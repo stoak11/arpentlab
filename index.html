@@ -1,632 +1,242 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Filament</title>
-<link rel="stylesheet" href="assets/filament.css"/>
-<link rel="stylesheet" href="assets/ceres-demo.css?v=3"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arpent — IA spécialisées, mesurées avant déploiement</title>
+  <meta name="description" content="Arpent conçoit des IA spécialisées pour une tâche métier précise : audit, prototype mesuré et intégration pour les PME et ETI européennes.">
+  <meta name="theme-color" content="#FAFAF8">
+  <link rel="icon" type="image/png" href="assets/arpent-logo-brandbook.png">
+  <meta property="og:title" content="Arpent — Une IA précise pour votre métier">
+  <meta property="og:description" content="On part du métier, on mesure, on prouve — avant de déployer.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/arpent.css">
 </head>
 <body>
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
 
-<nav class="nav">
-  <a class="nav-logo" href="#">FILAMENT</a>
-  <div class="nav-links">
-    <a href="#approche">Approche</a>
-    <a href="#produits">Produits</a>
-    <a href="#ceres">Ceres AI</a>
-    <a href="#services">Services</a>
-    <a href="#manifesto">Manifeste</a>
-    <a href="#contact">Contact</a>
-  </div>
-  <div class="nav-actions">
-  <a class="nav-cta" href="#contact">Échanger</a>
-  <a class="nav-cta nav-cta-ceres" href="#contact-pilote">Pilote Ceres</a>
-  </div>
-</nav>
+  <header class="site-header" id="top">
+    <a class="wordmark" href="#top" aria-label="Arpent, accueil">
+      <span>ARPENT</span><small>LAB</small>
+    </a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      <span class="sr-only">Ouvrir le menu</span><i></i><i></i>
+    </button>
+    <nav class="site-nav" id="site-nav" aria-label="Navigation principale">
+      <a href="#offres">Services</a>
+      <a href="#methode">Méthode</a>
+      <a href="#ceres">Ceres</a>
+      <a href="#equipe">Équipe</a>
+      <a class="nav-cta" href="#contact">Cadrer un cas d’usage</a>
+    </nav>
+  </header>
 
-<header class="hero">
-  <div class="hero-inner">
-    <div class="hero-eyebrow">Laboratoire IA, Paris, 2026</div>
-    <h1>De la recherche au produit.<br/>Du produit à <em>l'impact</em>.</h1>
-    <p class="hero-lead">Une approche R&amp;D appliquée sur le terrain. Données libres de droits et privées valorisées en produits pour les entreprises françaises et européennes.</p>
-    <div class="hero-stats">
-      <div class="hero-stat"><div class="num">R&amp;D</div><div class="lbl">Pipelines et composants réutilisables</div></div>
-      <div class="hero-stat"><div class="num">Produits</div><div class="lbl">Applications clé en main par industrie</div></div>
-      <div class="hero-stat"><div class="num">Services</div><div class="lbl">Intégrations sur mesure, même rigueur</div></div>
-    </div>
-  </div>
-</header>
-
-<section id="approche">
-  <div class="wrap">
-    <div class="section-num">01. Approche</div>
-    <h2 class="section-title">Ce que nous faisons et ce que nous refusons</h2>
-    <div class="manifesto-grid">
-      <div class="manifesto-text">
-        <p>L'IA généraliste ne connaît ni vos processus, ni vos parcelles, ni vos contrats. Les projets échouent quand on déploie une démo sans données ni périmètre.</p>
-        <p><strong>Filament</strong> part des faits. Structurer des sources vérifiables, mesurer avant de vendre, livrer une chose à la fois.</p>
-        <p>Nous ne sommes pas une agence « transformation digitale ». Nous construisons des composants réutilisables (RAG, agents, connecteurs MCP) et des produits par industrie.</p>
+  <main id="contenu">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">Laboratoire européen d’IA · Paris</p>
+        <h1 id="hero-title">Une IA précise<br>pour votre métier.<br><em>Une preuve avant le déploiement.</em></h1>
+        <p class="hero-lead">Arpent cadre, construit et mesure des systèmes d’IA spécialisés pour une tâche métier précise. Audit, prototype mesuré et intégration pour les PME et ETI européennes.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#contact">Cadrer un cas d’usage</a>
+          <a class="button button-quiet" href="#methode">Voir notre méthode <span aria-hidden="true">↓</span></a>
+        </div>
+        <p class="hero-note"><span></span>Premier échange : besoin, données disponibles et critère de réussite.</p>
       </div>
-      <ol class="principles">
-        <li><span class="num">01</span><div><strong>Évaluer avant de vendre.</strong> Indicateurs publics, métriques claires, pas de boîte noire.</div></li>
-        <li><span class="num">02</span><div><strong>Produits puis précision.</strong> Nos produits exploitent d'abord des données libres de droits ; la donnée locale affîne le modèle, avec consentement.</div></li>
-        <li><span class="num">03</span><div><strong>Un feature, un scope.</strong> Pas de plateforme fourre-tout. Un cas d'usage, bien fait.</div></li>
+
+      <div class="hero-instrument" aria-label="Le protocole de preuve Arpent">
+        <svg class="topography" viewBox="0 0 720 680" aria-hidden="true">
+          <g class="contours">
+            <path d="M49 365C49 167 185 53 371 53c179 0 300 122 300 281 0 173-121 293-289 293-185 0-333-81-333-262Z"/>
+            <path d="M108 361c0-154 105-247 260-247 144 0 244 96 244 224 0 137-97 229-231 229-151 0-273-64-273-206Z"/>
+            <path d="M171 354c0-110 76-181 192-181 108 0 185 70 185 166 0 99-72 166-169 166-115 0-208-47-208-151Z"/>
+            <path d="M236 346c0-68 48-114 123-114 72 0 124 46 124 109 0 65-49 107-112 107-74 0-135-31-135-102Z"/>
+            <path d="M301 340c0-29 22-51 57-51 36 0 61 23 61 53 0 31-24 51-56 51-34 0-62-16-62-53Z"/>
+          </g>
+          <g class="measure-lines">
+            <path d="M360 24v632M23 340h674"/>
+            <circle cx="360" cy="340" r="9"/>
+            <path d="M345 24h30M345 656h30M23 325v30M697 325v30"/>
+          </g>
+          <g class="ticks">
+            <path d="M80 331v18M120 334v12M160 331v18M200 334v12M240 331v18M280 334v12M320 331v18M400 331v18M440 334v12M480 331v18M520 334v12M560 331v18M600 334v12M640 331v18"/>
+          </g>
+        </svg>
+        <div class="proof-register">
+          <div class="register-head">
+            <img src="assets/arpent-logo-brandbook.png" alt="Arpent Lab" width="585" height="635">
+            <div><span>REGISTRE DE PREUVE</span><strong>Un go / no-go écrit</strong></div>
+          </div>
+          <ol>
+            <li><b>G0</b><div><strong>Cadrer</strong><span>Une tâche, des données, un usage.</span></div><i>01</i></li>
+            <li><b>G1</b><div><strong>Mesurer</strong><span>Baseline, métrique et seuil définis.</span></div><i>02</i></li>
+            <li><b>G2</b><div><strong>Déployer</strong><span>Seulement si la preuve tient.</span></div><i>03</i></li>
+          </ol>
+          <p>Pas de résultat maquillé en démonstration.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="principles" aria-labelledby="principles-title">
+      <div class="section-heading compact">
+        <p class="eyebrow">Notre position</p>
+        <h2 id="principles-title">Le strict nécessaire.<br>Mesuré avec rigueur.</h2>
+      </div>
+      <div class="principle-list">
+        <article><span>01</span><div><h3>Sobriété</h3><p>Un périmètre étroit. La technologie utile au besoin, rien de plus.</p></div></article>
+        <article><span>02</span><div><h3>Précision</h3><p>Une baseline, une métrique et un seuil décidés avant de construire.</p></div></article>
+        <article><span>03</span><div><h3>Souveraineté</h3><p>Choix d’hébergement, traçabilité et conformité adaptés à vos contraintes européennes.</p></div></article>
+      </div>
+    </section>
+
+    <section class="offers section-shell" id="offres" aria-labelledby="offers-title">
+      <div class="section-heading">
+        <p class="eyebrow">Services</p>
+        <h2 id="offers-title">Commencer au bon niveau.</h2>
+        <p>Chaque mission a une sortie concrète et un critère d’arrêt. Le service finance notre R&amp;D sans devenir une collection de POC sans lendemain.</p>
+      </div>
+      <div class="offer-table">
+        <article>
+          <header><span>01 · Décider</span><h3>Audit &amp; feuille de route</h3></header>
+          <p>Cartographie des données et processus, cas d’usage priorisés, risques et feuille de route exécutable.</p>
+          <ul><li>Entretiens métier</li><li>Score faisabilité × valeur</li><li>Architecture et conformité</li></ul>
+          <footer><div><small>2 à 3 semaines</small><strong>4–8 k€ HT</strong></div><a href="#contact">Demander un cadrage <span aria-hidden="true">→</span></a></footer>
+        </article>
+        <article class="offer-featured">
+          <header><span>02 · Construire · Cœur de l’offre</span><h3>Système IA spécialisé</h3></header>
+          <p>Un cas d’usage livré, branché sur vos données et vos outils, avec protocole de mesure et décision de mise en production.</p>
+          <ul><li>Prototype mesuré</li><li>Intégration métier</li><li>Documentation et transfert</li></ul>
+          <footer><div><small>6 à 12 semaines</small><strong>18–45 k€ HT</strong></div><a href="#contact">Étudier le périmètre <span aria-hidden="true">→</span></a></footer>
+        </article>
+        <article>
+          <header><span>03 · Aligner</span><h3>Atelier dirigeants &amp; équipes</h3></header>
+          <p>Comprendre ce qui fonctionne, faire émerger les bons cas d’usage et donner un cadre commun aux décisions IA.</p>
+          <ul><li>Diagnostic partagé</li><li>Cas concrets du secteur</li><li>Plan d’action court</li></ul>
+          <footer><div><small>½ journée à 2 jours</small><strong>1,5–5 k€ HT</strong></div><a href="#contact">Préparer un atelier <span aria-hidden="true">→</span></a></footer>
+        </article>
+      </div>
+    </section>
+
+    <section class="method" id="methode" aria-labelledby="method-title">
+      <div class="method-intro">
+        <p class="eyebrow light">Méthode Arpent</p>
+        <h2 id="method-title">On part du métier.<br>On mesure. On prouve.</h2>
+        <p>Notre usine interne, KERN, capitalise les composants, les protocoles et les apprentissages utiles. Chaque problème reste traité pour ce qu’il est : unique.</p>
+      </div>
+      <ol class="method-steps">
+        <li><span>01</span><div><h3>Arpenter</h3><p>Observer la décision métier, les données et les contraintes réelles.</p></div></li>
+        <li><span>02</span><div><h3>Mesurer</h3><p>Fixer baseline, métrique, seuil et coût avant le prototype.</p></div></li>
+        <li><span>03</span><div><h3>Prouver</h3><p>Tester hors échantillon. Documenter limites et incertitude.</p></div></li>
+        <li><span>04</span><div><h3>Déployer</h3><p>Mettre en service si — et seulement si — le seuil est atteint.</p></div></li>
       </ol>
-    </div>
+      <div class="stop-rule"><b>Règle d’arrêt</b><span>Si la preuve ne tient pas, nous arrêtons ou changeons de méthode. Le client garde un diagnostic exploitable.</span></div>
+    </section>
 
-    <div class="value-split">
-      <div class="value-box">
-        <h3>Produits</h3>
-        <p>Applications standalone alimentées par notre R&amp;D. Composants testés, modèles benchmarkés, valeur immédiate sans projet d'intégration. Ceres AI en est le premier exemple.</p>
-      </div>
-      <div class="value-box">
-        <h3>Services sur mesure</h3>
-        <p>Missions d'audit ou d'intégration qui réutilisent les mêmes composants, adaptées à vos données, vos outils et un cas d'usage précis. Plus de personnalisation, même rigueur technique.</p>
-      </div>
-    </div>
-
-    <h2 class="section-title" style="margin-top:40px;margin-bottom:20px;">Trois piliers</h2>
-    <div class="pillar-grid">
-      <div class="pillar">
-        <div class="pillar-tag">Pilier 1</div>
-        <h3>R&D</h3>
-        <p>Données libres de droits ou client → pipelines → RAG, agents, connecteurs MCP réutilisables.</p>
-      </div>
-      <div class="pillar">
-        <div class="pillar-tag">Pilier 2</div>
-        <h3>Produits</h3>
-        <p>Applications par industrie. Ceres AI est le premier exemple, vitrine de la méthode, pas l'identité du Lab.</p>
-      </div>
-      <div class="pillar">
-        <div class="pillar-tag">Pilier 3</div>
-        <h3>Services</h3>
-        <p>Audit, intégration, conférences pour les PME de tout secteur, même exigence de données.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="produits" class="surface">
-  <div class="wrap">
-    <div class="section-num">02. Produits</div>
-    <h2 class="section-title">Applications par industrie</h2>
-    <p class="section-intro">Chaque produit capitalise sur la même R&D. Ceres est en pilote ; les exemples ci-dessous illustrent le type de problèmes adressables dans d'autres industries.</p>
-
-    <div class="product-showcase">
-      <div class="product-hero-card">
-        <div class="product-hero-header">
-          <div class="product-brand">
-            <div class="product-icon">C</div>
-            <div>
-              <h3>Ceres AI</h3>
-              <div class="by">par Filament, Agriculture</div>
-            </div>
-          </div>
-          <span class="status-live">Pilotes 2026</span>
-        </div>
-        <div class="product-hero-body">
-          <p class="product-desc">Prévision de rendement blé tendre (q/ha) par parcelle, avec fourchette d'incertitude et mises à jour en cours de campagne. Registre parcellaire, météo et satellite, France.</p>
-          <div class="product-meta-row">
-            <span><strong>Profils</strong> exploitants, coopératives, assureurs récolte</span>
-            <span><strong>Sources</strong> RPG, Météo-France, Sentinel-2</span>
-          </div>
-          <a class="nav-cta" href="#ceres" style="display:inline-block;">Explorer la démo ↓</a>
+    <section class="ceres section-shell" id="ceres" aria-labelledby="ceres-title">
+      <div class="ceres-copy">
+        <p class="eyebrow terracotta">Premier produit · Agriculture</p>
+        <h2 id="ceres-title">Ceres : notre doctrine<br>mise à l’épreuve.</h2>
+        <p>Ceres estime la production de blé pour aider les coopératives et négoces à anticiper la collecte. La preuve commence à l’échelle départementale, où les références existent, puis vise la parcelle avec la vérité terrain d’un partenaire agronome.</p>
+        <div class="ceres-actions">
+          <a class="button button-terra" href="#contact">Voir Ceres en rendez-vous <span aria-hidden="true">→</span></a>
+          <span>Prototype en cours de mesure. La démo publique reste hors du parcours commercial tant que ses données fictives ne sont pas nettoyées.</span>
         </div>
       </div>
-
-      <div class="product-examples">
-        <div class="example-card">
-          <div class="tag">Concept, Logistique</div>
-          <h4>Prédiction de délai livraison</h4>
-          <p>Estimation par trajet à partir de données transport libres de droits, avec alertes avant rupture de créneau.</p>
-        </div>
-        <div class="example-card">
-          <div class="tag">Concept, Industrie</div>
-          <h4>Recherche documentaire conformité</h4>
-          <p>RAG sur corpus réglementaire et procédures internes, réponses sourcées pour qualité et audit.</p>
-        </div>
-        <div class="example-card">
-          <div class="tag">Concept, Services B2B</div>
-          <h4>Agent extraction contrats</h4>
-          <p>Extraction structurée de clauses et échéances depuis PDF, connexion ERP ou CRM via MCP.</p>
-        </div>
-        <div class="example-card">
-          <div class="tag">Concept, Territorial</div>
-          <h4>Indicateurs sur données libres de droits</h4>
-          <p>Tableaux de bord INSEE et données libres de droits, pour prioriser les actions des collectivités.</p>
-        </div>
+      <div class="ceres-proof" aria-label="Protocole Ceres">
+        <div class="ceres-mark">C</div>
+        <dl>
+          <div><dt>Cible cœur</dt><dd>Coopératives &amp; négoces</dd></div>
+          <div><dt>Sources</dt><dd>RPG · météo · satellite · rendements</dd></div>
+          <div><dt>Preuve v0</dt><dd>Département × campagne</dd></div>
+          <div><dt>Cible suivante</dt><dd>Parcelle + vérité terrain</dd></div>
+        </dl>
+        <p><span>SEUIL DE LANCEMENT</span> Défini avant la vente, mesuré contre des références publiques et une baseline simple.</p>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<section id="ceres">
-  <div class="wrap">
-    <div class="section-num">03. Démo Ceres AI</div>
-    <h2 class="section-title">Choisissez votre profil</h2>
-    <p class="section-intro">Chaque métier voit Ceres différemment. Aperçu ci-dessous, ou ouvrez la <strong>démo interactive</strong> (exploitant, coop et assureur, cliquable).</p>
-    <p style="margin-bottom:20px;">
-      <a class="nav-cta nav-cta-ceres" href="https://ceresdemo.netlify.app/" target="_blank" rel="noopener" style="display:inline-block;">Ouvrir la démo Ceres interactive →</a>
-    </p>
+    <section class="use-cases" aria-labelledby="cases-title">
+      <div class="section-heading compact">
+        <p class="eyebrow">Cas bien cadrés</p>
+        <h2 id="cases-title">Une tâche. Une sortie utile.</h2>
+        <p>Nous refusons les plateformes fourre-tout. Nous cherchons le plus petit système qui améliore réellement une décision ou un flux de travail.</p>
+      </div>
+      <div class="case-lines">
+        <article><span>PRÉDIRE</span><h3>Modèle prédictif</h3><p>Prévoir un volume, un risque ou un délai avec incertitude et référence comparative.</p><small>Sortie : score, intervalle, alerte ou API.</small></article>
+        <article><span>RETROUVER</span><h3>Recherche augmentée sourcée</h3><p>Interroger un corpus métier en conservant sources, droits d’accès et limites de réponse.</p><small>Sortie : réponse citée, dossier ou contrôle.</small></article>
+        <article><span>AGIR</span><h3>Agent métier &amp; connecteur</h3><p>Automatiser une séquence bornée entre vos documents, votre équipe et vos outils.</p><small>Sortie : action traçable, validation humaine.</small></article>
+      </div>
+    </section>
 
-    <div class="ceres-path" role="tablist">
-      <button type="button" class="persona-card active" role="tab" data-panel="exploitant" aria-selected="true">
-        <span class="who">Profil 1</span>
-        <span class="label">Je suis exploitant</span>
-        <span class="hint">Agriculteur, suivi parcelle</span>
-      </button>
-      <button type="button" class="persona-card" role="tab" data-panel="coop">
-        <span class="who">Profil 2</span>
-        <span class="label">Je suis une coopérative</span>
-        <span class="hint">Collecte, logistique, techniciens</span>
-      </button>
-      <button type="button" class="persona-card" role="tab" data-panel="assureur">
-        <span class="who">Profil 3</span>
-        <span class="label">Je suis assureur</span>
-        <span class="hint">Portefeuille récolte, exposition</span>
-      </button>
-    </div>
+    <section class="team section-shell" id="equipe" aria-labelledby="team-title">
+      <div class="section-heading compact">
+        <p class="eyebrow">Les arpenteurs</p>
+        <h2 id="team-title">Deux fondateurs,<br>un même terrain.</h2>
+      </div>
+      <div class="founder-list">
+        <article><span>Produit · R&amp;D</span><h3>Stanislas Banaszuk</h3><p>Produit, croissance et conception de systèmes. Fondateur de Skillogs ; Sciences Po, Mines ParisTech / Dauphine, Le Wagon Data Science.</p><a href="https://www.linkedin.com/in/sbanaszuk/" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a></article>
+        <article><span>Finance · Opérations</span><h3>Timothey Berl</h3><p>Structuration financière, pilotage et développement commercial. ESCP Europe, finance d’entreprise, Le Wagon Data Science.</p><a href="https://www.linkedin.com/in/timothey-berl-2b16a479/" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a></article>
+      </div>
+    </section>
 
-    <div class="ceres-demo-layout">
-      <div class="demo-frame-wrap">
+    <section class="faq" aria-labelledby="faq-title">
+      <div class="section-heading compact"><p class="eyebrow">Questions directes</p><h2 id="faq-title">Avant de commencer.</h2></div>
+      <div class="faq-list">
+        <details><summary>Faut-il déjà disposer de données propres ?<span></span></summary><p>Non. Le premier cadrage qualifie les sources, leur accessibilité et leur niveau de qualité. L’absence de données suffisantes peut devenir une conclusion utile — avant d’engager un développement.</p></details>
+        <details><summary>Combien de temps avant un premier résultat ?<span></span></summary><p>Un audit prend généralement 2 à 3 semaines. Un système spécialisé demande 6 à 12 semaines selon les données, l’intégration et le niveau de preuve attendu.</p></details>
+        <details><summary>Comment traitez-vous conformité et souveraineté ?<span></span></summary><p>Nous intégrons mesure, traçabilité, transparence, licences de données et choix d’hébergement selon l’usage et son niveau de risque. Le dispositif est cadré avec vos conseils lorsque nécessaire.</p></details>
+        <details><summary>Quel est le bon premier projet ?<span></span></summary><p>Une décision fréquente, coûteuse ou lente ; une sortie observable ; des données accessibles ; et une personne métier disponible pour juger le résultat.</p></details>
+      </div>
+    </section>
 
-        <!-- Exploitant (default) -->
-        <div class="demo-panel active ceres-embed" id="panel-exploitant" role="tabpanel">
-          <div class="embed-app">
-            <div class="embed-source">Données fictives · Démo produit · Juin 2026 · RPG · Météo-France · Sentinel-2 · Modèle Ceres v0.3</div>
-            <div class="embed-mode"><span>Vue <strong>Essentiel</strong> (lean), proche produit cible</span><a href="https://ceresdemo.netlify.app/farmer/lean" target="_blank" rel="noopener">Ouvrir →</a></div>
-            <header class="embed-header">
-              <div class="embed-header-top">
-                <span class="embed-back" aria-hidden="true">←</span>
-                <h4>Ceres AI</h4>
-              </div>
-              <span class="embed-user">Tom Gréhan, Exploitation Gréhan</span>
-            </header>
-            <div class="embed-body">
-              <div class="embed-yield-hero">
-                <div class="embed-yield-big">69</div>
-                <div class="embed-yield-unit">q/ha en moyenne, 186 ha</div>
-                <div class="embed-yield-range">Fourchette 61–76 q/ha, Confiance moyenne, MAJ 8 juin 2026</div>
-              </div>
-              <div class="embed-section">
-                <h5>Évolution saison</h5>
-                <div class="embed-season-bars">
-                  <div class="embed-bar-col"><div class="embed-bar" style="height:100%"><span class="embed-bar-val">72</span></div><span class="embed-bar-lbl">Avril</span></div>
-                  <div class="embed-bar-col"><div class="embed-bar" style="height:65%"><span class="embed-bar-val">70</span></div><span class="embed-bar-lbl">Mai</span></div>
-                  <div class="embed-bar-col"><div class="embed-bar is-current" style="height:48%"><span class="embed-bar-val">69</span></div><span class="embed-bar-lbl">Juin</span></div>
-                  <div class="embed-bar-col"><div class="embed-bar is-pending"></div><span class="embed-bar-lbl">Juillet</span></div>
-                </div>
-              </div>
-              <div class="embed-section">
-                <div class="embed-section-head">
-                  <h5>Mes parcelles</h5>
-                  <a class="embed-link" href="https://ceresdemo.netlify.app/farmer/lean/parcels" target="_blank" rel="noopener">Tout voir →</a>
-                </div>
-                <div class="embed-parcel"><div><strong>Les Vignes</strong><span>42 ha, Blé tendre</span></div><span class="embed-parcel-yield">71</span></div>
-                <div class="embed-parcel"><div><strong>Le Pré</strong><span>38 ha, Blé tendre</span></div><span class="embed-parcel-yield">67</span></div>
-                <div class="embed-parcel"><div><strong>La Butte</strong><span>56 ha, Blé tendre</span></div><span class="embed-parcel-yield">68</span></div>
-                <div class="embed-parcel"><div><strong>Champ Nord</strong><span>50 ha, Blé tendre</span></div><span class="embed-parcel-yield">70</span></div>
-              </div>
-            </div>
-            <nav class="embed-nav" aria-label="Navigation exploitant">
-              <span class="on">Accueil</span><span>Parcelles</span><span>Carte</span><span>Profil</span>
-            </nav>
-          </div>
+    <section class="contact" id="contact" aria-labelledby="contact-title">
+      <div class="contact-copy">
+        <p class="eyebrow light">Premier échange · 30 minutes</p>
+        <h2 id="contact-title">Quel résultat faudrait-il prouver ?</h2>
+        <p>Venez avec une décision métier, même imparfaitement formulée. Nous regarderons le périmètre, les données et le seuil qui rendrait le projet utile.</p>
+      </div>
+      <div class="contact-panel">
+        <p><span>BRIEF DE DÉPART</span>« Nous voulons améliorer [décision], aujourd’hui mesurée par [indicateur], à partir de [données disponibles]. »</p>
+        <button class="copy-brief" type="button" data-copy="Nous voulons améliorer [décision], aujourd’hui mesurée par [indicateur], à partir de [données disponibles].">Copier le brief</button>
+        <div class="contact-links">
+          <a href="https://www.linkedin.com/in/sbanaszuk/" target="_blank" rel="noopener"><strong>Écrire à Stanislas</strong><span>Produit &amp; cadrage →</span></a>
+          <a href="https://www.linkedin.com/in/timothey-berl-2b16a479/" target="_blank" rel="noopener"><strong>Écrire à Timothey</strong><span>Opérations &amp; projet →</span></a>
         </div>
-
-        <!-- Coop -->
-        <div class="demo-panel ceres-embed" id="panel-coop" role="tabpanel">
-          <div class="embed-app">
-            <div class="embed-source">Données fictives · Démo produit · Juin 2026 · RPG · Météo-France · Sentinel-2 · Modèle Ceres v0.3</div>
-            <div class="embed-mode"><span>Vue <strong>Essentiel</strong> (lean), proche produit cible</span><a href="https://ceresdemo.netlify.app/coop/lean" target="_blank" rel="noopener">Ouvrir →</a></div>
-            <div class="embed-layout">
-              <aside class="embed-sidebar">
-                <div class="embed-logo">Ceres<span>AI</span></div>
-                <span class="embed-switch">← Accueil démo</span>
-                <nav class="embed-side-nav">
-                  <a class="active" href="#">Tableau de bord</a>
-                  <a href="#">Alertes</a>
-                  <a href="#">Profil</a>
-                  <a href="#">Secteurs</a>
-                  <a href="#">Parcelles</a>
-                  <a href="#">Exports</a>
-                </nav>
-                <div class="embed-side-foot">
-                  <small>Coopérative du Val d'Oise</small>
-                  <small>Blé tendre 2026</small>
-                </div>
-              </aside>
-              <main class="embed-main">
-                <header class="embed-topbar">
-                  <div>
-                    <h4>Coopérative du Val d'Oise, Blé tendre 2026</h4>
-                    <p class="embed-sub">Campagne en cours, MAJ 8 juin 2026, Modèle v0.3</p>
-                  </div>
-                  <span class="embed-badge">MAJ #2 (épiaison)</span>
-                </header>
-                <div class="embed-alerts">
-                  <div class="embed-alerts-head">
-                    <h5>Alertes actives <span class="embed-alert-count">2</span></h5>
-                    <a href="#">Paramétrer</a>
-                  </div>
-                  <div class="embed-alert is-watch">
-                    <strong>2 secteurs sous moyenne coop</strong>
-                    <p>Est (62 q/ha), Centre (64 q/ha), vs 68 q/ha moyenne</p>
-                  </div>
-                  <div class="embed-alert is-watch">
-                    <strong>Volume prévu en hausse</strong>
-                    <p>29,1 kt estimés, +6 % vs campagne 2025</p>
-                  </div>
-                </div>
-                <div class="embed-stats">
-                  <div class="embed-stat"><span>Surface totale</span><strong>4 280 ha</strong></div>
-                  <div class="embed-stat"><span>Rendement moyen</span><strong>68 q/ha</strong><em>± 4 q/ha (IC 80 %)</em></div>
-                  <div class="embed-stat"><span>Volume prévu</span><strong>29,1 kt</strong><em>+6 % vs 2025</em></div>
-                  <div class="embed-stat"><span>Parcelles (échantillon)</span><strong>312</strong></div>
-                </div>
-                <div class="embed-grid">
-                  <section class="embed-panel">
-                    <div class="embed-panel-head">Carte secteurs <button type="button" class="embed-btn" data-demo-action="export">Export PDF</button></div>
-                    <div class="embed-map">
-                      <div class="embed-map-tile"><strong>Nord</strong><span>892 ha, 71 q/ha</span></div>
-                      <div class="embed-map-tile is-alert"><strong>Est</strong><span>654 ha, 62 q/ha</span><em>Sous moyenne</em></div>
-                      <div class="embed-map-tile"><strong>Sud</strong><span>1 120 ha, 69 q/ha</span></div>
-                      <div class="embed-map-tile"><strong>Ouest</strong><span>743 ha, 67 q/ha</span></div>
-                      <div class="embed-map-tile is-alert"><strong>Centre</strong><span>521 ha, 64 q/ha</span><em>Sous moyenne</em></div>
-                      <div class="embed-map-tile"><strong>Autres</strong><span>350 ha, 70 q/ha</span></div>
-                    </div>
-                  </section>
-                  <section class="embed-panel">
-                    <div class="embed-panel-head">Écarts vs moyenne coop <a href="#">Tout voir →</a></div>
-                    <table class="embed-table">
-                      <thead><tr><th>Parcelle / adhérent</th><th>Estimé</th><th>Écart</th><th>Conf.</th></tr></thead>
-                      <tbody>
-                        <tr><td><strong>p-1842</strong>, Expl. Martin</td><td>74 q/ha</td><td class="gap-pos">+6</td><td><span class="embed-conf hi"><span class="embed-conf-dot"></span>Haute</span></td></tr>
-                        <tr><td><strong>p-0921</strong>, Expl. Dupont</td><td>58 q/ha</td><td class="gap-neg">−10</td><td><span class="embed-conf med"><span class="embed-conf-dot"></span>Moyenne</span></td></tr>
-                        <tr><td><strong>p-3301</strong>, GA Les Champs</td><td>71 q/ha</td><td class="gap-pos">+3</td><td><span class="embed-conf hi"><span class="embed-conf-dot"></span>Haute</span></td></tr>
-                        <tr><td><strong>p-1104</strong>, Expl. Leroy</td><td>61 q/ha</td><td class="gap-neg">−7</td><td><span class="embed-conf med"><span class="embed-conf-dot"></span>Moyenne</span></td></tr>
-                      </tbody>
-                    </table>
-                  </section>
-                </div>
-              </main>
-            </div>
-          </div>
-        </div>
-
-        <!-- Assureur -->
-        <div class="demo-panel ceres-embed" id="panel-assureur" role="tabpanel">
-          <div class="embed-app">
-            <div class="embed-source">Données fictives · Démo produit · Juin 2026 · RPG · Météo-France · Sentinel-2 · Modèle Ceres v0.3</div>
-            <div class="embed-mode"><span>Vue <strong>Essentiel</strong> (lean), proche produit cible</span><a href="https://ceresdemo.netlify.app/insurer/lean" target="_blank" rel="noopener">Ouvrir →</a></div>
-            <div class="embed-layout">
-              <aside class="embed-sidebar">
-                <div class="embed-logo">Ceres<span>AI</span></div>
-                <span class="embed-role">Assureur récolte</span>
-                <span class="embed-switch">← Accueil démo</span>
-                <nav class="embed-side-nav">
-                  <a class="active" href="#">Portefeuille</a>
-                  <a href="#">Départements</a>
-                  <a href="#">Alertes</a>
-                  <a href="#">Profil</a>
-                  <a href="#">Exports</a>
-                </nav>
-                <div class="embed-side-foot">
-                  <small>Pacifica Récolte (Grand Est)</small>
-                  <small>Blé tendre 2026</small>
-                </div>
-              </aside>
-              <main class="embed-main">
-                <header class="embed-topbar">
-                  <div>
-                    <h4>Pacifica Récolte (Grand Est)</h4>
-                    <p class="embed-sub">Exposition récolte, Grand Est, MAJ 8 juin 2026</p>
-                  </div>
-                  <span class="embed-badge">MAJ #2 (épiaison)</span>
-                </header>
-                <div class="embed-alerts">
-                  <div class="embed-alerts-head">
-                    <h5>Alertes actives <span class="embed-alert-count">2</span></h5>
-                    <a href="#">Paramétrer</a>
-                  </div>
-                  <div class="embed-alert is-critical">
-                    <strong>1 département(s) sous normale</strong>
-                    <p>Aube (−12 %)</p>
-                  </div>
-                  <div class="embed-alert is-watch">
-                    <strong>Rendement portefeuille légèrement sous normale</strong>
-                    <p>66 q/ha vs 68 q/ha quinquennale (−3 %), surveillance recommandée</p>
-                  </div>
-                </div>
-                <div class="embed-stats">
-                  <div class="embed-stat"><span>Surface assurée</span><strong>12 400 ha</strong></div>
-                  <div class="embed-stat"><span>Rendement portefeuille</span><strong>66 q/ha</strong><em>vs 68 q/ha normale</em></div>
-                  <div class="embed-stat"><span>Dépts. sous normale</span><strong>1 / 8</strong><em>écart &gt; −10 %</em></div>
-                  <div class="embed-stat"><span>Contrats actifs</span><strong>847</strong></div>
-                </div>
-                <div class="embed-grid">
-                  <section class="embed-panel">
-                    <div class="embed-panel-head">Carte départements <a href="#">Détail →</a></div>
-                    <div class="embed-dept-map">
-                      <div class="embed-dept-tile"><strong>Marne</strong><span>2 100 ha, 71 q/ha</span></div>
-                      <div class="embed-dept-tile is-stress"><strong>Aube</strong><span>1 850 ha, 58 q/ha</span><em>Stress sécheresse</em></div>
-                      <div class="embed-dept-tile is-watch"><strong>Meuse</strong><span>980 ha, 63 q/ha</span><em>Surveillance</em></div>
-                      <div class="embed-dept-tile"><strong>Haute-Marne</strong><span>1 420 ha, 69 q/ha</span></div>
-                      <div class="embed-dept-tile is-watch"><strong>Vosges</strong><span>1 240 ha, 67 q/ha</span><em>Surveillance</em></div>
-                      <div class="embed-dept-tile is-watch"><strong>Moselle</strong><span>1 560 ha, 64 q/ha</span><em>Surveillance</em></div>
-                    </div>
-                  </section>
-                  <section class="embed-panel">
-                    <div class="embed-panel-head">Départements à surveiller <a href="#">Tout voir →</a></div>
-                    <table class="embed-table">
-                      <thead><tr><th>Département</th><th>Rendement</th><th>vs normale</th><th>Signal</th></tr></thead>
-                      <tbody>
-                        <tr><td><strong>Aube</strong></td><td>58 q/ha</td><td class="gap-neg">−12 %</td><td><span class="ins-signal ins-signal--stress">Stress sécheresse</span></td></tr>
-                        <tr><td><strong>Moselle</strong></td><td>64 q/ha</td><td class="gap-neg">−9 %</td><td><span class="ins-signal ins-signal--watch">Surveillance</span></td></tr>
-                        <tr><td><strong>Meuse</strong></td><td>63 q/ha</td><td class="gap-neg">−7 %</td><td><span class="ins-signal ins-signal--watch">Surveillance</span></td></tr>
-                        <tr><td><strong>Vosges</strong></td><td>67 q/ha</td><td class="gap-neg">−3 %</td><td><span class="ins-signal ins-signal--watch">Surveillance</span></td></tr>
-                      </tbody>
-                    </table>
-                  </section>
-                </div>
-              </main>
-            </div>
-          </div>
-        </div>
+        <p class="copy-status" role="status" aria-live="polite"></p>
       </div>
+    </section>
+  </main>
 
-      <aside class="ceres-side" id="ceres-side-cards"></aside>
-    </div>
-  </div>
-</section>
+  <footer class="site-footer">
+    <a class="wordmark inverse" href="#top"><span>ARPENT</span><small>LAB</small></a>
+    <p>IA spécialisées · Mesure · Preuve</p>
+    <p>Paris · 2026</p>
+  </footer>
 
-<section id="services" class="surface">
-  <div class="wrap">
-    <div class="section-num">04. Services</div>
-    <h2 class="section-title">Intégration et conseil</h2>
-    <p class="section-intro">Missions courtes, périmètre clair. Les intégrations sur mesure s'appuient sur les composants développés en R&amp;D. Le produit standardise, le service adapte à votre contexte.</p>
-    <div class="services-layout">
-      <div class="service-card">
-        <h3>Audit &amp; feuille de route</h3>
-        <div class="dur">2 à 3 semaines</div>
-        <p>Cartographie des données et processus, cas d'usage priorisés, stack recommandée, conformité.</p>
-        <div class="service-example">
-          <strong>Exemple</strong>
-          PME industrielle (~120 pers.), 3 cas d'usage IA classés par faisabilité.
-        </div>
-        <div class="service-price">4 000 – 8 000 € HT</div>
-      </div>
-      <div class="service-card">
-        <h3>Intégration sur mesure</h3>
-        <div class="dur">6 à 12 semaines</div>
-        <p>Base documentaire, agent métier ou connecteur MCP, un cas d'usage livré, branché sur vos outils.</p>
-        <div class="service-example">
-          <strong>Exemple</strong>
-          Négociant agro, extraction clauses contractuelles + export ERP.
-        </div>
-        <div class="service-price">18 000 – 45 000 € HT</div>
-      </div>
-      <div class="service-card">
-        <h3>Conférences &amp; séminaires</h3>
-        <div class="dur">Demi-journée à 2 jours</div>
-        <p>IA en PME, ce qui fonctionne, les limites, retours terrain.</p>
-        <div class="service-example">
-          <strong>Exemple</strong>
-          CCI régionale, matinée dirigeants, démo et check-list projet.
-        </div>
-        <div class="service-price">1 500 – 5 000 € HT</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="manifesto">
-  <div class="wrap about-wrap">
-    <div class="section-num">05. Manifeste</div>
-    <div class="about-layout">
-      <div class="about-lead">
-        <h2 class="section-title">À propos de nous</h2>
-        <p class="about-quote">De la recherche au produit. Du produit à l'impact. Une IA <strong>durable</strong> et <strong>désirable</strong> pour l'économie réelle.</p>
-      </div>
-      <div class="about-body">
-        <p>Nous sommes <strong>Stanislas Banaszuk</strong> et <strong>Timothey Berl</strong>, duo fondateur. Nous croyons que les entreprises françaises et européennes méritent une intelligence artificielle à la hauteur de leurs enjeux, ancrée dans le terrain, mesurable, et utile au quotidien.</p>
-        <p>Notre ambition est d'appliquer sur le terrain la recherche que nous menons, valoriser les <strong>données libres de droits</strong> et les <strong>données privées</strong>, avec consentement et rigueur, pour construire des produits IA efficients au service de l'économie réelle.</p>
-        <p>Filament est la structure de cette conviction. R&amp;D, produits par industrie, intégrations sur mesure. Une méthode reproductible. Plusieurs secteurs. La même exigence partout.</p>
-        <p class="about-sign">Stanislas &amp; Timothey, Paris, 2026</p>
-      </div>
-    </div>
-    <div class="about-commitments">
-      <div class="commitment"><span class="commitment-num">01</span><p><strong>Économie réelle.</strong> PME, filières, acteurs de terrain. Pas la tech pour la tech.</p></div>
-      <div class="commitment"><span class="commitment-num">02</span><p><strong>Données libres de droits et privées.</strong> Valorisées ensemble, dans le respect du cadre européen.</p></div>
-      <div class="commitment"><span class="commitment-num">03</span><p><strong>Produits.</strong> Recherche appliquée, benchmarks publics, livrables qui fonctionnent.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="contact" class="surface">
-  <div class="wrap contact-wrap">
-    <div class="section-num">06. Contact</div>
-
-    <div id="contact-echanger" class="contact-block contact-block--echanger">
-      <h2 class="section-title">Échanger</h2>
-      <p class="contact-lead">Filament est en structuration (SAS été 2026). Pas encore de compte produit. En attendant, contactez-nous directement sur LinkedIn.</p>
-      <div class="contact-actions">
-        <a class="contact-btn primary" href="https://www.linkedin.com/in/sbanaszuk/" target="_blank" rel="noopener">Stanislas sur LinkedIn</a>
-        <a class="contact-btn primary" href="https://www.linkedin.com/in/timothey-berl-2b16a479/" target="_blank" rel="noopener">Timothey sur LinkedIn</a>
-      </div>
-      <p class="contact-sign">Stanislas Banaszuk et Timothey Berl, co-fondateurs, Paris</p>
-    </div>
-
-    <div id="contact-pilote" class="contact-block contact-block--pilote">
-      <h2 class="section-title">Pilote Ceres AI</h2>
-      <p class="contact-lead contact-lead--left">Exploitants, coopératives et assureurs récolte, blé tendre, France. Automne 2026. Nous vous recontactons quand les pilotes ouvrent.</p>
-      <form class="pilot-form" id="pilot-form" novalidate>
-        <label for="pilot-name">Nom / structure</label>
-        <input type="text" id="pilot-name" name="name" required autocomplete="name" placeholder="Expl. Dupont, Coop du Val ou Assureur…"/>
-        <label for="pilot-email">Email</label>
-        <input type="email" id="pilot-email" name="email" required autocomplete="email" placeholder="vous@exemple.fr"/>
-        <label for="pilot-profile">Profil</label>
-        <select id="pilot-profile" name="profile" required>
-          <option value="">Choisir…</option>
-          <option value="exploitant">Exploitant agricole</option>
-          <option value="coop">Coopérative / négoce</option>
-          <option value="assureur">Assureur récolte</option>
-          <option value="conseil">Conseiller / technicien</option>
-          <option value="autre">Autre</option>
-        </select>
-        <label for="pilot-message">Message (optionnel)</label>
-        <textarea id="pilot-message" name="message" placeholder="Surface blé, département, besoin principal…"></textarea>
-        <button type="submit" id="pilot-submit">Manifester mon intérêt</button>
-        <p class="form-note">Email société à compléter post-SAS. En attendant, votre message est copié et LinkedIn s'ouvre à l'envoi.</p>
-        <div class="form-success" id="pilot-success" role="status"></div>
-      </form>
-    </div>
-  </div>
-</section>
-
-<div class="demo-toast" id="demo-toast" aria-live="polite"></div>
-
-<footer>
-  <span class="filament-mark">FILAMENT</span>
-  <span>Démo, Juin 2026, Filament (nom provisoire), Retours bienvenus</span>
-</footer>
-
-<script>
-var SITE_CONFIG = {
-  // Set your email to enable form delivery via FormSubmit (free, one-time activation email):
-  contactEmail: null,
-  linkedinStan: 'https://www.linkedin.com/in/sbanaszuk/',
-  linkedinTim: 'https://www.linkedin.com/in/timothey-berl-2b16a479/'
-};
-
-function showToast(msg) {
-  var el = document.getElementById('demo-toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(function() { el.classList.remove('show'); }, 4200);
-}
-
-document.querySelectorAll('[data-demo-action]').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    showToast('Démo. Export disponible en version pilote. Manifestez votre intérêt en bas de page.');
-    document.getElementById('contact-pilote').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-});
-
-document.getElementById('pilot-form').addEventListener('submit', function(e) {
-  e.preventDefault();
-  var form = e.target;
-  var name = form.name.value.trim();
-  var email = form.email.value.trim();
-  var profile = form.profile.value;
-  var message = form.message.value.trim();
-  if (!name || !email || !profile) {
-    showToast('Merci de remplir nom, email et profil.');
-    return;
-  }
-  var submitBtn = document.getElementById('pilot-submit');
-  var successEl = document.getElementById('pilot-success');
-  submitBtn.disabled = true;
-  var bodyText = 'Demande pilote Ceres AI\n\nNom/structure: ' + name + '\nEmail: ' + email + '\nProfil: ' + profile + (message ? '\nMessage: ' + message : '');
-  function showSuccess(html) {
-    successEl.innerHTML = html;
-    successEl.classList.add('visible');
-    form.reset();
-    submitBtn.disabled = false;
-  }
-  if (SITE_CONFIG.contactEmail) {
-    fetch('https://formsubmit.co/ajax/' + encodeURIComponent(SITE_CONFIG.contactEmail), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        _subject: 'Pilote Ceres, ' + name,
-        _template: 'table',
-        name: name,
-        email: email,
-        profile: profile,
-        message: message || '(aucun)'
-      })
-    }).then(function(r) {
-      if (r.ok) {
-        showSuccess('Demande envoyée. Nous vous recontactons pour le pilote automne 2026.');
-      } else {
-        throw new Error('submit failed');
-      }
-    }).catch(function() {
-      submitBtn.disabled = false;
-      showToast('Envoi impossible. Contactez-nous sur LinkedIn.');
-      window.open(SITE_CONFIG.linkedinStan, '_blank', 'noopener');
+  <script>
+    const toggle = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('.site-nav');
+    toggle.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
+      nav.classList.toggle('open', !open);
     });
-  } else {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(bodyText).catch(function() {});
-    }
-    showSuccess('Demande enregistrée localement. <a href="' + SITE_CONFIG.linkedinStan + '" target="_blank" rel="noopener">Contactez Stanislas sur LinkedIn</a> en collant votre message. Activation email société en cours.');
-    window.open(SITE_CONFIG.linkedinStan, '_blank', 'noopener');
-    submitBtn.disabled = false;
-  }
-});
-
-var personaContent = {
-  exploitant: {
-    cards: [
-      { type: 'Valeur', title: 'Anticiper avant la moisson', text: 'Hypothèse. L\'exploitant veut une estimation fiable dès l\'épiaison, pas seulement en juillet.' },
-      { type: 'Feature', title: 'Fourchette q/ha par parcelle', text: 'Estimation centrale + intervalle 80 %, pour prioriser les interventions.' },
-      { type: 'Feature', title: 'Timeline saison', text: '3 mises à jour (levée, montaison, épiaison), pour suivre l\'évolution de l\'estimation.' },
-      { type: 'Hypothèse', title: 'Mobile first', text: 'Consultation rapide au champ ; pas de saisie obligatoire en v1.' },
-      { type: 'À valider', title: 'Précision minimale', text: 'Quel écart q/ha est acceptable pour être utile ? ±5 ? ±10 ?' }
-    ]
-  },
-  coop: {
-    cards: [
-      { type: 'Valeur', title: 'Planifier la collecte', text: 'Hypothèse. La coop a besoin du volume total et par secteur avant la récolte.' },
-      { type: 'Feature', title: 'Carte secteurs', text: 'Agrégation par zone géographique, pour repérer les secteurs en retard.' },
-      { type: 'Feature', title: 'Écarts adhérents', text: 'Parcelles au-dessus ou sous la moyenne coop, pour le technicien conseil.' },
-      { type: 'Feature', title: 'Export PDF / CSV', text: 'Partage interne et avec la filière, sans ressaisie manuelle.' },
-      { type: 'À valider', title: 'Granularité utile', text: 'Secteur suffit-il, ou faut-il le détail adhérent dès la v1 ?' }
-    ]
-  },
-  assureur: {
-    cards: [
-      { type: 'Valeur', title: 'Signaux précoces portefeuille', text: 'Hypothèse. L\'assureur veut repérer les départements sous normale avant les déclarations sinistre.' },
-      { type: 'Feature', title: 'Indice vs quinquennal', text: 'Comparaison rendement estimé et moyenne historique par département.' },
-      { type: 'Feature', title: 'Signaux de stress', text: 'Tags automatiques (sécheresse, surveillance), pas de modèle météo brut.' },
-      { type: 'Feature', title: 'Vue agrégée', text: 'Surface assurée, rendement portefeuille, départements à risque.' },
-      { type: 'À valider', title: 'Fréquence MAJ', text: 'Mensuelle suffisante, ou besoin hebdomadaire en période critique ?' }
-    ]
-  }
-};
-
-function renderSideCards(panel) {
-  var container = document.getElementById('ceres-side-cards');
-  var data = personaContent[panel];
-  container.innerHTML = data.cards.map(function(c) {
-    var cls = c.type === 'Hypothèse' || c.type === 'À valider' ? ' side-card hypothesis' : ' side-card';
-    return '<div class="' + cls.trim() + '"><div class="type">' + c.type + '</div><h4>' + c.title + '</h4><p>' + c.text + '</p></div>';
-  }).join('');
-}
-
-function selectPersona(panel, btn) {
-  document.querySelectorAll('.persona-card').forEach(function(b) {
-    b.classList.toggle('active', b === btn);
-    b.setAttribute('aria-selected', b === btn);
-  });
-  document.querySelectorAll('.demo-panel').forEach(function(p) {
-    p.classList.toggle('active', p.id === 'panel-' + panel);
-  });
-  renderSideCards(panel);
-}
-
-document.querySelectorAll('.persona-card').forEach(function(btn) {
-  btn.addEventListener('click', function() { selectPersona(btn.dataset.panel, btn); });
-});
-
-renderSideCards('exploitant');
-</script>
+    nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+      toggle.setAttribute('aria-expanded', 'false');
+      nav.classList.remove('open');
+    }));
+    const copyButton = document.querySelector('.copy-brief');
+    const copyStatus = document.querySelector('.copy-status');
+    copyButton.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(copyButton.dataset.copy);
+        copyStatus.textContent = 'Brief copié. Collez-le dans votre message LinkedIn.';
+        copyButton.textContent = 'Brief copié';
+      } catch (_) {
+        copyStatus.textContent = 'Sélectionnez le brief ci-dessus pour le copier.';
+      }
+    });
+  </script>
 </body>
 </html>

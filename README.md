@@ -1,21 +1,40 @@
-# Filament : site démo
+# Arpent — landing commerciale
 
-**De la recherche au produit. Du produit à l'impact.**
+Landing statique française d’Arpent Lab.
 
-Site de démonstration (nom provisoire). Premier produit vitrine : Ceres AI.
+## Positionnement
 
-## Live
+Arpent conçoit des IA spécialisées pour une tâche métier précise et en mesure la valeur avant mise en production. La page présente :
 
-https://stoak11.github.io/filament-demo/
+- la doctrine de preuve ;
+- les trois offres de services ;
+- la méthode Arpenter → Mesurer → Prouver → Déployer ;
+- Ceres, premier produit et banc d’essai de la méthode ;
+- les fondateurs et les canaux de contact.
 
-## Local
+## Exécution locale
 
-Ouvrir `index.html` dans Chrome.
+Depuis ce dossier :
 
-## Contact / pilote Ceres
+```powershell
+python -m http.server 8080 --bind 127.0.0.1
+```
 
-Dans `index.html`, définir `SITE_CONFIG.contactEmail` (ex. `vous@domaine.fr`) pour activer l'envoi via [FormSubmit](https://formsubmit.co) : sans backend. Sans email, le formulaire redirige vers LinkedIn.
+Puis ouvrir `http://127.0.0.1:8080/`.
 
-## Source
+Aucun build ni dépendance front-end n’est requis.
 
-Généré depuis le vault Lab_AI (`docs/website/`). Ne pas committer de docs internes (KERN, founding doc).
+## Fichiers
+
+- `index.html` — contenu, sémantique et interactions minimales ;
+- `assets/arpent.css` — système visuel responsive ;
+- `assets/arpent-logo-brandbook.png` — logo officiel recadré depuis le brand book fourni ;
+- `assets/ceres-demo.css` — ancien composant de démonstration conservé mais non chargé.
+
+## Contacts
+
+La page n’affiche pas de faux formulaire. Les CTA finaux ouvrent les profils LinkedIn des fondateurs ; le brief de départ peut être copié localement dans le presse-papiers.
+
+## Statut
+
+Prototype commercial prêt à revue. Le domaine, l’adresse email société et l’hébergement de production restent à brancher lorsque les décisions correspondantes sont prises.
