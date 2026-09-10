@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#FAFAF8">
   <link rel="icon" type="image/png" href="assets/arpent-logo-brandbook.png">
   <meta property="og:title" content="Arpent — Une IA précise pour votre métier">
-  <meta property="og:description" content="On part du métier, on mesure, on prouve — avant de déployer. Ceres : anticiper la collecte de blé, pilote 2027 pour coopératives et négoces.">
+  <meta property="og:description" content="On part du métier, on mesure, on prouve — avant de déployer. Ceres, pilote 2027 : anticiper la collecte de blé pour coopératives et négoces.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -138,12 +138,12 @@
       <div class="ceres-copy">
         <p class="eyebrow terracotta">Premier produit · Coopératives &amp; négoces céréaliers</p>
         <h2 id="ceres-title">Ceres : anticiper<br>la collecte de blé.</h2>
-        <p>En 2024-25, les coopératives du Bassin parisien ont vu leur collecte reculer de 18 à 29 % — souvent bien au-delà des estimations de printemps. Ceres estime la production de blé à l’échelle du département, à partir du parcellaire public, de la météo et du satellite, et se mesure contre les statistiques Agreste. Ensuite seulement, la parcelle, avec la vérité terrain d’un partenaire agronome.</p>
+        <p>En 2024-25, les coopératives du Bassin parisien ont vu leur collecte reculer de 18 à 29 %, souvent bien au-delà des estimations de printemps. Ceres estime la production de blé à l’échelle du département, à partir du parcellaire public, de la météo et du satellite, et se mesure contre les statistiques Agreste. Ensuite seulement, la parcelle, avec la vérité terrain d’un partenaire agronome.</p>
         <div class="ceres-offer" aria-label="Pilote collecte 2027">
           <span>PILOTE COLLECTE 2027</span>
           <ul>
             <li><b>Rétro-test 2024–2026</b> sur vos départements de collecte, remis avant tout engagement.</li>
-            <li><b>Trois prévisions en saison</b> — avril, mai, juin 2027 — avec intervalle de confiance et baseline.</li>
+            <li><b>Trois prévisions en saison</b> (avril, mai, juin 2027) avec intervalle de confiance et baseline.</li>
             <li><b>Critère de succès contractuel.</b> Si la preuve ne tient pas, le solde n’est pas dû.</li>
           </ul>
         </div>
@@ -214,7 +214,7 @@
               <option value="audit">Audit &amp; feuille de route IA</option>
               <option value="integration">Système IA spécialisé</option>
               <option value="atelier">Atelier dirigeants &amp; équipes</option>
-              <option value="ceres">Ceres — rétro-test de mes départements (coopérative / négoce)</option>
+              <option value="ceres">Ceres : rétro-test de mes départements (coopérative / négoce)</option>
               <option value="autre">Autre</option>
             </select>
           </div>
@@ -224,11 +224,12 @@
           </div>
           <div class="field"><label for="f-email">Email professionnel</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
           <div class="field">
-            <label for="f-brief">La décision à améliorer <small>— même imparfaitement formulée</small></label>
-            <textarea id="f-brief" name="decision" rows="3" placeholder="Nous voulons améliorer [décision], aujourd’hui mesurée par [indicateur], à partir de [données disponibles]."></textarea>
+            <label for="f-brief">Votre problème, vos données</label>
+            <textarea id="f-brief" name="decision" rows="4" placeholder="J’ai tel problème : … Je travaille avec telles données : …"></textarea>
+            <p class="field-help">Deux phrases suffisent. Le problème d’abord, tel que vous le vivez. Puis les données ou documents avec lesquels vous travaillez déjà, même incomplets.</p>
           </div>
           <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="sr-only">
-          <input type="hidden" name="_subject" value="Arpent — demande de premier échange">
+          <input type="hidden" name="_subject" value="Arpent : demande de premier échange">
           <label class="consent"><input type="checkbox" name="consentement" value="oui" required><span>J’accepte qu’Arpent Lab utilise ces informations pour me répondre. Elles ne servent à rien d’autre, ne sont pas transmises à des tiers et sont supprimées sous 12 mois sans suite. Droits d’accès et d’effacement : <a href="mailto:privacy@arpent.com">privacy@arpent.com</a>.</span></label>
           <button class="button button-primary form-submit" type="submit">Demander un premier échange</button>
           <p class="form-status" role="status" aria-live="polite"></p>
@@ -275,8 +276,8 @@
       const data = new FormData(form);
       const label = typeField.options[typeField.selectedIndex].text;
       if (FORMSPREE_ID === 'FORMSPREE_ID') {
-        const body = `Objet : ${label}\nNom : ${data.get('nom')}\nOrganisation : ${data.get('organisation')}\nEmail : ${data.get('email')}\n\nDécision à améliorer :\n${data.get('decision') || '—'}`;
-        window.location.href = `mailto:${FALLBACK_EMAIL}?subject=${encodeURIComponent('Arpent — ' + label)}&body=${encodeURIComponent(body)}`;
+        const body = `Objet : ${label}\nNom : ${data.get('nom')}\nOrganisation : ${data.get('organisation')}\nEmail : ${data.get('email')}\n\nProblème et données :\n${data.get('decision') || '(non renseigné)'}`;
+        window.location.href = `mailto:${FALLBACK_EMAIL}?subject=${encodeURIComponent('Arpent : ' + label)}&body=${encodeURIComponent(body)}`;
         status.textContent = 'Votre messagerie s’ouvre avec la demande pré-remplie. Si rien ne se passe, écrivez à ' + FALLBACK_EMAIL + '.';
         return;
       }
