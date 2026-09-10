@@ -240,6 +240,37 @@ details p { max-width: 680px; margin: -2px 45px 23px 0; color: var(--muted); fon
   .site-footer p:nth-child(2) { text-align: left; }
 }
 
+/* --- v2 (10/09/2026) : offre pilote Ceres + formulaire de contact --- */
+.hero-note a { color: var(--anthracite); border-bottom: 1px solid var(--gold); }
+.ceres-offer { margin-top: 30px; padding: 22px 24px; border: 1px solid #d8c9c2; border-left: 3px solid var(--terra); border-radius: var(--radius); background: #fbf7f5; }
+.ceres-offer > span { display: block; margin-bottom: 12px; color: var(--terra); font: 500 10px/1.4 var(--mono); letter-spacing: .16em; }
+.ceres-offer ul { margin: 0; padding: 0; list-style: none; }
+.ceres-offer li { position: relative; margin: 8px 0; padding-left: 18px; color: #4f5760; font-size: 14px; }
+.ceres-offer li::before { content: ""; position: absolute; left: 0; top: .75em; width: 8px; height: 1px; background: var(--terra); }
+.ceres-offer li b { color: var(--anthracite); font-weight: 600; }
+.ceres-proof dl div { grid-template-columns: 128px 1fr; }
+.contact-direct { margin: 28px 0 0 !important; color: #b7bec3 !important; font-size: 14px !important; line-height: 1.9; }
+.contact-direct a { color: #e5d59c; border-bottom: 1px solid rgba(229,213,156,.4); }
+.contact-direct a:hover { color: white; }
+.contact-form { display: grid; gap: 16px; }
+.field { display: grid; gap: 7px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.field label { color: #dbc47f; font: 500 10px/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
+.field label small { color: #9aa1a7; text-transform: none; letter-spacing: 0; font: 400 10px var(--mono); }
+.field input, .field select, .field textarea { width: 100%; min-height: 46px; padding: 11px 13px; border: 1px solid #565d63; border-radius: 4px; color: white; background: #232a31; font: 400 14px var(--sans); }
+.field textarea { min-height: 96px; resize: vertical; line-height: 1.5; }
+.field select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, #dbc47f 50%), linear-gradient(135deg, #dbc47f 50%, transparent 50%); background-position: calc(100% - 20px) 50%, calc(100% - 14px) 50%; background-size: 6px 6px; background-repeat: no-repeat; padding-right: 40px; }
+.field select option { color: var(--anthracite); background: white; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--gold); outline: none; }
+.field input::placeholder, .field textarea::placeholder { color: #7d858c; }
+.consent { display: grid; grid-template-columns: 18px 1fr; gap: 12px; align-items: start; color: #aeb5ba; font-size: 12px; line-height: 1.55; }
+.consent input { margin: 3px 0 0; width: 16px; height: 16px; accent-color: var(--gold); }
+.consent a { color: #e5d59c; }
+.form-submit { width: 100%; }
+.form-status { min-height: 18px; margin: 0; color: #e2cd8b; font: 400 11px var(--mono); }
+.site-footer a { color: #cdd2d6; }
+@media (max-width: 760px) { .field-row { grid-template-columns: 1fr; } .ceres-offer { padding: 18px; } .ceres-proof dl div { grid-template-columns: 100px 1fr; } }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
