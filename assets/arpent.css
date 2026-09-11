@@ -276,3 +276,19 @@ details p { max-width: 680px; margin: -2px 45px 23px 0; color: var(--muted); fon
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* --- v3 (11/09/2026) : section Produit, note de financement, formulaire Ceres --- */
+.offers-note { max-width: 780px; margin: 30px 0 0; padding-left: 17px; border-left: 2px solid var(--gold); color: #cfd4d8; font-size: 14px; line-height: 1.6; }
+.product { background: var(--paper); border-top: 1px solid var(--line); }
+.product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 55px; }
+.product-grid article { display: flex; flex-direction: column; padding: 32px 30px 28px; border: 1px solid var(--line); border-top: 3px solid var(--terra); border-radius: var(--radius); background: var(--white); }
+.product-grid header span { color: var(--terra); font: 500 10px/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
+.product-grid h3 { margin: 12px 0 15px; font-size: 24px; }
+.product-grid p { margin: 0; color: var(--muted); font-size: 14px; }
+.product-grid ul { margin: 22px 0 0; padding: 18px 0 0; border-top: 1px solid var(--line); list-style: none; }
+.product-grid li { position: relative; margin: 8px 0; padding-left: 17px; color: #4f5760; font-size: 13px; }
+.product-grid li::before { content: ""; position: absolute; left: 0; top: .72em; width: 7px; height: 1px; background: var(--terra); }
+.product-link { min-height: 44px; display: flex; align-items: center; justify-content: space-between; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--terra-dark); font-size: 13px; font-weight: 600; }
+.product-link:hover { color: var(--terra); }
+.field[hidden] { display: none; }
+@media (max-width: 760px) { .product-grid { grid-template-columns: 1fr; } .product-grid article { padding: 26px 22px 24px; } }
