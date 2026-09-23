@@ -245,14 +245,70 @@ input.fld.mono,select.fld.mono{font-family:var(--mono);font-size:12px}
 .info-row .ir-val{font-size:13px}
 .info-row .ir-val .mono{font-family:var(--mono);font-size:12px}
 
+/* ===== Mobile nav toggle ===== */
+.mobile-nav-toggle{display:none;position:fixed;top:12px;left:12px;z-index:50;width:40px;height:40px;border-radius:var(--r-sm);background:var(--anthracite);color:#fff;border:none;align-items:center;justify-content:center;font-size:18px;cursor:pointer}
+.mobile-nav-toggle.show{display:flex}
+.mobile-overlay{display:none;position:fixed;inset:0;background:rgba(30,36,43,.5);z-index:39;backdrop-filter:blur(2px)}
+.mobile-overlay.show{display:block}
+
 /* ===== Responsive ===== */
 @media(max-width:840px){
   .app{grid-template-columns:1fr}
-  .sidebar{display:none}
+  .sidebar{position:fixed;top:0;left:0;bottom:0;width:260px;z-index:40;transform:translateX(-100%);transition:transform .25s ease;display:flex !important;flex-direction:column}
+  .sidebar.open{transform:translateX(0)}
+  .main{padding-top:0}
+  .topbar{padding:0 56px 0 12px;height:auto;min-height:52px;flex-wrap:wrap;gap:6px}
+  .topbar-left{flex-wrap:wrap;gap:6px}
+  .topbar h1{font-size:13px}
+  .topbar-right{gap:8px}
+  .topbar-meta{display:none}
+  .live-badge{display:none}
+  .user-avatar{width:28px;height:28px;font-size:11px}
+  .content{padding:14px}
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+  .grid-4{gap:10px}
   .conn-grid{grid-template-columns:1fr}
   .detail-grid{grid-template-columns:1fr}
   .detail-grid .dg-label{border-right:none;border-bottom:1px solid var(--line)}
+  .form-grid,.form-grid-3{grid-template-columns:1fr}
+  .flow-steps{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:0;padding-bottom:6px}
+  .flow-step{min-width:100px;flex-shrink:0}
+  .flow-field{grid-template-columns:1fr;gap:4px}
+  .flow-field .ff-label{font-size:11px}
+  .flow-field .conf-bar{justify-self:start}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .geo-grid{grid-template-columns:1fr 1fr}
+  .chat-wrap{grid-template-columns:1fr}
+  .chat-side{display:none}
+  .prd-grid,.advice-grid{grid-template-columns:1fr}
+  .roadmap{flex-direction:column}
+  .wf-info-list{columns:1}
+  .wf-doc-row{grid-template-columns:1fr}
+  .kpi-val{font-size:22px}
+  .kpi{padding:12px}
+  .card-head{flex-direction:column;align-items:flex-start;gap:10px}
+  .card-head > div:last-child,.card-head > span:last-child{width:100%}
+  .card-head .btn-sm{width:100%;justify-content:center;text-align:center}
+  .card-head .btn-sm + .btn-sm{margin-top:6px}
+  .modal-overlay{padding:0}
+  .modal{max-width:100%;border-radius:0;min-height:100vh}
+  .modal-body{padding:16px;max-height:calc(100vh - 120px)}
+  .movement{grid-template-columns:1fr;gap:4px}
+  .info-row{grid-template-columns:1fr;gap:4px}
+  .quick-links{grid-template-columns:1fr}
+  .tbl{font-size:11px}
+  .tbl th,.tbl td{padding:8px 6px}
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .toast-wrap{left:12px;right:12px;bottom:12px}
+  .toast{max-width:none;width:100%}
+  .role-tabs{flex-wrap:wrap}
+}
+@media(max-width:480px){
+  .stat-grid,.geo-grid{grid-template-columns:1fr}
+  .kpi-val{font-size:20px}
+  .content{padding:10px}
+  .flow-step{min-width:90px}
+  .card-body{padding:12px}
 }
 
 
@@ -710,24 +766,92 @@ tr:hover td { background: var(--paper); }
 .wf-bcae.pending .wb-ico{background:var(--warn);color:#fff}
 .wf-bcae .wb-desc{color:var(--muted);font-size:11px;font-family:var(--mono)}
 
-@media (max-width: 900px) {
-  .app { grid-template-columns: 1fr; }
-  .sidebar { display: none; }
-  .stat-grid { grid-template-columns: repeat(2, 1fr); }
-  .geo-grid { grid-template-columns: 1fr 1fr; }
-  .chat-wrap { grid-template-columns: 1fr; }
-  .chat-side { display: none; }
-  .prd-grid, .advice-grid { grid-template-columns: 1fr; }
-  .roadmap { flex-direction: column; }
-  .wf-info-list { columns: 1; }
-  .wf-doc-row { grid-template-columns: 1fr 1fr; }
-}
+/* Legacy 900px media query rules already covered by 840px above */
+
+/* ===== Veille ===== */
+.veil-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.veil-head .btn{flex-shrink:0}
+.veil-grid{display:grid;grid-template-columns:300px 1fr;gap:18px;align-items:start}
+@media(max-width:1100px){.veil-grid{grid-template-columns:1fr}}
+.veil-sources{display:flex;flex-direction:column;gap:8px}
+.veil-src{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border:1px solid var(--line);border-radius:var(--r);background:#fff;transition:border-color .15s,box-shadow .15s}
+.veil-src:hover{border-color:var(--line2);box-shadow:var(--shadow)}
+.veil-src.on{border-color:var(--gold);background:linear-gradient(180deg,rgba(199,162,72,.05),#fff)}
+.veil-src-main{flex:1;min-width:0}
+.veil-src-nom{font-size:13px;font-weight:600;color:var(--anthracite);margin-bottom:2px}
+.veil-src-cat{font-size:10px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em}
+.veil-src-desc{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.35}
+.veil-toggle{flex-shrink:0;position:relative;width:38px;height:22px;border-radius:11px;background:var(--gris2);transition:background .18s;cursor:pointer;border:none}
+.veil-toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:var(--shadow);transition:transform .18s}
+.veil-toggle.on{background:var(--gold)}
+.veil-toggle.on::after{transform:translateX(16px)}
+.veil-filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.veil-filter{padding:6px 13px;border:1px solid var(--line);border-radius:20px;font-size:11.5px;font-weight:500;color:var(--muted);background:#fff;cursor:pointer;transition:all .15s;font-family:inherit}
+.veil-filter:hover{border-color:var(--line2);color:var(--ink)}
+.veil-filter.active{background:var(--anthracite);color:#fff;border-color:var(--anthracite)}
+.veil-articles{display:flex;flex-direction:column;gap:12px}
+.veil-art{border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;background:#fff;transition:border-color .15s,box-shadow .15s;cursor:pointer;position:relative}
+.veil-art:hover{border-color:var(--line2);box-shadow:var(--shadow-md)}
+.veil-art.unread{border-left:3px solid var(--gold);padding-left:13px}
+.veil-art.fea{border-color:var(--gold);background:linear-gradient(180deg,rgba(199,162,72,.04),#fff)}
+.veil-art-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.veil-badge{font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono)}
+.veil-badge.synd{background:rgba(199,162,72,.15);color:var(--gold)}
+.veil-badge.reg{background:rgba(45,125,70,.13);color:var(--ok)}
+.veil-badge.met{background:rgba(107,155,216,.15);color:#4a78b0}
+.veil-badge.mar{background:rgba(181,98,62,.13);color:var(--terra)}
+.veil-badge.agr{background:rgba(107,114,128,.15);color:var(--muted)}
+.veil-src-tag{font-size:10px;color:var(--muted);font-family:var(--mono)}
+.veil-date{font-size:10px;color:var(--muted);font-family:var(--mono);margin-left:auto}
+.veil-art h4{font-size:14.5px;font-weight:600;color:var(--anthracite);margin-bottom:5px;line-height:1.35}
+.veil-art .veil-excerpt{font-size:12.5px;color:var(--muted);line-height:1.5}
+.veil-art-foot{display:flex;align-items:center;justify-content:space-between;margin-top:9px;gap:8px}
+.veil-read{font-size:10px;font-family:var(--mono);color:var(--muted)}
+.veil-read.unread{color:var(--gold);font-weight:600}
+.veil-link{font-size:11px;color:var(--terra);text-decoration:underline}
+.veil-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px}
+.veil-sugg-form{display:flex;flex-direction:column;gap:12px}
+.veil-sugg-form label{font-size:11px;font-weight:600;color:var(--anthracite);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono)}
+.veil-sugg-form input,.veil-sugg-form select,.veil-sugg-form textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:var(--r-sm);font-size:13px;color:var(--ink);background:#fff}
+.veil-sugg-form input:focus,.veil-sugg-form select:focus,.veil-sugg-form textarea:focus{outline:none;border-color:var(--gold)}
+
+/* ===== Stocks visuel ===== */
+.stk-levels{display:flex;flex-direction:column;gap:14px}
+.stk-level{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;transition:border-color .15s}
+.stk-level.warn{border-color:rgba(181,98,62,.35);background:rgba(181,98,62,.03)}
+.stk-level-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
+.stk-level-name{font-weight:600;font-size:13px;color:var(--anthracite)}
+.stk-level-amm{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px}
+.stk-level-qty{font-family:var(--mono);font-size:15px;font-weight:600;white-space:nowrap}
+.stk-level-qty .u{font-size:10px;color:var(--muted);font-weight:400}
+.stk-bar{position:relative;height:16px;background:var(--gris);border-radius:8px;overflow:hidden}
+.stk-bar-fill{position:absolute;top:0;left:0;bottom:0;border-radius:8px;transition:width .3s ease}
+.stk-bar-fill.ok{background:linear-gradient(90deg,var(--ok),#3a9656)}
+.stk-bar-fill.warn{background:linear-gradient(90deg,var(--warn),#d4a23a)}
+.stk-bar-fill.err{background:linear-gradient(90deg,var(--err),#c2503f)}
+.stk-bar-seuil{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--anthracite);opacity:.6;z-index:2;box-shadow:0 0 0 1px rgba(255,255,255,.5)}
+.stk-bar-labels{display:flex;justify-content:space-between;font-size:9px;font-family:var(--mono);color:var(--muted);margin-top:3px}
+.stk-level-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px}
+.stk-level-foot .stk-sub{font-size:10px;color:var(--muted);font-family:var(--mono)}
+.stk-spark{display:block;flex-shrink:0}
+.stk-alert{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r-sm);border:1px solid rgba(181,98,62,.25);background:rgba(181,98,62,.05);margin-bottom:8px}
+.stk-alert:last-child{margin-bottom:0}
+.stk-alert .sa-ico{width:28px;height:28px;border-radius:50%;background:var(--terra);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.stk-alert .sa-title{font-size:12px;font-weight:600;color:var(--anthracite)}
+.stk-alert .sa-desc{font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:1px}
+.mv-ico{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.mv-ico.entree{background:rgba(45,125,70,.12);color:var(--ok)}
+.mv-ico.sortie{background:rgba(181,98,62,.12);color:var(--terra)}
+.mv-qty.entree{color:var(--ok);font-weight:600}
+.mv-qty.sortie{color:var(--terra);font-weight:600}
 
 </style>
 </head>
 <body>
 <div class="app">
-  <aside class="sidebar">
+  <button class="mobile-nav-toggle" id="mobileNavToggle" onclick="toggleMobileNav()">&#9776;</button>
+  <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileNav()"></div>
+  <aside class="sidebar" id="sidebar">
     <div class="brand">
       <div class="brand-mark">F</div>
       <div>
@@ -923,6 +1047,7 @@ const NAV_CONFIG = {
     { id:'registre-phyto', label:'Registre phyto', ico:'▦', count: () => (typeof REGISTRE !== 'undefined' ? REGISTRE.length : 0) },
     { id:'flux-agentique', label:'Flux agentique', ico:'↻' },
     { id:'declarations', label:'Declarations', ico:'≡' },
+    { id:'veille', label:'Veille', ico:'⦿' },
     { id:'wf-overview', label:'Obligations & workflows', ico:'⚖' },
     { id:'wf-registre-phyto', label:'Registre phyto (wf)', ico:'R', count: () => (typeof REGISTRE !== 'undefined' ? REGISTRE.length : 0) },
     { id:'wf-pac', label:'Declaration PAC (wf)', ico:'P' },
@@ -955,6 +1080,7 @@ const TITLES = {
   'registre-phyto': 'Registre phyto',
   'flux-agentique': 'Flux agentique',
   'declarations': 'Declarations',
+  'veille': 'Veille',
   'wf-overview': 'Obligations & workflows',
   'wf-registre-phyto': 'Registre phyto · workflow',
   'wf-pac': 'Declaration PAC · workflow',
@@ -1114,6 +1240,32 @@ window.App = {
     return Math.round((ok / total) * 100);
   },
 };
+
+/* ===== Mobile nav helpers ===== */
+function toggleMobileNav() {
+  var sb = document.getElementById('sidebar');
+  var ov = document.getElementById('mobileOverlay');
+  var tg = document.getElementById('mobileNavToggle');
+  var isOpen = sb.classList.contains('open');
+  if (isOpen) { sb.classList.remove('open'); ov.classList.remove('show'); tg.innerHTML = '&#9776;'; }
+  else { sb.classList.add('open'); ov.classList.add('show'); tg.innerHTML = '&times;'; }
+}
+function closeMobileNav() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('mobileOverlay').classList.remove('show');
+  var tg = document.getElementById('mobileNavToggle');
+  if (tg) tg.innerHTML = '&#9776;';
+}
+function checkMobileNav() {
+  var w = window.innerWidth;
+  var tg = document.getElementById('mobileNavToggle');
+  if (tg) { if (w <= 840) tg.classList.add('show'); else tg.classList.remove('show'); }
+  var sb = document.getElementById('sidebar');
+  if (sb && w > 840) { sb.classList.remove('open'); document.getElementById('mobileOverlay').classList.remove('show'); }
+}
+window.addEventListener('resize', checkMobileNav);
+window.addEventListener('load', checkMobileNav);
+(function() { var origNav = App.navigateTo; App.navigateTo = function(v) { origNav.call(App, v); closeMobileNav(); }; })();
 
 /* ============================================================
    VIEW MODULES
@@ -1343,8 +1495,68 @@ App.registerView('achats', function() {
 
 /* ----- 5. STOCKS ----- */
 App.registerView('stocks', function() {
-  const stockValue = DATA.stock.reduce((s, item) => s + (item.quantite * item.prixUnitaire), 0);
-  const lowStock = DATA.stock.filter(s => s.quantite < s.seuil);
+  var stockValue = DATA.stock.reduce(function(s, item) { return s + (item.quantite * item.prixUnitaire); }, 0);
+  var lowStock = DATA.stock.filter(function(s) { return s.quantite < s.seuil; });
+
+  // Group movements by product
+  var movByProduct = {};
+  DATA.movements.forEach(function(m) {
+    if (!movByProduct[m.produit]) movByProduct[m.produit] = [];
+    movByProduct[m.produit].push(m);
+  });
+
+  // Build per-product history: reconstruct running level from movements
+  var stockData = DATA.stock.map(function(s) {
+    var movs = (movByProduct[s.produit] || []).slice().sort(function(a, b) { return new Date(a.date) - new Date(b.date); });
+    var totalEntree = movs.filter(function(m) { return m.type === 'entree'; }).reduce(function(sum, m) { return sum + m.quantite; }, 0);
+    var totalSortie = movs.filter(function(m) { return m.type === 'sortie'; }).reduce(function(sum, m) { return sum + m.quantite; }, 0);
+    var startLevel = s.quantite - totalEntree + totalSortie;
+    var level = startLevel;
+    var points = [{ d: movs.length ? movs[0].date : '', v: startLevel }];
+    movs.forEach(function(m) {
+      level = level + (m.type === 'entree' ? m.quantite : -m.quantite);
+      points.push({ d: m.date, v: level });
+    });
+    var allVals = points.map(function(p) { return p.v; }).concat([s.quantite, s.seuil * 2, 1]);
+    var maxLevel = Math.max.apply(null, allVals);
+    var capaciteMax = Math.ceil(maxLevel * 1.2);
+    return { s: s, movs: movs, points: points, capaciteMax: capaciteMax };
+  });
+
+  // Sparkline SVG
+  function sparkline(pts, w, h, color) {
+    if (pts.length < 2) return '<svg class="stk-spark" width="' + w + '" height="' + h + '"></svg>';
+    var vals = pts.map(function(p) { return p.v; });
+    var min = Math.min.apply(null, vals);
+    var max = Math.max.apply(null, vals);
+    if (max === min) { max = min + 1; }
+    var range = max - min;
+    var stepX = w / (pts.length - 1);
+    var coords = pts.map(function(p, i) {
+      var x = (i * stepX).toFixed(1);
+      var y = (h - 2 - ((p.v - min) / range) * (h - 4)).toFixed(1);
+      return x + ',' + y;
+    });
+    var linePts = coords.join(' ');
+    var areaPts = '0,' + h + ' ' + linePts + ' ' + w + ',' + h;
+    return '<svg class="stk-spark" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">' +
+      '<polygon points="' + areaPts + '" fill="' + color + '" opacity="0.12"/>' +
+      '<polyline points="' + linePts + '" fill="none" stroke="' + color + '" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>' +
+      '</svg>';
+  }
+
+  // Level bar HTML
+  function levelBar(s, capaciteMax) {
+    var fillPct = Math.min(100, (s.quantite / capaciteMax) * 100);
+    var seuilPct = Math.min(100, (s.seuil / capaciteMax) * 100);
+    var low = s.quantite < s.seuil;
+    var fillClass = low ? (s.quantite < s.seuil * 0.5 ? 'err' : 'warn') : 'ok';
+    return '<div class="stk-bar">' +
+      '<div class="stk-bar-fill ' + fillClass + '" style="width:' + fillPct.toFixed(1) + '%"></div>' +
+      '<div class="stk-bar-seuil" style="left:' + seuilPct.toFixed(1) + '%"></div>' +
+    '</div>' +
+    '<div class="stk-bar-labels"><span>0</span><span>seuil ' + s.seuil + '</span><span>cap ' + capaciteMax + ' ' + s.unite + '</span></div>';
+  }
 
   return '' +
   '<div class="grid-3" style="margin-bottom:18px">' +
@@ -1352,35 +1564,41 @@ App.registerView('stocks', function() {
     '<div class="kpi"><div class="kpi-label">Produits en stock</div><div class="kpi-val">' + DATA.stock.length + '</div></div>' +
     '<div class="kpi ' + (lowStock.length > 0 ? 'warn' : 'ok') + '"><div class="kpi-label">Stocks bas</div><div class="kpi-val">' + lowStock.length + '</div><div class="kpi-delta ' + (lowStock.length > 0 ? 'neg' : 'pos') + '">' + (lowStock.length > 0 ? 'a reapprovisionner' : 'OK') + '</div></div>' +
   '</div>' +
-  (lowStock.length > 0 ? '<div class="card" style="border-color:rgba(184,134,47,.3)"><div class="card-body">' +
-    lowStock.map(s => '<div class="alert warn"><div class="ai">▲</div><div><div class="at">' + s.produit + ' (AMM ' + s.amm + ')</div><div class="ad">Stock: ' + s.quantite + s.unite + ' < seuil ' + s.seuil + s.unite + '</div></div></div>').join('') +
+  (lowStock.length > 0 ? '<div class="card"><div class="card-head"><div><div class="card-title">Alertes stock bas</div><div class="card-sub">produits sous le seuil de reapprovisionnement</div></div></div><div class="card-body tight">' +
+    lowStock.map(function(s) {
+      return '<div class="stk-alert"><div class="sa-ico">!</div><div><div class="sa-title">' + s.produit + ' (AMM ' + s.amm + ')</div><div class="sa-desc">Stock: ' + s.quantite + ' ' + s.unite + ' / seuil: ' + s.seuil + ' ' + s.unite + '</div></div></div>';
+    }).join('') +
   '</div></div>' : '') +
-  '<div class="card"><div class="card-head"><div><div class="card-title">Inventaire phyto</div><div class="card-sub">produits en stock · E-Phy AMM</div></div>' +
+  '<div class="card"><div class="card-head"><div><div class="card-title">Niveaux de stock</div><div class="card-sub">remplissage, seuil d alerte et historique par produit</div></div>' +
     '<button class="btn btn-outline btn-sm" onclick="App.navigateTo(\'achats\')">Voir achats</button></div>' +
-  '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Produit</th><th>AMM</th><th>Substance active</th><th class="num">Quantite</th><th>Unite</th><th class="num">Seuil</th><th class="num">Valeur</th><th>Statut</th></tr></thead><tbody>' +
-  DATA.stock.map(s => {
-    const low = s.quantite < s.seuil;
-    return '<tr>' +
-    '<td>' + s.produit + '</td>' +
-    '<td class="mono"><span class="tag terra">' + s.amm + '</span></td>' +
-    '<td class="mono" style="font-size:11px">' + s.substance + '</td>' +
-    '<td class="num">' + s.quantite.toFixed(1) + '</td>' +
-    '<td class="mono">' + s.unite + '</td>' +
-    '<td class="num">' + s.seuil + '</td>' +
-    '<td class="num">' + (s.quantite * s.prixUnitaire).toFixed(0) + ' EUR</td>' +
-    '<td>' + (low ? '<span class="tag err">Stock bas</span>' : '<span class="tag ok">OK</span>') + '</td>' +
-    '</tr>';
+  '<div class="card-body"><div class="stk-levels">' +
+  stockData.map(function(item) {
+    var s = item.s;
+    var low = s.quantite < s.seuil;
+    var sparkColor = low ? 'var(--terra)' : 'var(--gold)';
+    return '<div class="stk-level' + (low ? ' warn' : '') + '">' +
+      '<div class="stk-level-head">' +
+        '<div><div class="stk-level-name">' + s.produit + '</div><div class="stk-level-amm">AMM ' + s.amm + ' / ' + s.substance + '</div></div>' +
+        '<div class="stk-level-qty">' + s.quantite.toFixed(1) + '<span class="u"> ' + s.unite + '</span></div>' +
+      '</div>' +
+      levelBar(s, item.capaciteMax) +
+      '<div class="stk-level-foot">' +
+        '<div class="stk-sub">Valeur: ' + (s.quantite * s.prixUnitaire).toFixed(0) + ' EUR</div>' +
+        sparkline(item.points, 120, 28, sparkColor) +
+      '</div>' +
+    '</div>';
   }).join('') +
-  '</tbody></table></div></div>' +
-  '<div class="card"><div class="card-head"><div><div class="card-title">Mouvements de stock</div><div class="card-sub">entrees (achats) & sorties (traitements)</div></div></div><div class="card-body tight">' +
-  DATA.movements.slice().reverse().map(m =>
-    '<div class="movement">' +
-    '<div class="mv-date">' + App.fmtDate(m.date) + '</div>' +
-    '<div class="mv-type ' + m.type + '">' + (m.type === 'entree' ? '+' : '-') + '</div>' +
-    '<div class="mv-desc">' + m.produit + ' · ' + m.source + '</div>' +
-    '<div class="mv-qty">' + (m.type === 'entree' ? '+' : '-') + m.quantite + ' ' + m.unite + '</div>' +
-    '</div>'
-  ).join('') +
+  '</div></div></div>' +
+  '<div class="card"><div class="card-head"><div><div class="card-title">Mouvements de stock</div><div class="card-sub">entrees (achats) et sorties (traitements)</div></div></div><div class="card-body tight">' +
+  DATA.movements.slice().reverse().map(function(m) {
+    var isIn = m.type === 'entree';
+    return '<div class="movement">' +
+      '<div class="mv-date">' + App.fmtDate(m.date) + '</div>' +
+      '<div class="mv-ico ' + m.type + '">' + (isIn ? '\u2193' : '\u2191') + '</div>' +
+      '<div class="mv-desc">' + m.produit + ' / ' + m.source + '</div>' +
+      '<div class="mv-qty ' + m.type + '">' + (isIn ? '+' : '-') + m.quantite + ' ' + m.unite + '</div>' +
+    '</div>';
+  }).join('') +
   '</div></div>' +
   '<div class="section-title">Lien stocks -> traitements: chaque traitement dans le registre decremente le stock</div>';
 });
@@ -2084,19 +2302,42 @@ function fieldLabel(k) {
 /* ============================================================
    MODULE 3 : DECLARATIONS (consolidees)
    ============================================================ */
+// UI state: which declarations have been pre-remplie
+let DECL_STATE = {
+  'PAC TelePAC 2026': null,
+  'Registre phyto (Annexe I)': null,
+  'Traceabilite (CE 178/2002)': null,
+  'Assurance recolte': null,
+};
+
+function declPreviewLines(csv, n) {
+  if (!csv) return '';
+  var lines = csv.replace(/^\uFEFF/, '').split(/\r?\n/).filter(function(l){return l.length>0;}).slice(0, n);
+  return lines.join('\n');
+}
+
+function generatePhytoForDecl() {
+  if (REGISTRE.length === 0) {
+    return { csv: buildCSV(), filename: 'ceres_registre_phyto.csv', rows: 0, fields: 24, conf: conformite() };
+  }
+  var csv = buildCSV();
+  return { csv: csv, filename: 'ceres_registre_phyto.csv', rows: REGISTRE.length, fields: 24, conf: conformite() };
+}
+
 function viewDeclarations() {
   const totalSurface = PARCELLES.reduce((s,p)=>s+p.surface,0);
   const conf = conformite();
   const dpu = Math.round(totalSurface * 82);
+  const pacConf = pacConformite();
 
   const decls = [
     {
       nom:'PAC TelePAC 2026',
-      desc:'Import RPG, pre-remplissage, controles BCAE, surface, DPU estimate',
-      statut:'pre-remplie', echeance:'15 mai 2026',
-      detail: `${PARCELLES.length} parcelles · ${totalSurface.toFixed(1)} ha · ${dpu} EUR estime · BCAE ${pacConformite()}%`,
+      desc:'Import RPG, pre-remplissage, controles BCAE, surface, DPU calcule',
+      statut:'a configurer', echeance:'15 mai 2026',
+      detail: `${PARCELLES.length} parcelles · ${totalSurface.toFixed(1)} ha · DPU estime ${dpu} EUR (82 EUR/ha) · BCAE ${pacConf}%`,
       action: 'App.navigateTo(\'ceres-prev\')',
-      color: 'ok',
+      color: 'neu',
     },
     {
       nom:'Registre phyto (Annexe I)',
@@ -2125,46 +2366,70 @@ function viewDeclarations() {
   ];
 
   const statutBadge = (s) => {
-    if (s === 'a jour' || s === 'pre-remplie') return 'ok';
+    if (s === 'a jour' || s === 'pre-rempli') return 'ok';
     if (s === 'en cours') return 'warn';
     if (s === 'en retard') return 'err';
     return 'neu';
   };
 
+  const preRempliCount = Object.keys(DECL_STATE).filter(k => DECL_STATE[k]).length;
+
   return `
   <div class="grid-4" style="margin-bottom:18px">
     <div class="kpi accent"><div class="kpi-label">Declarations</div><div class="kpi-val">${decls.length}</div><div class="kpi-delta neu">toutes obligations</div></div>
-    <div class="kpi ok"><div class="kpi-label">A jour</div><div class="kpi-val">${decls.filter(d=>d.statut==='a jour'||d.statut==='pre-remplie').length}</div><div class="kpi-delta pos">conformes</div></div>
+    <div class="kpi ok"><div class="kpi-label">Pre-remplies</div><div class="kpi-val">${preRempliCount}</div><div class="kpi-delta ${preRempliCount>0?'pos':'neu'}">documents generes</div></div>
     <div class="kpi"><div class="kpi-label">En cours</div><div class="kpi-val">${decls.filter(d=>d.statut==='en cours').length}</div><div class="kpi-delta neu">a finaliser</div></div>
     <div class="kpi terra"><div class="kpi-label">Non demarrees</div><div class="kpi-val">${decls.filter(d=>d.statut==='non demarree').length}</div><div class="kpi-delta neg">action requise</div></div>
   </div>
 
   <div class="section-title">Tableau de bord declarations consolidees</div>
   <div class="grid-2" style="margin-bottom:16px">
-    ${decls.map(d => `
-    <div class="card">
+    ${decls.map(d => {
+      const pre = DECL_STATE[d.nom];
+      const isPre = !!pre;
+      const badgeStatut = isPre ? 'pre-rempli' : d.statut;
+      const badgeClass = isPre ? 'ok' : statutBadge(d.statut);
+      const fillPct = isPre ? 100 : (d.statut==='a jour'?100:d.statut==='en cours'?60:d.statut==='en retard'?30:0);
+      let extraInfo = '';
+      if (d.nom === 'PAC TelePAC 2026') {
+        extraInfo = '<div style="margin-top:8px;padding:8px 10px;background:var(--gris);border-radius:var(--r-sm);font-size:11px;font-family:var(--mono);color:var(--ink)"><strong>DPU estime:</strong> ' + totalSurface.toFixed(1) + ' ha x 82 EUR/ha = <strong style="color:var(--ok)">' + dpu + ' EUR</strong> · BCAE ' + pacConf + '%</div>';
+      } else if (d.nom === 'Registre phyto (Annexe I)') {
+        extraInfo = '<div style="margin-top:8px;padding:8px 10px;background:var(--gris);border-radius:var(--r-sm);font-size:11px;font-family:var(--mono);color:var(--ink)"><strong>Conformite reelle:</strong> ' + conf + '% (' + (conf>=80?'conforme':conf>=50?'partiel':'non conforme') + ') · ' + REGISTRE.length + ' utilisations</div>';
+      }
+      let previewHtml = '';
+      if (isPre && pre.csv) {
+        const lines5 = declPreviewLines(pre.csv, 5);
+        previewHtml = '<div style="margin-top:10px"><div class="hint" style="margin-bottom:4px">Apercu du document genere (5 premieres lignes)</div><pre class="mono" style="font-size:10px;background:var(--anthracite);color:#c8cdd3;padding:10px;border-radius:var(--r);overflow-x:auto;white-space:pre-wrap;max-height:160px">' + lines5.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</pre></div>';
+      }
+      return `
+    <div class="card" style="${isPre?'border:2px solid var(--ok)':''}">
       <div class="card-head">
         <div><div class="card-title">${d.nom}</div><div class="card-sub">${d.desc}</div></div>
-        <span class="tag ${statutBadge(d.statut)}">${d.statut}</span>
+        <span class="tag ${badgeClass}">${badgeStatut}</span>
       </div>
       <div class="card-body">
         <div style="display:flex;justify-content:space-between;margin-bottom:12px">
           <div><span class="hint">Echeance</span><div style="font-weight:600;font-size:13px">${d.echeance}</div></div>
           <div style="text-align:right"><span class="hint">Detail</span><div style="font-size:12px;font-family:var(--mono);color:var(--muted)">${d.detail}</div></div>
         </div>
+        ${isPre ? '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:8px 10px;background:rgba(45,125,70,.08);border-radius:var(--r-sm);border:1px solid rgba(45,125,70,.2)"><span style="color:var(--ok);font-size:18px;font-weight:700">&#10003;</span><span style="font-size:12px;color:var(--ok);font-weight:600">Pre-rempli</span><span style="font-size:11px;color:var(--muted);font-family:var(--mono)">${pre.fields} champs · ${pre.rows} lignes</span></div>' : ''}
+        ${extraInfo}
         <div class="compliance-bar" style="height:8px;margin-bottom:12px">
-          <div class="compliance-fill" style="width:${d.statut==='a jour'||d.statut==='pre-remplie'?100:d.statut==='en cours'?60:d.statut==='en retard'?30:0}%;background:var(--${statutBadge(d.statut)==='ok'?'ok':statutBadge(d.statut)==='warn'?'warn':statutBadge(d.statut)==='err'?'err':'gris2'})"></div>
+          <div class="compliance-fill" style="width:${fillPct}%;background:var(--${badgeClass==='ok'?'ok':badgeClass==='warn'?'warn':badgeClass==='err'?'err':'gris2'})"></div>
         </div>
-        <div style="display:flex;gap:8px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn btn-outline btn-sm" onclick="${d.action}">Detail -></button>
-          <button class="btn btn-gold btn-sm" onclick="autoFill('${d.nom}')">Pre-remplir</button>
+          ${isPre ? '<button class="btn btn-outline btn-sm" onclick="reDownloadDecl(\'' + d.nom + '\')">Telecharger le document genere</button>' : ''}
+          <button class="btn btn-gold btn-sm" onclick="autoFill('${d.nom}')">${isPre ? 'Regenerer' : 'Pre-remplir'}</button>
         </div>
+        ${previewHtml}
       </div>
-    </div>`).join('')}
+    </div>`;
+    }).join('')}
   </div>
 
   <div class="card">
-    <div class="card-head"><div><div class="card-title">Detail PAC TelePAC 2026</div><div class="card-sub">BCAE · DPU · par parcelle</div></div></div>
+    <div class="card-head"><div><div class="card-title">Detail PAC TelePAC 2026</div><div class="card-sub">BCAE · DPU calcule (82 EUR/ha) · par parcelle</div></div></div>
     <div class="card-body" style="padding:0">
       <table class="tbl"><thead><tr><th>Ilot/Parc.</th><th>Commune</th><th>Nom</th><th>Culture</th><th class="num">Surface</th><th class="num">DPU (82 EUR/ha)</th><th>BCAE</th></tr></thead><tbody>
       ${PARCELLES.map(p=>`<tr><td class="mono">${p.ilot}/${p.parcelle}</td><td>${p.commune}</td><td>${p.nom}</td><td><span class="tag gold">${p.culture}</span></td><td class="num">${p.surface.toFixed(1)} ha</td><td class="num">${Math.round(p.surface*82)} EUR</td><td><span class="tag ok">OK</span></td></tr>`).join('')}
@@ -2176,8 +2441,102 @@ function viewDeclarations() {
 }
 
 function autoFill(name) {
-  App.toast('Pre-remplissage lance: ' + name);
-  addTrace('DECLARATION', 'Pre-remplissage: ' + name);
+  let result = null;
+  if (name === 'PAC TelePAC 2026') {
+    result = generatePACDeclaration();
+  } else if (name === 'Registre phyto (Annexe I)') {
+    exportCSV();
+    result = generatePhytoForDecl();
+    App.toast('Registre phyto pre-rempli · ' + REGISTRE.length + ' utilisations · conformite ' + result.conf + '%');
+  } else if (name === 'Traceabilite (CE 178/2002)') {
+    result = generateTraceabilite();
+  } else if (name === 'Assurance recolte') {
+    result = generateAssurance();
+  } else {
+    App.toast('Pre-remplissage: ' + name);
+  }
+  if (result) {
+    DECL_STATE[name] = result;
+    addTrace('DECLARATION', 'Pre-remplissage: ' + name + ' · ' + result.fields + ' champs · ' + result.rows + ' lignes');
+  } else {
+    addTrace('DECLARATION', 'Pre-remplissage: ' + name);
+  }
+  App.navigateTo('declarations');
+}
+
+function reDownloadDecl(name) {
+  const pre = DECL_STATE[name];
+  if (!pre) { App.toast('Aucun document genere pour ' + name); return; }
+  downloadFile(pre.filename, pre.csv, 'text/csv;charset=utf-8');
+  App.toast('Document re-telecharge: ' + pre.filename);
+  addTrace('EXPORT', 'Re-telechargement: ' + pre.filename);
+}
+
+/* ===== Real declaration generators (DB to export) ===== */
+
+function generatePACDeclaration() {
+  var totalSurface = PARCELLES.reduce(function(s,p){return s+p.surface;},0);
+  var dpu = Math.round(totalSurface * 82);
+  var rows = PARCELLES.map(function(p) {
+    return [
+      p.ilot, p.parcelle, p.insee, p.commune, p.nom,
+      p.culture, OEPP[p.culture] || p.culture,
+      p.surface.toFixed(1), Math.round(p.surface * 82),
+      p.conformite === 'ok' ? 'CONFORME' : p.conformite === 'warn' ? 'A_VERIFIER' : 'NON_CONFORME'
+    ].join(';');
+  });
+  var csv = '\uFEFF' + [
+    'ilot;parcelle;insee;commune;nom_parcelle;code_oepp;culture;surface_ha;dpu_eur;bcae_statut',
+    rows.join('\n'),
+    'TOTAL;;;;;;' + totalSurface.toFixed(1) + ' ha;' + dpu + ' EUR;',
+    'campagne;2026', 'siret_exploitation;' + SIRET_DETENTEUR,
+    'date_generation;' + todayFR(),
+    'source;Ceres · RPG campagne 2025 · TelePAC preparation',
+  ].join('\n');
+  downloadFile('ceres_declaration_pac_2026.csv', csv, 'text/csv;charset=utf-8');
+  App.toast('Declaration PAC generee · ' + PARCELLES.length + ' parcelles · ' + totalSurface.toFixed(1) + ' ha · ' + dpu + ' EUR');
+  return { csv: csv, filename: 'ceres_declaration_pac_2026.csv', rows: PARCELLES.length, fields: 10, dpu: dpu, totalSurface: totalSurface };
+}
+
+function generateTraceabilite() {
+  var lines = [];
+  REGISTRE.forEach(function(r) {
+    lines.push('PHYTO;' + r.dateUtilisation + ';' + r.produit + ';AMM ' + r.amm + ';' + r.ilot + '/' + r.parcelle + ';' + r.surface + 'ha;' + r.culture + ';dose ' + r.dose + ' ' + (r.doseUnite||''));
+  });
+  DATA.parcels.forEach(function(p) {
+    lines.push('SEMIS;2026;' + p.culture + ';' + p.ilot + '/' + p.parcelle + ';' + p.surface + 'ha;' + (OEPP[p.culture]||p.culture));
+  });
+  lines.push('RECOLTE;2026;en attente;apres moisson');
+  var content = '\uFEFF' + [
+    'CERES · JOURNAL DE CULTURE · SIRET ' + SIRET_DETENTEUR,
+    'Reglement CE 178/2002 · conservation 5 ans',
+    'Genere le ' + todayFR(),
+    'type;date;produit/culture;reference;parcelle;surface;culture;detail',
+    lines.join('\n'),
+  ].join('\n');
+  downloadFile('ceres_journal_culture.csv', content, 'text/csv;charset=utf-8');
+  App.toast('Journal de culture genere · ' + lines.length + ' entrees');
+  return { csv: content, filename: 'ceres_journal_culture.csv', rows: lines.length, fields: 8 };
+}
+
+function generateAssurance() {
+  var totalSurface = PARCELLES.reduce(function(s,p){return s+p.surface;},0);
+  var primes = PARCELLES.map(function(p) {
+    var prime = Math.round(p.surface * 12.5);
+    return p.ilot + '/' + p.parcelle + ';' + p.commune + ';' + p.culture + ';' + p.surface.toFixed(1) + 'ha;' + prime + ' EUR';
+  });
+  var totalPrime = primes.reduce(function(s,r){return s + parseInt(r.split(';')[4]);}, 0);
+  var csv = '\uFEFF' + [
+    'ilot_parcelle;commune;culture;surface_ha;prime_eur',
+    primes.join('\n'),
+    'TOTAL;;;;' + totalPrime + ' EUR',
+    'siret;' + SIRET_DETENTEUR,
+    'rendements_historiques;2020-2025',
+    'date_generation;' + todayFR(),
+  ].join('\n');
+  downloadFile('ceres_assurance_recolte_2026.csv', csv, 'text/csv;charset=utf-8');
+  App.toast('Declaration assurance generee · ' + PARCELLES.length + ' parcelles · ' + totalPrime + ' EUR prime');
+  return { csv: csv, filename: 'ceres_assurance_recolte_2026.csv', rows: PARCELLES.length, fields: 5, totalPrime: totalPrime };
 }
 
 function pacConformite() {
@@ -3455,6 +3814,249 @@ App.registerView('agent-architecture', function() {
   App._onMount = function() { renderArchitecture(); };
   return '\n<div class="page-head">\n  <div class="page-title">Architecture & explicabilite</div>\n  <div class="page-sub">Le flux en 8 etapes, la provenance par champ, le registre immuable</div>\n</div>\n<div id="architecture-content"></div>\n';
 });
+
+/* ============================================================
+   MODULE VEILLE : sources d'information & flux d'articles
+   ============================================================ */
+const VEILLE_SOURCES = [
+  { id:'fnsea', nom:'FNSEA', categorie:'Syndicats', optin:true, desc:'Federation nationale des syndicats d\'exploitants agricoles' },
+  { id:'ja', nom:'Jeunes Agriculteurs (JA)', categorie:'Syndicats', optin:false, desc:'Syndicat des jeunes agriculteurs, renouvellement et installation' },
+  { id:'conf Paysanne', nom:'Confederation paysanne', categorie:'Syndicats', optin:false, desc:'Syndicat alterieur, ecologie et souverainete alimentaire' },
+  { id:'chambres', nom:'Chambres d\'agriculture', categorie:'Regulation', optin:false, desc:'Reseau des chambres departementales et regionales' },
+  { id:'ephy', nom:'E-Phy / ANSES', categorie:'Regulation', optin:false, desc:'Base de produits phytopharmaceutiques autorises en France' },
+  { id:'bsv', nom:'BSV (Bulletin de sante du vegetal)', categorie:'Agro/technique', optin:false, desc: 'Surveillance epidemiologique des cultures par region' },
+  { id:'meteo', nom:'Meteo-France', categorie:'Meteo', optin:false, desc:'Previsions et vigilances meteorologiques pour les fenetres de traitement' },
+  { id:'franceagrimer', nom:'FranceAgriMer', categorie:'Marches', optin:false, desc:'Office national, marches cereales, viande, lait' },
+  { id:'terrenet', nom:'Terre-net', categorie:'Marches', optin:false, desc:'Portail d\'actualite agricole, cours des cereales' },
+  { id:'arvalis', nom:'ARVALIS', categorie:'Agro/technique', optin:false, desc:'Institut technique des cereales, experimentation et conseil' },
+];
+
+const VEILLE_ARTICLES = [
+  {
+    titre: 'Rapport d\'orientation 2026 de la FNSEA: priorites pour la PAC post-2027 et defense du revenu',
+    source: 'FNSEA',
+    sourceId: 'fnsea',
+    date: '2026-09-18',
+    categorie: 'Syndicats',
+    extrait: 'La FNSEA presente son rapport d\'orientation 2026 lors du Conseil elargi. Trois axes: simplification administrative, revenu des exploitations face a la conjoncture, et preparation de la PAC post-2027 avec une position commune des syndicats.',
+    url: 'https://www.fnsea.fr',
+    lu: false,
+    featured: true,
+  },
+  {
+    titre: 'Elections FNSEA 2026: campaign officielle lancee, listes en presence et calendrier des votes',
+    source: 'FNSEA',
+    sourceId: 'fnsea',
+    date: '2026-09-15',
+    categorie: 'Syndicats',
+    extrait: 'Les elections internes de la FNSEE preparent le renouvellement des mandats. Quatre listes declarees. Vote electronique du 1er au 15 decembre 2026, resultats au Congres de fevrier 2027.',
+    url: 'https://www.fnsea.fr',
+    lu: false,
+    featured: true,
+  },
+  {
+    titre: 'Reglementation UE 2023/564: mise en application du registre phyto numerique, conformite obligatoire',
+    source: 'E-Phy / ANSES',
+    sourceId: 'ephy',
+    date: '2026-09-12',
+    categorie: 'Regulation',
+    extrait: 'La directive UE 2023/564 impose un registre numerique des utilisations de produits phytopharmaceutiques. Les exploitations doivent enregistreur 17 champs (arrete 24/12/2025), conserves 5 ans. Controles renforces des 2027.',
+    url: 'https://ephy.anses.fr',
+    lu: false,
+    featured: false,
+  },
+  {
+    titre: 'Vigilance meteo: episode pluvieux sur le Centre, fenetres de traitement reduites cette semaine',
+    source: 'Meteo-France',
+    sourceId: 'meteo',
+    date: '2026-09-22',
+    categorie: 'Meteo',
+    extrait: 'Meteo-France emet une vigilance jaune pluie-inondation pour le Cantal et le Puy-de-Dome. Vent moyen 15-25 km/h, precipitations prevues jeudi et vendredi. Fenetres de traitement a privilegier mercredi apres-midi.',
+    url: 'https://meteofrance.com',
+    lu: true,
+    featured: false,
+  },
+  {
+    titre: 'Marches cereales: le cours du ble tendre redemarre, le colza suivi de pres',
+    source: 'Terre-net',
+    sourceId: 'terrenet',
+    date: '2026-09-20',
+    categorie: 'Marches',
+    extrait: 'Le ble tendre epingle a 235 EUR/t en collecte, en legere hausse (+8 EUR/t sur la semaine). Le colza beneficie d\'un contexte tendu avec un cours a 480 EUR/t. La production europeenne en retrait de 4% sur 2026.',
+    url: 'https://www.terre-net.fr',
+    lu: true,
+    featured: false,
+  },
+  {
+    titre: 'FranceAgriMer: estimation de la production cerealiere 2026, bilan provisoire par region',
+    source: 'FranceAgriMer',
+    sourceId: 'franceagrimer',
+    date: '2026-09-19',
+    categorie: 'Marches',
+    extrait: 'FranceAgriMer publie l\'estimation provisoire de la production cerealiere 2026: 36,2 Mt pour les cereales a paille, en retrait de 2,1% par rapport a 2025. Le rendement moyen ble tendre estime a 71,4 q/ha.',
+    url: 'https://www.franceagrimer.fr',
+    lu: false,
+    featured: false,
+  },
+  {
+    titre: 'ARVALIS: essais variete ble tendre 2026, resultats attendus sur la resistance septoriose',
+    source: 'ARVALIS',
+    sourceId: 'arvalis',
+    date: '2026-09-16',
+    categorie: 'Agro/technique',
+    extrait: 'ARVALIS publie les premiers resultats des essais variete ble tendre 2026. Les variete Chevalier et LG Audio affichent une bonne tolerance a la septoriose. Le conseil: anticiper le choix varietal pour la campagne 2027.',
+    url: 'https://www.arvalis.fr',
+    lu: false,
+    featured: false,
+  },
+  {
+    titre: 'Chambres d\'agriculture: nouvelle plateforme d\'accompagnement au registre phyto numerique',
+    source: 'Chambres d\'agriculture',
+    sourceId: 'chambres',
+    date: '2026-09-14',
+    categorie: 'Regulation',
+    extrait: 'Les Chambres d\'agriculture lancent une plateforme d\'accompagnement au registre phyto numerique (UE 2023/564). Ateliers dans chaque departement, formations en ligne, et accompagnement individualise des exploitants.',
+    url: 'https://www.chambres-agriculture.fr',
+    lu: true,
+    featured: false,
+  },
+];
+
+App.registerView('veille', function() {
+  var filterCat = App.state.veilleFilter || 'all';
+
+  var catClass = function(cat) {
+    var map = { 'Syndicats':'synd', 'Regulation':'reg', 'Meteo':'met', 'Marches':'mar', 'Agro/technique':'agr' };
+    return map[cat] || 'agr';
+  };
+  var catLabel = function(cat) {
+    if (cat === 'Syndicats') return 'Syndicats';
+    if (cat === 'Regulation') return 'Regulation';
+    if (cat === 'Meteo') return 'Meteo';
+    if (cat === 'Marches') return 'Marches';
+    if (cat === 'Agro/technique') return 'Agro/technique';
+    return cat;
+  };
+
+  // Sources: catalogue avec toggle
+  var sourcesHtml = VEILLE_SOURCES.map(function(s) {
+    return '<div class="veil-src' + (s.optin ? ' on' : '') + '" data-src="' + s.id + '">' +
+      '<div class="veil-src-main">' +
+        '<div class="veil-src-nom">' + s.nom + '</div>' +
+        '<div class="veil-src-cat">' + catLabel(s.categorie) + '</div>' +
+        '<div class="veil-src-desc">' + s.desc + '</div>' +
+      '</div>' +
+      '<button class="veil-toggle' + (s.optin ? ' on' : '') + '" data-src="' + s.id + '" onclick="veilToggleSource(\'' + s.id + '\')"></button>' +
+    '</div>';
+  }).join('');
+
+  // Filtres categorie
+  var cats = ['all','Syndicats','Regulation','Meteo','Marches','Agro/technique'];
+  var filtersHtml = cats.map(function(c) {
+    var active = (filterCat === c) ? ' active' : '';
+    var label = (c === 'all') ? 'Tous' : catLabel(c);
+    return '<button class="veil-filter' + active + '" onclick="veilFilterSet(\'' + c + '\')">' + label + '</button>';
+  }).join('');
+
+  // Articles filtres par sources opt-in + categorie
+  var activeSrcIds = VEILLE_SOURCES.filter(function(s){ return s.optin; }).map(function(s){ return s.id; });
+  var articles = VEILLE_ARTICLES.filter(function(a) {
+    if (activeSrcIds.indexOf(a.sourceId) === -1) return false;
+    if (filterCat !== 'all' && a.categorie !== filterCat) return false;
+    return true;
+  });
+  // FNSEA en premier
+  articles.sort(function(a, b) {
+    if (a.sourceId === 'fnsea' && b.sourceId !== 'fnsea') return -1;
+    if (b.sourceId === 'fnsea' && a.sourceId !== 'fnsea') return 1;
+    return new Date(b.date) - new Date(a.date);
+  });
+
+  var articlesHtml;
+  if (articles.length === 0) {
+    articlesHtml = '<div class="veil-empty">Aucun article pour cette selection. Activez des sources ou changez de filtre.</div>';
+  } else {
+    articlesHtml = articles.map(function(a) {
+      var cls = 'veil-art' + (a.lu ? '' : ' unread') + (a.featured ? ' fea' : '');
+      var readLabel = a.lu ? 'Lu' : 'Non lu';
+      var readClass = a.lu ? 'veil-read' : 'veil-read unread';
+      var ext = a.extrait.length > 180 ? a.extrait.substring(0, 180) + '...' : a.extrait;
+      return '<div class="' + cls + '" onclick="veilMarkRead(' + VEILLE_ARTICLES.indexOf(a) + ')">' +
+        '<div class="veil-art-top">' +
+          '<span class="veil-badge ' + catClass(a.categorie) + '">' + catLabel(a.categorie) + '</span>' +
+          '<span class="veil-src-tag">' + a.source + '</span>' +
+          '<span class="veil-date">' + App.fmtDate(a.date) + '</span>' +
+        '</div>' +
+        '<h4>' + a.titre + '</h4>' +
+        '<div class="veil-excerpt">' + ext + '</div>' +
+        '<div class="veil-art-foot">' +
+          '<span class="' + readClass + '">' + readLabel + '</span>' +
+          '<a class="veil-link" href="' + a.url + '" target="_blank" onclick="event.stopPropagation()">Lire la source</a>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  var activeCount = activeSrcIds.length;
+
+  return '' +
+  '<div class="veil-head">' +
+    '<div><div class="page-title">Veille</div><div class="page-sub">Flux d\'actualite agricole · ' + activeCount + ' source' + (activeCount > 1 ? 's' : '') + ' active' + (activeCount > 1 ? 's' : '') + '</div></div>' +
+    '<button class="btn btn-outline btn-sm" onclick="veilSuggestSource()">Suggerer une source</button>' +
+  '</div>' +
+  '<div class="veil-grid">' +
+    '<div class="card"><div class="card-head"><div><div class="card-title">Sources</div><div class="card-sub">catalogue · opt-in par source</div></div></div><div class="card-body"><div class="veil-sources">' + sourcesHtml + '</div></div></div>' +
+    '<div>' +
+      '<div class="veil-filters">' + filtersHtml + '</div>' +
+      '<div class="veil-articles">' + articlesHtml + '</div>' +
+    '</div>' +
+  '</div>';
+});
+
+function veilToggleSource(srcId) {
+  var src = VEILLE_SOURCES.find(function(s) { return s.id === srcId; });
+  if (src) src.optin = !src.optin;
+  App.render();
+  App.updateMeta();
+  App.toast(src && src.optin ? 'Source activee' : 'Source desactivee');
+}
+
+function veilFilterSet(cat) {
+  App.state.veilleFilter = cat;
+  App.render();
+  App.updateMeta();
+}
+
+function veilMarkRead(idx) {
+  if (VEILLE_ARTICLES[idx] && !VEILLE_ARTICLES[idx].lu) {
+    VEILLE_ARTICLES[idx].lu = true;
+    App.render();
+    App.updateMeta();
+  }
+}
+
+function veilSuggestSource() {
+  var body = '' +
+    '<div class="veil-sugg-form">' +
+      '<div><label>Nom de la source</label><input id="vsg-nom" placeholder="Ex: reussir.fr, INRAE, etc." style="margin-top:5px"></div>' +
+      '<div><label>Categorie</label><select id="vsg-cat" style="margin-top:5px">' +
+        '<option>Syndicats</option><option>Regulation</option><option>Meteo</option><option>Marches</option><option>Agro/technique</option>' +
+      '</select></div>' +
+      '<div><label>URL ou description</label><textarea id="vsg-desc" rows="3" placeholder="Decrire la source et pourquoi elle vous interesse" style="margin-top:5px"></textarea></div>' +
+    '</div>';
+  App.openModal('Suggerer une source', body, function() {
+    var btn = document.createElement('button');
+    btn.className = 'btn btn-accent';
+    btn.textContent = 'Envoyer la suggestion';
+    btn.style.marginTop = '12px';
+    btn.onclick = function() {
+      App.closeModal();
+      App.toast('Suggestion enregistree, merci');
+    };
+    var modalBody = document.querySelector('.modal-body');
+    if (modalBody) modalBody.appendChild(btn);
+  });
+}
 
 
 /* ===== INIT ===== */
