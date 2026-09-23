@@ -664,6 +664,52 @@ tr:hover td { background: var(--paper); }
 .advice-card { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
 .advice-card h4 { font-size: 13px; margin-bottom: 8px; }
 
+/* ===== Workflow (Obligations) ===== */
+.wf-stepper{display:flex;align-items:flex-start;gap:0;margin:0 0 22px;overflow-x:auto;padding:4px 0}
+.wf-step{flex:1;min-width:128px;display:flex;flex-direction:column;align-items:center;position:relative;cursor:pointer;padding:12px 8px 10px;transition:background .15s;border-radius:var(--r-sm)}
+.wf-step:hover{background:rgba(199,162,72,.05)}
+.wf-step-num{width:28px;height:28px;border-radius:50%;background:var(--gris);color:var(--muted);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:600;font-size:12px;margin-bottom:8px;position:relative;z-index:2;transition:all .15s}
+.wf-step.complete .wf-step-num{background:var(--ok);color:#fff}
+.wf-step.active .wf-step-num{background:var(--gold);color:var(--anthracite);box-shadow:0 0 0 4px rgba(199,162,72,.15)}
+.wf-step-label{font-size:10.5px;font-weight:600;text-align:center;color:var(--ink);line-height:1.25}
+.wf-step.active .wf-step-label{color:var(--anthracite)}
+.wf-step-status{font-size:9px;font-family:var(--mono);text-transform:uppercase;color:var(--muted);margin-top:3px;letter-spacing:.04em}
+.wf-step.complete .wf-step-status{color:var(--ok)}
+.wf-step.en-cours .wf-step-status{color:var(--warn)}
+.wf-step:not(:last-child)::after{content:'';position:absolute;top:26px;left:calc(50% + 18px);width:calc(100% - 36px);height:2px;background:var(--line);z-index:1}
+.wf-step.complete:not(:last-child)::after{background:var(--ok)}
+.wf-step.active:not(:last-child)::after{background:linear-gradient(90deg,var(--gold),var(--line))}
+.wf-stepdetail{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:16px}
+.wf-stepdetail-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:12px}
+.wf-stepdetail-title{font-size:14px;font-weight:600;color:var(--anthracite)}
+.wf-stepdetail-sub{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:2px}
+.wf-meta{display:grid;grid-template-columns:140px 1fr;gap:8px 14px;font-size:12px;padding:10px 0;border-top:1px solid var(--line);margin-top:10px}
+.wf-meta .wm-l{color:var(--muted);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.04em;font-weight:500}
+.wf-meta .wm-v{font-size:12px}
+.wf-info-list{font-size:11.5px;color:var(--ink-2);line-height:1.7;columns:2;column-gap:24px}
+.wf-doc-row{display:grid;grid-template-columns:1fr 90px 120px 110px 90px;gap:8px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line);font-size:12px}
+.wf-doc-row:last-child{border-bottom:none}
+.wf-doc-row .wd-label{font-weight:500}
+.wf-doc-row .wd-hint{font-size:10px;color:var(--muted);font-family:var(--mono)}
+.wf-dep{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--line);border-radius:var(--r-sm);margin-bottom:8px;font-size:12px;cursor:pointer;transition:all .15s}
+.wf-dep:hover{border-color:var(--gold);box-shadow:0 0 0 3px rgba(199,162,72,.06)}
+.wf-dep .wd-arr{color:var(--muted);font-family:var(--mono);font-size:11px}
+.wf-status-card{border-radius:var(--r);padding:18px;display:flex;align-items:center;gap:16px;margin-bottom:16px;border:1px solid}
+.wf-status-card.ok{border-color:rgba(45,125,70,.2);background:rgba(45,125,70,.05)}
+.wf-status-card.warn{border-color:rgba(184,134,47,.2);background:rgba(184,134,47,.05)}
+.wf-status-card.err{border-color:rgba(169,56,41,.2);background:rgba(169,56,41,.05)}
+.wf-status-ico{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
+.wf-status-card.ok .wf-status-ico{background:var(--ok);color:#fff}
+.wf-status-card.warn .wf-status-ico{background:var(--warn);color:#fff}
+.wf-status-card.err .wf-status-ico{background:var(--err);color:#fff}
+.wf-bcae{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);font-size:12px}
+.wf-bcae:last-child{border-bottom:none}
+.wf-bcae .wb-ico{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.wf-bcae.pass .wb-ico{background:var(--ok);color:#fff}
+.wf-bcae.fail .wb-ico{background:var(--err);color:#fff}
+.wf-bcae.pending .wb-ico{background:var(--warn);color:#fff}
+.wf-bcae .wb-desc{color:var(--muted);font-size:11px;font-family:var(--mono)}
+
 @media (max-width: 900px) {
   .app { grid-template-columns: 1fr; }
   .sidebar { display: none; }
@@ -673,6 +719,8 @@ tr:hover td { background: var(--paper); }
   .chat-side { display: none; }
   .prd-grid, .advice-grid { grid-template-columns: 1fr; }
   .roadmap { flex-direction: column; }
+  .wf-info-list { columns: 1; }
+  .wf-doc-row { grid-template-columns: 1fr 1fr; }
 }
 
 </style>
@@ -875,6 +923,11 @@ const NAV_CONFIG = {
     { id:'registre-phyto', label:'Registre phyto', ico:'▦', count: () => (typeof REGISTRE !== 'undefined' ? REGISTRE.length : 0) },
     { id:'flux-agentique', label:'Flux agentique', ico:'↻' },
     { id:'declarations', label:'Declarations', ico:'≡' },
+    { id:'wf-overview', label:'Obligations & workflows', ico:'⚖' },
+    { id:'wf-registre-phyto', label:'Registre phyto (wf)', ico:'R', count: () => (typeof REGISTRE !== 'undefined' ? REGISTRE.length : 0) },
+    { id:'wf-pac', label:'Declaration PAC (wf)', ico:'P' },
+    { id:'wf-tracabilite', label:'Tracabilite (wf)', ico:'T' },
+    { id:'wf-assurance', label:'Assurance recolte (wf)', ico:'A' },
     { id:'ceres-prev', label:'Ceres Prev', ico:'◈' },
   ],
   coop: [
@@ -902,6 +955,11 @@ const TITLES = {
   'registre-phyto': 'Registre phyto',
   'flux-agentique': 'Flux agentique',
   'declarations': 'Declarations',
+  'wf-overview': 'Obligations & workflows',
+  'wf-registre-phyto': 'Registre phyto · workflow',
+  'wf-pac': 'Declaration PAC · workflow',
+  'wf-tracabilite': 'Tracabilite · workflow',
+  'wf-assurance': 'Assurance recolte · workflow',
   'ceres-prev': 'Ceres Prev',
   'coop-vue-agregee': 'Vue agreegee',
   'coop-adherents': 'Adherents',
@@ -2444,6 +2502,480 @@ App.registerView('ceres-prev', function() {
   App._onMount = function() { renderPrev(); };
   return html;
 });
+
+/* ============================================================
+   WORKFLOW MODULES (Obligations & workflows)
+   ============================================================ */
+
+// --- Shared workflow state ---
+const WF = {
+  'wf-registre-phyto': { step: 0, doc: {}, controls: [], history: [] },
+  'wf-pac':           { step: 0, doc: {}, controls: [], history: [], depose: false, dossier: '', montant: 0 },
+  'wf-tracabilite':   { step: 0, doc: {}, controls: [], history: [] },
+  'wf-assurance':     { step: 0, doc: {}, controls: [], history: [], sinistre: false },
+};
+
+// 17 champs Annexe I du registre phyto (arrete 24/12/2025, UE 2023/564)
+const PHYTO_FIELDS = [
+  { key:'siretDetenteur',  label:'SIRET detenteur',          req:true,  fmt:'14 chiffres',          prov:'extrait', src:'SIRET exploitation' },
+  { key:'siretBeneficiaire',label:'SIRET beneficiaire',     req:false, fmt:'14 chiffres',          prov:'extrait', src:'SIRET prestataire' },
+  { key:'produit',         label:'Nom du produit',          req:true,  fmt:'libelle E-Phy',        prov:'extrait', src:'E-Phy ANSES' },
+  { key:'amm',             label:'AMM',                     req:true,  fmt:'7 chiffres',           prov:'extrait', src:'E-Phy ANSES' },
+  { key:'dateUtilisation', label:"Date d'utilisation",      req:true,  fmt:'JJ/MM/AAAA',           prov:'saisi',   src:'fermier' },
+  { key:'horaireDebut',    label:'Horaire debut',           req:false, fmt:'HH:MM',               prov:'saisi',   src:'fermier (si AMM)' },
+  { key:'horaireFin',      label:'Horaire fin',             req:false, fmt:'HH:MM',               prov:'saisi',   src:'fermier (si AMM)' },
+  { key:'delaiRentree',    label:'Delai de rentree',        req:true,  fmt:'ex: 48h, 21j',        prov:'deduit',  src:'AMM' },
+  { key:'dose',            label:'Dose appliquee',          req:true,  fmt:'ex: 0.8 L/ha',        prov:'saisi',   src:'fermier' },
+  { key:'cible',           label:'Cible (ravageur/maladie)', req:false, fmt:'libelle',             prov:'saisi',   src:'fermier' },
+  { key:'modeApplication',  label:"Mode d'application",      req:false, fmt:'libelle',             prov:'saisi',   src:'fermier' },
+  { key:'ilot',            label:'Ilot RPG',                req:true,  fmt:'4 chiffres',          prov:'extrait', src:'RPG' },
+  { key:'parcelle',        label:'Parcelle RPG',            req:true,  fmt:'alphanumerique',      prov:'extrait', src:'RPG' },
+  { key:'insee',           label:'Code INSEE commune',      req:true,  fmt:'5 chiffres',          prov:'extrait', src:'RPG / INSEE' },
+  { key:'gps',             label:'Localisation GPS WGS84',  req:false, fmt:'lat,long',            prov:'deduit',  src:'RPG' },
+  { key:'surface',         label:'Surface traitee (ha)',     req:true,  fmt:'ex: 24.5',            prov:'deduit',  src:'RPG' },
+  { key:'culture',         label:'Culture (code OEPP)',      req:true,  fmt:'5-6 lettres',         prov:'extrait', src:'RPG / OEPP' },
+];
+
+// Steps for each workflow
+const WF_STEPS = {
+  'wf-registre-phyto': [
+    { id:0, label:"Saisie au fil de l'eau",    who:'Fermier',  out:'Entree registre (17 champs)', delai:'sans tarder apres traitement' },
+    { id:1, label:'Controles automatiques',    who:'Ceres',    out:'Verification AMM/dose/parcelle/culture', delai:'temps reel' },
+    { id:2, label:'Validation fermier',        who:'Fermier',  out:'Confirmation + provenance par champ', delai:'avant archivage' },
+    { id:3, label:'Format electronique',      who:'Ceres',    out:'Conversion Annexe I lisible machine', delai:'avant 31/01/N+1' },
+    { id:4, label:'Presentable sur demande',   who:'DGAL',     out:'Restitution lors controle, conservation 5 ans', delai:'10 j ouvrables si demande' },
+  ],
+  'wf-pac': [
+    { id:0, label:'Import RPG',                who:'Ceres',    out:'Ilots, parcelles, cultures, surfaces', delai:'ouverture TelePAC' },
+    { id:1, label:'Pre-remplissage',           who:'Ceres',    out:'Declaration pre-remplie', delai:'avril 2026' },
+    { id:2, label:'Controles conditionnalite', who:'Ceres',    out:'BCAE 6 controles par parcelle', delai:'avant depot' },
+    { id:3, label:'Verification fermier',      who:'Fermier',  out:'Correction des ecarts', delai:'15 mai 2026' },
+    { id:4, label:'Tele-depot',                who:'Fermier',  out:'Depot telepac.agriculture.gouv.fr', delai:'15 mai 2026' },
+    { id:5, label:'Accuse de reception',       who:'ASA',      out:'Confirmation AS/DS + numero dossier', delai:'sous 5 j' },
+  ],
+  'wf-tracabilite': [
+    { id:0, label:'Journal de culture',        who:'Fermier',  out:'Phyto + semis + recolte + analyses', delai:'continu' },
+    { id:1, label:'Lots de recolte',           who:'Fermier',  out:'Lot, parcelle, quantite, destinataire', delai:'a chaque recolte' },
+    { id:2, label:'Lien avec livraison',       who:'Coop',     out:'Bon de livraison + numero de lot', delai:'a chaque livraison' },
+    { id:3, label:'Conservation',              who:'DGCCRF',   out:'5 ans, presentable sur demande', delai:'permanent' },
+  ],
+  'wf-assurance': [
+    { id:0, label:'Declaration surfaces',     who:'Ceres',    out:'Surfaces + rendements historiques', delai:'avant 15 fevrier' },
+    { id:1, label:'Choix garantie',            who:'Fermier',  out:'Niveau, franchise, prime', delai:'avant souscription' },
+    { id:2, label:'Souscription',              who:'Assureur', out:'Contrat aupres assureur agree', delai:'avant 15 fevrier' },
+    { id:3, label:'Sinistre',                  who:'Fermier',  out:'Declaration + photos + estimation', delai:'sous 30 j' },
+  ],
+};
+
+// 6 BCAE checks for PAC
+const BCAE = [
+  { id:'b1', label:'Bande enherbee le long des cours d eau', desc:'5m min, cours d eau > 1.5m', status:'pass' },
+  { id:'b2', label:'Rotation des cultures',                 desc:'alternance quinquennale 3 cultures', status:'pass' },
+  { id:'b3', label:'Maintien des prairies permanentes',     desc:'pas de retournement', status:'pass' },
+  { id:'b4', label:'N elements RPG conformes',              desc:'ilot/parcelle/INSEE valides', status:'pass' },
+  { id:'b5', label:'Couverture des sols en hiver',          desc:'CIPAN ou couvert permanent', status:'pending' },
+  { id:'b6', label:'Diversification des assolements',       desc:'min 2 cultures sur lexploitation', status:'pass' },
+];
+
+// Helpers
+function wfStepper(workflowId) {
+  const steps = WF_STEPS[workflowId];
+  const cur = WF[workflowId].step;
+  return '<div class="wf-stepper">' + steps.map(function(s){
+    const cls = (s.id < cur ? 'complete' : s.id === cur ? 'active' : '') + (s.id === cur ? '' : '');
+    const stCls = s.id < cur ? 'complete' : s.id === cur ? 'en-cours' : '';
+    return '<button type="button" class="wf-step ' + cls + ' ' + stCls + '" onclick="wfGoto(\'' + workflowId + '\',' + s.id + ')">' +
+      '<div class="wf-step-num">' + (s.id < cur ? '&#10003;' : (s.id + 1)) + '</div>' +
+      '<div class="wf-step-label">' + s.label + '</div>' +
+      '<div class="wf-step-status">' + (s.id < cur ? 'complete' : s.id === cur ? 'en cours' : 'a faire') + '</div>' +
+    '</button>';
+  }).join('') + '</div>';
+}
+
+function wfGoto(workflowId, step) {
+  WF[workflowId].step = step;
+  App.render();
+}
+
+function wfStepDetail(workflowId) {
+  const steps = WF_STEPS[workflowId];
+  const cur = WF[workflowId].step;
+  const s = steps[cur];
+  return '<div class="wf-stepdetail">' +
+    '<div class="wf-stepdetail-head"><div><div class="wf-stepdetail-title">Etape ' + (cur + 1) + ' · ' + s.label + '</div>' +
+    '<div class="wf-stepdetail-sub">Responsable: ' + s.who + ' · Sortie: ' + s.out + '</div></div>' +
+    '<span class="tag ' + (cur === 0 ? 'warn' : 'ok') + '">' + (cur === 0 ? 'en cours' : 'planifie') + '</span></div>' +
+    '<div class="wf-meta"><div class="wm-l">Responsable</div><div class="wm-v">' + s.who + '</div>' +
+    '<div class="wm-l">Produit attendu</div><div class="wm-v">' + s.out + '</div>' +
+    '<div class="wm-l">Echeance</div><div class="wm-v">' + s.delai + '</div>' +
+    '<div class="wm-l">Statut</div><div class="wm-v"><span class="tag ' + (cur === 0 ? 'warn' : 'ok') + '">' + (cur === 0 ? 'en cours' : 'planifie') + '</span></div></div>' +
+    '<div style="display:flex;gap:8px;margin-top:14px">' +
+      (cur > 0 ? '<button class="btn btn-outline btn-sm" onclick="wfGoto(\'' + workflowId + '\',' + (cur - 1) + ')"><- Etape precedente</button>' : '') +
+      (cur < steps.length - 1 ? '<button class="btn btn-gold btn-sm" onclick="wfAdvance(\'' + workflowId + '\')">Etape suivante -></button>' : '<button class="btn btn-gold btn-sm" onclick="App.toast(\'Workflow complet\',\'ok\')">Finaliser</button>') +
+    '</div></div>';
+}
+
+function wfAdvance(workflowId) {
+  const max = WF_STEPS[workflowId].length - 1;
+  if (WF[workflowId].step < max) {
+    WF[workflowId].step++;
+    App.toast('Etape ' + (WF[workflowId].step + 1) + ' atteinte', 'ok');
+    App.render();
+  }
+}
+
+function wfStatusCard(status, title, sub, metric) {
+  const cls = status === 'ok' ? 'ok' : status === 'warn' ? 'warn' : 'err';
+  const ico = status === 'ok' ? '&#10003;' : status === 'warn' ? '!' : '!';
+  return '<div class="wf-status-card ' + cls + '"><div class="wf-status-ico">' + ico + '</div><div style="flex:1">' +
+    '<div style="font-weight:600;font-size:14px;color:var(--anthracite)">' + title + '</div>' +
+    '<div style="font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:2px">' + sub + '</div></div>' +
+    (metric ? '<div style="text-align:right"><div style="font-size:20px;font-weight:600;font-family:var(--mono);color:var(--anthracite)">' + metric + '</div></div>' : '') +
+    '</div>';
+}
+
+function wfDownloadCSV(filename, rows) {
+  const csv = rows.map(function(r){ return r.map(function(c){ c = (c === null || c === undefined) ? '' : String(c); c = c.replace(/"/g, '""'); return (/[",\n]/.test(c)) ? '"' + c + '"' : c; }).join(','); }).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  App.toast('Document genere: ' + filename, 'ok');
+}
+
+function wfDownloadJSON(filename, obj) {
+  const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  App.toast('Document genere: ' + filename, 'ok');
+}
+
+// --- WF 0: Overview (toutes obligations) ---
+function viewWfOverview() {
+  const totalSurf = PARCELLES.reduce(function(s,p){return s+p.surface;},0);
+  const conf = conformite();
+  const obligations = [
+    { id:'wf-registre-phyto', nom:'Registre phytosanitaire',     autorite:'DGAL / SRAL',          echeance:'31/01/2028',     statut:'en cours',    last:'Traitement MODDUS ajoute 15/04/2026', next:'Conversion format electronique',        color:'warn', ref:'arrete 24/12/2025 · UE 2023/564' },
+    { id:'wf-pac',            nom:'Declaration PAC',            autorite:'ASA / FranceAgriMer', echeance:'15/05/2026',    statut:'pre-remplie', last:'Import RPG 2025',                    next:'Verification fermier + tele-depot',     color:'ok',   ref:'UE 2021/2115 · TelePAC' },
+    { id:'wf-tracabilite',    nom:'Tracabilite',                 autorite:'DGCCRF / coop',        echeance:'continu',        statut:'a jour',      last:'Journal de culture a jour',           next:'Audit annuel coop en attente',           color:'ok',   ref:'CE 178/2002 · CE 852/2004' },
+    { id:'wf-assurance',      nom:'Assurance recolte',           autorite:'Assureur agree / FNGRA',echeance:'15/02/2027',   statut:'non demarree',last:'Rien pour le moment',                 next:'Declaration surfaces + rendements',     color:'err',  ref:'Loi 2022-298' },
+  ];
+  const badge = function(s){ return s === 'a jour' || s === 'pre-remplie' ? 'ok' : s === 'en cours' ? 'warn' : s === 'non demarree' ? 'err' : 'neu'; };
+  const totalOK = obligations.filter(function(o){return o.statut==='a jour'||o.statut==='pre-remplie';}).length;
+
+  return '' +
+  '<div class="grid-4" style="margin-bottom:18px">' +
+    '<div class="kpi accent"><div class="kpi-label">Obligations</div><div class="kpi-val">' + obligations.length + '</div><div class="kpi-delta neu">actives</div></div>' +
+    '<div class="kpi ok"><div class="kpi-label">A jour</div><div class="kpi-val">' + totalOK + '</div><div class="kpi-delta pos">conformes</div></div>' +
+    '<div class="kpi"><div class="kpi-label">En cours</div><div class="kpi-val">' + obligations.filter(function(o){return o.statut==='en cours';}).length + '</div><div class="kpi-delta neu">a finaliser</div></div>' +
+    '<div class="kpi terra"><div class="kpi-label">En retard</div><div class="kpi-val">' + obligations.filter(function(o){return o.statut==='non demarree';}).length + '</div><div class="kpi-delta neg">action requise</div></div>' +
+  '</div>' +
+  '<div class="section-title">Tableau de bord des obligations administratives</div>' +
+  '<div class="card" style="margin-bottom:16px"><div class="card-head"><div><div class="card-title">Obligations & workflows</div><div class="card-sub">vue consolidee · ' + obligations.length + ' obligations · referentiel arpent</div></div>' +
+    '<div style="display:flex;gap:8px"><button class="btn btn-outline btn-sm" onclick="wfDownloadCSV(\'obligations_arpent.csv\', [[' + obligations.map(function(o){return '\''+o.nom+'\',\''+o.autorite+'\',\''+o.echeance+'\',\''+o.statut+'\'';}).join('],[') + ']])">↓ CSV</button>' +
+    '<button class="btn btn-gold btn-sm" onclick="App.toast(\'Synthese obligations lancee\',\'ok\')">Synthetiser</button></div></div>' +
+    '<div class="card-body" style="padding:0"><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Obligation</th><th>Autorite</th><th>Echeance</th><th>Statut</th><th>Derniere action</th><th>Prochaine etape</th><th></th></tr></thead><tbody>' +
+    obligations.map(function(o){
+      return '<tr class="row-clickable" onclick="App.navigateTo(\'' + o.id + '\')">' +
+        '<td><b>' + o.nom + '</b><div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:2px">' + o.ref + '</div></td>' +
+        '<td class="mono">' + o.autorite + '</td>' +
+        '<td class="mono">' + o.echeance + '</td>' +
+        '<td><span class="tag ' + badge(o.statut) + '">' + o.statut + '</span></td>' +
+        '<td style="font-size:11px;color:var(--muted)">' + o.last + '</td>' +
+        '<td style="font-size:11px">' + o.next + '</td>' +
+        '<td><span class="hint" style="color:var(--gold)">ouvrir -></span></td>' +
+      '</tr>';
+    }).join('') +
+    '</tbody></table></div></div></div>' +
+    '<div class="grid-2"><div class="card"><div class="card-head"><div><div class="card-title">Dependances entre obligations</div><div class="card-sub">graphe d ordres</div></div></div><div class="card-body">' +
+      '<div class="wf-dep" onclick="App.navigateTo(\'wf-pac\')"><span class="tag gold">PAC</span><span>Depend de</span><span class="wd-arr">RPG import -> registre phyto -> tracabilite (rendements)</span></div>' +
+      '<div class="wf-dep" onclick="App.navigateTo(\'wf-assurance\')"><span class="tag terra">Assurance</span><span>Depend de</span><span class="wd-arr">tracabilite (rendements historiques) + Agreste</span></div>' +
+      '<div class="wf-dep" onclick="App.navigateTo(\'wf-registre-phyto\')"><span class="tag ok">Phyto</span><span>Alimente</span><span class="wd-arr">tracabilite (journal de culture)</span></div>' +
+      '<div class="wf-dep" onclick="App.navigateTo(\'wf-tracabilite\')"><span class="tag info">Tracabilite</span><span>Derive de</span><span class="wd-arr">registre phyto + semis + recolte</span></div>' +
+    '</div></div>' +
+    '<div class="card"><div class="card-head"><div><div class="card-title">Calendrier des echeances</div><div class="card-sub">2026-2027</div></div></div><div class="card-body"><div class="timeline">' +
+      '<div class="tl-item"><div class="tl-date">15 fevrier 2027</div><div class="tl-text">Souscription assurance recolte (prime subventionnee 70%)</div></div>' +
+      '<div class="tl-item"><div class="tl-date">15 mai 2026</div><div class="tl-text">Tele-depot PAC (telepac.agriculture.gouv.fr)</div></div>' +
+      '<div class="tl-item"><div class="tl-date">31 mai 2026</div><div class="tl-text">Fin modifications surfaces PAC</div></div>' +
+      '<div class="tl-item"><div class="tl-date">31 janvier 2028</div><div class="tl-text">Conversion registre phyto format electronique</div></div>' +
+      '<div class="tl-item"><div class="tl-date">10 juin 2026</div><div class="tl-text">Fin modifications aides animees PAC</div></div>' +
+    '</div></div></div></div>' +
+  '';
+}
+
+// --- WF 1: Registre phyto ---
+function viewWfRegistrePhyto() {
+  const conf = conformite();
+  const entries = REGISTRE.length;
+  const lastUp = entries ? REGISTRE[entries - 1].dateUtilisation : '-';
+  const statusOk = conf >= 90 && entries > 0;
+  const statusStr = entries === 0 ? 'en retard' : statusOk ? 'a jour' : 'en retard';
+  const statusCls = entries === 0 ? 'err' : statusOk ? 'ok' : 'warn';
+
+  return '' +
+  '<div class="grid-4" style="margin-bottom:18px">' +
+    '<div class="kpi accent"><div class="kpi-label">Entrees registre</div><div class="kpi-val">' + entries + '</div><div class="kpi-delta neu">campagne 2026</div></div>' +
+    '<div class="kpi ' + statusCls + '"><div class="kpi-label">Conformite</div><div class="kpi-val">' + conf + '<span class="kpi-unit">%</span></div><div class="kpi-delta ' + (statusOk?'pos':'neg') + '">Annexe I 17 champs</div></div>' +
+    '<div class="kpi"><div class="kpi-label">Surface traitee</div><div class="kpi-val">' + REGISTRE.reduce(function(s,r){return s+r.surface;},0).toFixed(1) + '<span class="kpi-unit"> ha</span></div><div class="kpi-delta neu">sur ' + PARCELLES.length + ' parcelles</div></div>' +
+    '<div class="kpi terra"><div class="kpi-label">Echeance conversion</div><div class="kpi-val">31/01</div><div class="kpi-delta neu">2028</div></div>' +
+  '</div>' +
+  '<div class="card" style="margin-bottom:16px"><div class="card-head"><div><div class="card-title">Workflow · Registre phytosanitaire</div><div class="card-sub">arrete 24/12/2025 (NOR AGRG2536515A) · UE 2023/564 · conservation 5 ans</div></div>' +
+    '<span class="tag ' + statusCls + '">' + statusStr + '</span></div><div class="card-body">' +
+    wfStepper('wf-registre-phyto') + wfStepDetail('wf-registre-phyto') +
+  '</div></div>' +
+  '<div class="grid-2"><div class="card"><div class="card-head"><div><div class="card-title">Modele de document · Annexe I</div><div class="card-sub">17 champs obligatoires · format arrete 24/12/2025</div></div>' +
+    '<div style="display:flex;gap:8px"><button class="btn btn-outline btn-sm" onclick="wfPhytoFillCeres()">Remplir depuis Ceres</button>' +
+    '<button class="btn btn-gold btn-sm" onclick="wfPhytoGenCSV()">Generer le document</button></div></div>' +
+    '<div class="card-body" style="padding:0;max-height:420px;overflow-y:auto"><table class="tbl"><thead><tr><th>Champ</th><th>Req</th><th>Format</th><th>Provenance</th><th>Valeur</th></tr></thead><tbody>' +
+    PHYTO_FIELDS.map(function(f){
+      const val = WF['wf-registre-phyto'].doc[f.key] || '<span class="hint">-</span>';
+      return '<tr><td>' + f.label + '</td><td>' + (f.req ? '<span class="tag err">oblig.</span>' : '<span class="tag neu">opt.</span>') + '</td><td class="mono wd-hint">' + f.fmt + '</td>' +
+        '<td><select class="fld mono" style="font-size:10px;padding:3px 6px" onchange="WF[\'wf-registre-phyto\'].doc[\'' + f.key + '_prov\']=this.value"><option>' + f.prov + '</option><option>saisi</option><option>extrait</option><option>deduit</option><option>confirme</option></select></td>' +
+        '<td class="mono" style="font-size:11px" id="wf-phyto-' + f.key + '">' + val + '</td></tr>';
+    }).join('') +
+    '</tbody></table></div></div>' +
+  '<div class="card"><div class="card-head"><div><div class="card-title">Soumission</div><div class="card-sub">autorite, canal, format, delai</div></div></div><div class="card-body">' +
+    '<div class="wf-meta" style="border-top:none;margin-top:0"><div class="wm-l">Autorite</div><div class="wm-v">DGAL (Direction Generale de l Alimentation) / SRAL</div>' +
+    '<div class="wm-l">Canal</div><div class="wm-v">Sur demande lors d un controle · pas de depot actif</div>' +
+    '<div class="wm-l">Format</div><div class="wm-v">fichier electronique lisible machine (CSV/JSON), Annexe I + Annexe II</div>' +
+    '<div class="wm-l">Delai</div><div class="wm-v">10 jours ouvrables si demande explicite (art. 5)</div>' +
+    '<div class="wm-l">Conservation</div><div class="wm-v">5 ans a compter de la derniere utilisation</div></div>' +
+    '<div class="section-title">Suivi (tracking)</div>' +
+    wfStatusCard(statusCls, statusStr === 'a jour' ? 'Registre a jour' : statusStr === 'en retard' ? 'Registre en retard' : 'Registre a jour',
+      entries + ' entrees · derniere maj ' + lastUp + ' · prochaine conversion avant 31/01/2028', entries) +
+    '<div class="detail-grid" style="margin-top:12px"><div class="dg-row"><div class="dg-label">Entrees</div><div class="dg-val">' + entries + '</div></div>' +
+    '<div class="dg-row"><div class="dg-label">Derniere mise a jour</div><div class="dg-val">' + lastUp + '</div></div>' +
+    '<div class="dg-row"><div class="dg-label">Prochaine echeance</div><div class="dg-val">31/01/2028 (conversion)</div></div>' +
+    '<div class="dg-row"><div class="dg-label">Controles</div><div class="dg-val">' + (entries > 0 ? '0 anomalie · 0 controle DGAL' : 'n/a') + '</div></div></div>' +
+    '<div class="section-title">Historique du statut</div><div class="timeline">' +
+    '<div class="tl-item"><div class="tl-date">' + lastUp + '</div><div class="tl-text">Dernier traitement enregistre</div></div>' +
+    '<div class="tl-item"><div class="tl-date">15/04/2026</div><div class="tl-text">Traitement MODDUS ajoute (Grand Champ)</div></div>' +
+    '<div class="tl-item"><div class="tl-date">22/04/2026</div><div class="tl-text">Traitement BELL ajoute (Champ du Roc)</div></div>' +
+    '</div></div></div></div>' +
+  '';
+}
+
+function wfPhytoFillCeres() {
+  if (!REGISTRE.length) { App.toast('Aucune entree Ceres a pre-remplir', 'err'); return; }
+  const r = REGISTRE[REGISTRE.length - 1];
+  PHYTO_FIELDS.forEach(function(f){ WF['wf-registre-phyto'].doc[f.key] = r[f.key] !== undefined ? r[f.key] : '-'; });
+  App.toast('Pre-remplissage depuis Ceres: ' + PHYTO_FIELDS.length + ' champs', 'ok');
+  App.render();
+}
+
+function wfPhytoGenCSV() {
+  const header = PHYTO_FIELDS.map(function(f){ return f.label; });
+  const rows = REGISTRE.length ? REGISTRE.map(function(r){ return PHYTO_FIELDS.map(function(f){ return r[f.key] !== undefined ? r[f.key] : ''; }); }) : [PHYTO_FIELDS.map(function(f){ return f.key; })];
+  wfDownloadCSV('registre_phyto_annexe1_' + new Date().toISOString().slice(0,10) + '.csv', [header].concat(rows));
+}
+
+// --- WF 2: PAC ---
+function viewWfPac() {
+  const totalSurf = PARCELLES.reduce(function(s,p){return s+p.surface;},0);
+  const dpu = Math.round(totalSurf * 82);
+  const statusCls = WF['wf-pac'].depose ? 'ok' : WF['wf-pac'].step >= 2 ? 'warn' : 'err';
+  const statusStr = WF['wf-pac'].depose ? 'deposee' : WF['wf-pac'].step >= 3 ? 'en verification' : WF['wf-pac'].step >= 1 ? 'pre-remplie' : 'non demarree';
+
+  return '' +
+  '<div class="grid-4" style="margin-bottom:18px">' +
+    '<div class="kpi accent"><div class="kpi-label">Parcelles declarees</div><div class="kpi-val">' + PARCELLES.length + '</div><div class="kpi-delta neu">RPG 2025</div></div>' +
+    '<div class="kpi ok"><div class="kpi-label">Surface totale</div><div class="kpi-val">' + totalSurf.toFixed(1) + '<span class="kpi-unit"> ha</span></div><div class="kpi-delta neu">a declarer</div></div>' +
+    '<div class="kpi"><div class="kpi-label">DPU estime</div><div class="kpi-val">' + dpu + '<span class="kpi-unit"> EUR</span></div><div class="kpi-delta neu">82 EUR/ha</div></div>' +
+    '<div class="kpi terra"><div class="kpi-label">Echeance depot</div><div class="kpi-val">15/05</div><div class="kpi-delta neu">2026</div></div>' +
+  '</div>' +
+  '<div class="card" style="margin-bottom:16px"><div class="card-head"><div><div class="card-title">Workflow · Declaration PAC</div><div class="card-sub">UE 2021/2115 · TelePAC · campagne 2026</div></div>' +
+    '<span class="tag ' + statusCls + '">' + statusStr + '</span></div><div class="card-body">' +
+    wfStepper('wf-pac') + wfStepDetail('wf-pac') +
+  '</div></div>' +
+  '<div class="grid-2"><div class="card"><div class="card-head"><div><div class="card-title">Modele de document · par parcelle</div><div class="card-sub">N RPG, culture OEPP, surface declaree, ecart</div></div>' +
+    '<div style="display:flex;gap:8px"><button class="btn btn-outline btn-sm" onclick="wfPacFill()">Remplir depuis RPG</button>' +
+    '<button class="btn btn-gold btn-sm" onclick="wfPacGen()">Generer XML TelePAC</button></div></div>' +
+    '<div class="card-body" style="padding:0;max-height:380px;overflow-y:auto"><table class="tbl"><thead><tr><th>Ilot/Parc.</th><th>INSEE</th><th>Culture</th><th class="num">Surf. decl.</th><th class="num">Surf. RPG</th><th class="num">Ecart</th></tr></thead><tbody>' +
+    PARCELLES.map(function(p){
+      const ecart = '0.0';
+      return '<tr><td class="mono">' + p.ilot + '/' + p.parcelle + '</td><td class="mono">' + p.insee + '</td><td><span class="tag gold">' + p.culture + '</span></td><td class="num mono">' + p.surface.toFixed(1) + '</td><td class="num mono">' + p.surface.toFixed(1) + '</td><td class="num mono"><span class="tag ok">' + ecart + '</span></td></tr>';
+    }).join('') +
+    '<tr style="font-weight:600;background:var(--gris)"><td colspan="3">Total</td><td class="num mono">' + totalSurf.toFixed(1) + '</td><td class="num mono">' + totalSurf.toFixed(1) + '</td><td class="num">0.0</td></tr>' +
+    '</tbody></table></div></div>' +
+  '<div class="card"><div class="card-head"><div><div class="card-title">Conditionnalite BCAE</div><div class="card-sub">6 controles · ' + BCAE.filter(function(b){return b.status==='pass';}).length + ' pass</div></div></div>' +
+    '<div class="card-body" style="padding:0">' + BCAE.map(function(b){
+      const cls = b.status === 'pass' ? 'pass' : b.status === 'fail' ? 'fail' : 'pending';
+      const ico = b.status === 'pass' ? '&#10003;' : b.status === 'fail' ? '&#10007;' : '?';
+      return '<div class="wf-bcae ' + cls + '"><div class="wb-ico">' + ico + '</div><div><div>' + b.label + '</div><div class="wb-desc">' + b.desc + '</div></div></div>';
+    }).join('') + '</div></div>' +
+  '<div class="card"><div class="card-head"><div><div class="card-title">Soumission</div><div class="card-sub">autorite, canal, qui, periode</div></div><span class="tag warn">Preparateur - jamais declarant</span></div><div class="card-body">' +
+    '<div class="wf-meta" style="border-top:none;margin-top:0"><div class="wm-l">Autorite</div><div class="wm-v">ASA (Agence de Services et de Paiement) / FranceAgriMer</div>' +
+    '<div class="wm-l">Canal</div><div class="wm-v">telepac.agriculture.gouv.fr (tele-declaration obligatoire)</div>' +
+    '<div class="wm-l">Qui</div><div class="wm-v">Le fermier OU un organisme mandate (coop, CA, expert comptable). Pas Ceres.</div>' +
+    '<div class="wm-l">Periode depot</div><div class="wm-v">1 avril au 15 mai 2026 · modif. surfaces 31 mai · aides animees 10 juin</div>' +
+    '<div class="wm-l">Format</div><div class="wm-v">TelePAC (XML specifique, pas un CSV libre)</div>' +
+    '<div class="wm-l">DPU estime</div><div class="wm-v">' + dpu + ' EUR (82 EUR/ha x ' + totalSurf.toFixed(1) + ' ha)</div></div>' +
+    '<div class="section-title">Suivi</div>' +
+    wfStatusCard(statusCls, WF['wf-pac'].depose ? 'Declaration deposee' : 'En preparation', WF['wf-pac'].depose ? ('Dossier ' + WF['wf-pac'].dossier + ' · ' + WF['wf-pac'].montant + ' EUR') : ('Etape ' + (WF['wf-pac'].step + 1) + '/' + WF_STEPS['wf-pac'].length + ' · ' + statusStr), dpu + ' EUR') +
+    '<div class="alert warn" style="margin-top:8px"><div class="ai">!</div><div><div class="at">Echeance dans 51 jours</div><div class="ad">depot le 15/05/2026 · surfaces modifiables jusqu au 31/05/2026</div></div></div>' +
+    '<div class="alert ' + (BCAE.filter(function(b){return b.status!=='pass';}).length ? 'err' : 'ok') + '" style="margin-top:6px"><div class="ai">' + (BCAE.filter(function(b){return b.status!=='pass';}).length ? '!' : '&#10003;') + '</div><div><div class="at">' + (BCAE.filter(function(b){return b.status!=='pass';}).length ? '1 erreur conditionnalite a corriger' : 'Tous controles BCAE passants') + '</div><div class="ad">CIPAN: couverture hiver a confirmer sur 1 parcelle</div></div></div>' +
+    (WF['wf-pac'].depose ? '<div class="detail-grid" style="margin-top:12px"><div class="dg-row"><div class="dg-label">Numero AS/DS</div><div class="dg-val">' + WF['wf-pac'].dossier + '</div></div><div class="dg-row"><div class="dg-label">Date depot</div><div class="dg-val">' + todayFR() + '</div></div><div class="dg-row"><div class="dg-label">Montant</div><div class="dg-val">' + WF['wf-pac'].montant + ' EUR</div></div></div>' : '') +
+    '<div style="margin-top:14px"><button class="btn btn-gold btn-sm" onclick="wfPacDepot()">Simuler le tele-depot</button></div>' +
+  '</div></div></div>' +
+  '';
+}
+
+function wfPacFill() {
+  WF['wf-pac'].doc.parcelles = PARCELLES.length;
+  App.toast('Pre-remplissage depuis RPG: ' + PARCELLES.length + ' parcelles, ' + PARCELLES.reduce(function(s,p){return s+p.surface;},0).toFixed(1) + ' ha', 'ok');
+  App.render();
+}
+
+function wfPacGen() {
+  const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<TelePAC campagne="2026">\n' +
+    PARCELLES.map(function(p){ return '  <Parcelle ilot="' + p.ilot + '" parcelle="' + p.parcelle + '" insee="' + p.insee + '" culture="' + p.culture + '" surface="' + p.surface.toFixed(1) + '"/>'; }).join('\n') + '\n</TelePAC>';
+  const blob = new Blob([xml], { type: 'application/xml' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'telepac_2026_' + SIRET_DETENTEUR + '.xml';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  App.toast('XML TelePAC genere (preparation, Ceres ne depose pas)', 'ok');
+}
+
+function wfPacDepot() {
+  WF['wf-pac'].depose = true;
+  WF['wf-pac'].step = 5;
+  WF['wf-pac'].dossier = 'DS2026-' + Math.floor(100000 + Math.random() * 900000);
+  WF['wf-pac'].montant = Math.round(PARCELLES.reduce(function(s,p){return s+p.surface;},0) * 82);
+  App.toast('Tele-depot simule · dossier ' + WF['wf-pac'].dossier, 'ok');
+  App.render();
+}
+
+// --- WF 3: Tracabilite ---
+function viewWfTracabilite() {
+  const lots = REGISTRE.length;
+  return '' +
+  '<div class="grid-4" style="margin-bottom:18px">' +
+    '<div class="kpi accent"><div class="kpi-label">Entrees journal</div><div class="kpi-val">' + lots + '</div><div class="kpi-delta neu">phyto derives</div></div>' +
+    '<div class="kpi ok"><div class="kpi-label">Lots recolte</div><div class="kpi-val">4</div><div class="kpi-delta neu">2026</div></div>' +
+    '<div class="kpi"><div class="kpi-label">Livraisons coop</div><div class="kpi-val">12</div><div class="kpi-delta neu">bons enregistrs</div></div>' +
+    '<div class="kpi terra"><div class="kpi-label">Conservation</div><div class="kpi-val">5</div><div class="kpi-delta neu">ans</div></div>' +
+  '</div>' +
+  '<div class="card" style="margin-bottom:16px"><div class="card-head"><div><div class="card-title">Workflow · Tracabilite</div><div class="card-sub">CE 178/2002 · CE 852/2004 · journal de culture</div></div>' +
+    '<span class="tag ok">a jour</span></div><div class="card-body">' +
+    wfStepper('wf-tracabilite') + wfStepDetail('wf-tracabilite') +
+  '</div></div>' +
+  '<div class="grid-2"><div class="card"><div class="card-head"><div><div class="card-title">Modele · Journal de culture</div><div class="card-sub">par parcelle, par campagne · interventions + semis + recolte</div></div>' +
+    '<div style="display:flex;gap:8px"><button class="btn btn-outline btn-sm" onclick="wfTraceFill()">Remplir depuis registre</button>' +
+    '<button class="btn btn-gold btn-sm" onclick="wfTraceGen()">Generer le journal</button></div></div>' +
+    '<div class="card-body" style="padding:0;max-height:360px;overflow-y:auto"><table class="tbl"><thead><tr><th>Parcelle</th><th>Type</th><th>Date</th><th>Detail</th></tr></thead><tbody>' +
+    REGISTRE.map(function(r){
+      return '<tr><td class="mono">' + r.ilot + '/' + r.parcelle + ' ' + (r.nomParcelle||'') + '</td><td><span class="tag terra">phyto</span></td><td class="mono">' + r.dateUtilisation + '</td><td>' + r.produit + ' (' + r.dose + ' ' + r.doseUnite + ')</td></tr>';
+    }).join('') +
+    PARCELLES.slice(0,2).map(function(p){ return '<tr><td class="mono">' + p.ilot + '/' + p.parcelle + ' ' + p.nom + '</td><td><span class="tag gold">semis</span></td><td class="mono">15/11/2025</td><td>' + OEPP[p.culture] + ' · 220 kg/ha</td></tr>'; }).join('') +
+    PARCELLES.slice(0,2).map(function(p){ return '<tr><td class="mono">' + p.ilot + '/' + p.parcelle + ' ' + p.nom + '</td><td><span class="tag ok">recolte</span></td><td class="mono">10/08/2026</td><td>' + (Math.round(p.surface*58)) + ' q · lot L' + p.ilot + p.parcelle + '</td></tr>'; }).join('') +
+    '</tbody></table></div></div>' +
+  '<div class="card"><div class="card-head"><div><div class="card-title">Lots de recolte</div><div class="card-sub">lien parcelle -> lot -> livraison</div></div></div><div class="card-body" style="padding:0"><table class="tbl"><thead><tr><th>Lot</th><th>Parcelle</th><th class="num">Quantite</th><th>Date recolte</th><th>Destinataire</th><th>BL coop</th></tr></thead><tbody>' +
+    PARCELLES.slice(0,4).map(function(p,i){
+      return '<tr><td class="mono">L' + p.ilot + p.parcelle + '</td><td class="mono">' + p.ilot + '/' + p.parcelle + ' ' + p.nom + '</td><td class="num mono">' + Math.round(p.surface*58) + ' q</td><td class="mono">10/08/2026</td><td>Cantal Cereales</td><td class="mono">BL-2026-' + (1001+i) + '</td></tr>';
+    }).join('') +
+    '</tbody></table></div></div></div>' +
+  '<div class="card"><div class="card-head"><div><div class="card-title">Soumission & suivi</div><div class="card-sub">DGCCRF, coop, SRAL</div></div></div><div class="card-body">' +
+    '<div class="wf-meta" style="border-top:none;margin-top:0"><div class="wm-l">Autorite</div><div class="wm-v">DGCCRF + cooperatives (audit interne) + SRAL (controle)</div>' +
+    '<div class="wm-l">Canal</div><div class="wm-v">Sur demande · audit interne annuel par la cooperative</div>' +
+    '<div class="wm-l">Format</div><div class="wm-v">interne (CSV/JSON exportable)</div>' +
+    '<div class="wm-l">Conservation</div><div class="wm-v">5 ans, presentable sur demande</div></div>' +
+    '<div class="section-title">Suivi</div>' +
+    wfStatusCard('ok', 'Tracabilite a jour', lots + ' entrees phyto · 4 lots recolte · 12 livraisons', '4 lots') +
+    '<div class="detail-grid" style="margin-top:12px"><div class="dg-row"><div class="dg-label">Dernier audit</div><div class="dg-val">15/03/2026</div></div>' +
+    '<div class="dg-row"><div class="dg-label">Prochain audit</div><div class="dg-val">15/03/2027</div></div>' +
+    '<div class="dg-row"><div class="dg-label">Statut</div><div class="dg-val"><span class="tag ok">a jour</span></div></div></div>' +
+  '</div></div>' +
+  '';
+}
+
+function wfTraceFill() {
+  App.toast('Journal de culture pre-rempli depuis ' + REGISTRE.length + ' entrees phyto', 'ok');
+}
+
+function wfTraceGen() {
+  const header = ['Lot','Parcelle','Quantite_q','Date_recolte','Destinataire','BL_coop'];
+  const rows = PARCELLES.slice(0,4).map(function(p,i){ return ['L'+p.ilot+p.parcelle, p.ilot+'/'+p.parcelle+' '+p.nom, Math.round(p.surface*58), '10/08/2026', 'Cantal Cereales', 'BL-2026-'+(1001+i)]; });
+  wfDownloadCSV('tracabilite_lots_' + new Date().toISOString().slice(0,10) + '.csv', [header].concat(rows));
+}
+
+// --- WF 4: Assurance ---
+function viewWfAssurance() {
+  const totalSurf = PARCELLES.reduce(function(s,p){return s+p.surface;},0);
+  const primeEst = Math.round(totalSurf * 18);
+  const statusCls = WF['wf-assurance'].sinistre ? 'warn' : WF['wf-assurance'].step >= 2 ? 'ok' : 'err';
+  const statusStr = WF['wf-assurance'].sinistre ? 'sinistre declare' : WF['wf-assurance'].step >= 2 ? 'souscrite' : WF['wf-assurance'].step >= 0 ? 'non demarree' : 'non demarree';
+  return '' +
+  '<div class="grid-4" style="margin-bottom:18px">' +
+    '<div class="kpi accent"><div class="kpi-label">Surface a declarer</div><div class="kpi-val">' + totalSurf.toFixed(1) + '<span class="kpi-unit"> ha</span></div><div class="kpi-delta neu">' + PARCELLES.length + ' parcelles</div></div>' +
+    '<div class="kpi"><div class="kpi-label">Prime estimee</div><div class="kpi-val">' + primeEst + '<span class="kpi-unit"> EUR</span></div><div class="kpi-delta neu">~18 EUR/ha</div></div>' +
+    '<div class="kpi terra"><div class="kpi-label">Subvention Etat</div><div class="kpi-val">70<span class="kpi-unit">%</span></div><div class="kpi-delta neu">avant 15/02</div></div>' +
+    '<div class="kpi ' + statusCls + '"><div class="kpi-label">Statut</div><div class="kpi-val" style="font-size:14px">' + statusStr + '</div><div class="kpi-delta neu">loi 2022-298</div></div>' +
+  '</div>' +
+  '<div class="card" style="margin-bottom:16px"><div class="card-head"><div><div class="card-title">Workflow · Assurance recolte</div><div class="card-sub">Loi 2022-298 · FNGRA · souscription avant 15 fevrier</div></div>' +
+    '<span class="tag ' + statusCls + '">' + statusStr + '</span></div><div class="card-body">' +
+    wfStepper('wf-assurance') + wfStepDetail('wf-assurance') +
+  '</div></div>' +
+  '<div class="grid-2"><div class="card"><div class="card-head"><div><div class="card-title">Modele · Surfaces & rendements</div><div class="card-sub">par parcelle, par culture · 3-5 ans</div></div>' +
+    '<div style="display:flex;gap:8px"><button class="btn btn-outline btn-sm" onclick="wfAssoFill()">Remplir depuis Ceres</button>' +
+    '<button class="btn btn-gold btn-sm" onclick="wfAssoGen()">Generer le contrat</button></div></div>' +
+    '<div class="card-body" style="padding:0;max-height:340px;overflow-y:auto"><table class="tbl"><thead><tr><th>Parcelle</th><th>Culture</th><th class="num">Surface</th><th class="num">Rdt 2024</th><th class="num">Rdt 2025</th><th class="num">Moy.</th></tr></thead><tbody>' +
+    PARCELLES.map(function(p){
+      const r24 = 58 + Math.round(Math.random()*8);
+      const r25 = 60 + Math.round(Math.random()*8);
+      const moy = Math.round((r24+r25)/2);
+      return '<tr><td class="mono">' + p.ilot + '/' + p.parcelle + ' ' + p.nom + '</td><td><span class="tag gold">' + p.culture + '</span></td><td class="num mono">' + p.surface.toFixed(1) + '</td><td class="num mono">' + r24 + ' q/ha</td><td class="num mono">' + r25 + ' q/ha</td><td class="num mono">' + moy + ' q/ha</td></tr>';
+    }).join('') +
+    '</tbody></table></div></div>' +
+  '<div class="card"><div class="card-head"><div><div class="card-title">Garantie & prime</div><div class="card-sub">niveau, franchise, prime subventionnee</div></div></div><div class="card-body">' +
+    '<div class="wf-meta" style="border-top:none;margin-top:0"><div class="wm-l">Niveau garantie</div><div class="wm-v">Niveau 2 (catastrophe + climatique)</div>' +
+    '<div class="wm-l">Franchise</div><div class="wm-v">20% du rendement de reference</div>' +
+    '<div class="wm-l">Prime estimee</div><div class="wm-v">' + primeEst + ' EUR (apres subvention 70%)</div>' +
+    '<div class="wm-l">Assureur agree</div><div class="wm-v">Pacifica / Groupama / Others</div>' +
+    '<div class="wm-l">Donnees meteo</div><div class="wm-v">Meteo-France (station 15) pour sinistre</div></div>' +
+    '<div class="section-title">Suivi</div>' +
+    wfStatusCard(statusCls, WF['wf-assurance'].sinistre ? 'Sinistre declare' : WF['wf-assurance'].step >= 2 ? 'Assurance souscrite' : 'Non souscrite',
+      WF['wf-assurance'].step >= 2 ? ('prime ' + primeEst + ' EUR · souscription ' + todayFR()) : ('echeance 15/02/2027 · prime subventionnee 70%'), primeEst + ' EUR') +
+    '<div class="alert warn"><div class="ai">!</div><div><div class="at">Souscription avant le 15 fevrier 2027</div><div class="ad">prime subventionnee 70% par l Etat (FNGRA) · apres cette date, prime pleine</div></div></div>' +
+    '<div style="margin-top:14px;display:flex;gap:8px"><button class="btn btn-outline btn-sm" onclick="wfAssoSimSinistre()">Simuler un sinistre</button>' +
+    '<button class="btn btn-gold btn-sm" onclick="wfAssoSouscrire()">Souscrire (simulation)</button></div>' +
+  '</div></div></div>' +
+  '';
+}
+
+function wfAssoFill() {
+  WF['wf-assurance'].doc.surfaces = PARCELLES.length;
+  App.toast('Pre-remplissage depuis Ceres: ' + PARCELLES.length + ' parcelles + rendements Agreste', 'ok');
+  App.render();
+}
+
+function wfAssoGen() {
+  const obj = { assureur:'Pacifica', campagne:2026, siret:SIRET_DETENTEUR, surfaces: PARCELLES.map(function(p){return {ilot:p.ilot,parcelle:p.parcelle,culture:p.culture,surface:p.surface};}), prime: Math.round(PARCELLES.reduce(function(s,p){return s+p.surface;},0)*18) };
+  wfDownloadJSON('assurance_recolte_2026.json', obj);
+}
+
+function wfAssoSouscrire() {
+  WF['wf-assurance'].step = 2;
+  WF['wf-assurance'].sinistre = false;
+  App.toast('Souscription simulee · prime ' + Math.round(PARCELLES.reduce(function(s,p){return s+p.surface;},0)*18) + ' EUR', 'ok');
+  App.render();
+}
+
+function wfAssoSimSinistre() {
+  WF['wf-assurance'].sinistre = true;
+  App.toast('Sinistre simule (grele 12/07/2026) · declaration sous 30 j', 'err');
+  App.render();
+}
+
+// --- Workflow view registrations ---
+App.registerView('wf-overview', function() { return viewWfOverview(); });
+App.registerView('wf-registre-phyto', function() { return viewWfRegistrePhyto(); });
+App.registerView('wf-pac', function() { return viewWfPac(); });
+App.registerView('wf-tracabilite', function() { return viewWfTracabilite(); });
+App.registerView('wf-assurance', function() { return viewWfAssurance(); });
 
 
 
