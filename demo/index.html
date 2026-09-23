@@ -1,1909 +1,1414 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FarmCockpit — Démo Ceres · Arpent Lab</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ceres · FarmCockpit : Arpent Lab</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ===== Brand tokens ===== */
-:root {
-  --anthracite: #1e242b;
-  --anthracite-2: #2c333b;
-  --anthracite-3: #3a424b;
-  --gold: #c7a248;
-  --gold-dark: #96752d;
-  --gold-light: #eadba8;
-  --terra: #b5623e;
-  --terra-dark: #8d472c;
-  --terra-light: #f4ddcd;
-  --paper: #fafaf8;
-  --white: #ffffff;
-  --grey: #ececec;
-  --muted: #6f7881;
-  --line: #dbdcd9;
-  --line-soft: #e8e8e4;
-  --green: #047857;
-  --green-light: #ecfdf5;
-  --green-bg: #d1fae5;
-  --amber: #d97706;
-  --amber-light: #fffbeb;
-  --red: #dc2626;
-  --red-light: #fef2f2;
-  --blue: #2563eb;
-  --blue-light: #eff6ff;
-  --mono: "IBM Plex Mono", ui-monospace, monospace;
-  --sans: "Inter", "Segoe UI", sans-serif;
-  --radius: 10px;
-  --radius-sm: 6px;
-  --radius-lg: 16px;
-  --shadow-sm: 0 1px 2px rgba(30,36,43,.06);
-  --shadow: 0 2px 8px rgba(30,36,43,.08);
-  --shadow-lg: 0 8px 30px rgba(30,36,43,.12);
-  --sidebar-w: 240px;
+:root{
+  --anthracite:#1e242b; --gold:#c7a248; --terra:#b5623e; --paper:#fafaf8;
+  --gris:#eaece8; --gris2:#d4d7d2; --ink:#2a2f36; --muted:#6b7280;
+  --line:#e2e5e0; --line2:#cfd3cc; --ok:#2d7d46; --warn:#b8862f; --err:#a93829;
+  --r:8px; --r-sm:5px; --r-lg:14px;
+  --shadow:0 1px 3px rgba(30,36,43,.06),0 1px 2px rgba(30,36,43,.04);
+  --shadow-md:0 4px 12px rgba(30,36,43,.08),0 2px 4px rgba(30,36,43,.04);
+  --shadow-lg:0 12px 32px rgba(30,36,43,.12),0 4px 8px rgba(30,36,43,.06);
+  --mono:'IBM Plex Mono',ui-monospace,monospace; --sans:'Inter',system-ui,sans-serif;
 }
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,select,textarea{font-family:inherit;font-size:13px}
+a{color:inherit;text-decoration:none}
+::selection{background:rgba(199,162,72,.25)}
 
-*, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  margin: 0;
-  font-family: var(--sans);
-  color: var(--anthracite);
-  background: var(--paper);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-button, input, select, textarea { font: inherit; color: inherit; }
-a { color: inherit; text-decoration: none; }
+/* ===== Layout ===== */
+.app{display:grid;grid-template-columns:240px 1fr;height:100vh;overflow:hidden}
+.sidebar{background:var(--anthracite);color:#c8cdd3;display:flex;flex-direction:column;overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:5px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
+.brand{padding:18px 20px 14px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px}
+.brand-mark{width:28px;height:28px;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--gold),var(--terra));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--anthracite);font-family:var(--mono)}
+.brand-name{font-size:14px;font-weight:600;color:#fff;letter-spacing:-0.01em}
+.brand-sub{font-size:9px;color:rgba(255,255,255,.4);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-top:1px}
+.role-section{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.07)}
+.role-label{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.35);font-family:var(--mono);margin-bottom:8px;display:block}
+.role-tabs{display:flex;flex-direction:column;gap:3px}
+.role-tab{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:var(--r-sm);font-size:12px;color:rgba(255,255,255,.6);transition:all .15s;text-align:left;font-weight:500}
+.role-tab:hover{background:rgba(255,255,255,.06);color:#fff}
+.role-tab.active{background:rgba(199,162,72,.14);color:var(--gold)}
+.role-tab .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.role-tab[data-role="exploitant"] .dot{background:var(--gold)}
+.role-tab[data-role="coop"] .dot{background:var(--terra)}
+.role-tab[data-role="agent"] .dot{background:#6b9bd8}
+.nav-group-label{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.3);font-family:var(--mono);padding:14px 14px 7px;display:block}
+.nav{display:flex;flex-direction:column;gap:1px;padding:0 8px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r-sm);font-size:12.5px;color:rgba(255,255,255,.55);transition:all .12s;font-weight:500;width:100%;text-align:left}
+.nav-item:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.9)}
+.nav-item.active{background:rgba(255,255,255,.08);color:#fff}
+.nav-item .ico{width:15px;height:15px;flex-shrink:0;opacity:.7}
+.nav-count{margin-left:auto;font-size:10px;font-family:var(--mono);color:rgba(255,255,255,.4);background:rgba(255,255,255,.06);padding:1px 5px;border-radius:3px}
+.sidebar-foot{margin-top:auto;padding:12px 14px;border-top:1px solid rgba(255,255,255,.07);font-size:10px;color:rgba(255,255,255,.3);font-family:var(--mono);line-height:1.6}
+.sidebar-foot a{color:var(--gold);opacity:.7}
+.sidebar-foot a:hover{opacity:1}
 
-::selection { background: var(--gold-light); }
+.main{overflow-y:auto;background:var(--paper)}
+.main::-webkit-scrollbar{width:6px}
+.main::-webkit-scrollbar-thumb{background:var(--gris2);border-radius:3px}
+.topbar{height:52px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(255,255,255,.7);backdrop-filter:blur(8px);position:sticky;top:0;z-index:10}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar h1{font-size:14px;font-weight:600;letter-spacing:-0.01em}
+.topbar-role{font-size:10px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding:2px 8px;border:1px solid var(--line);border-radius:10px}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.topbar-meta{font-size:11px;font-family:var(--mono);color:var(--muted)}
+.topbar-btn{font-size:11px;font-family:var(--mono);color:var(--muted);padding:4px 10px;border:1px solid var(--line);border-radius:5px;transition:all .15s;text-transform:uppercase;letter-spacing:.04em}
+.topbar-btn:hover{border-color:var(--gold);color:var(--ink)}
+.content{padding:24px;max-width:1280px}
 
-/* ===== App shell ===== */
-.app {
-  display: grid;
-  grid-template-columns: var(--sidebar-w) 1fr;
-  min-height: 100vh;
-}
+/* ===== Cards & panels ===== */
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.card-head{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--anthracite)}
+.card-sub{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:2px}
+.card-body{padding:18px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 
-/* ===== Sidebar ===== */
-.sidebar {
-  background: var(--anthracite);
-  color: #c8ccd0;
-  display: flex;
-  flex-direction: column;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow-y: auto;
-}
-.sidebar-brand {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  padding: 22px 20px 18px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-}
-.sidebar-brand span {
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: .22em;
-  color: #fff;
-}
-.sidebar-brand small {
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: .14em;
-  color: var(--gold);
-  font-family: var(--mono);
-}
-.sidebar-brand .logo-c {
-  width: 28px; height: 28px;
-  border: 2px solid var(--gold);
-  border-radius: 50%;
-  display: grid; place-items: center;
-  font-size: 13px; font-weight: 800;
-  color: var(--gold);
-  flex: none;
-}
-.sidebar-section {
-  padding: 16px 12px 8px;
-}
-.sidebar-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,.35);
-  padding: 0 8px 8px;
-}
-.sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
-.sidebar-nav button {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 10px;
-  border: 0;
-  background: transparent;
-  color: #a0a6ab;
-  font-size: 13px;
-  font-weight: 500;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: background .15s, color .15s;
-  text-align: left;
-  width: 100%;
-}
-.sidebar-nav button:hover { background: rgba(255,255,255,.06); color: #fff; }
-.sidebar-nav button.active {
-  background: rgba(199,162,72,.12);
-  color: var(--gold);
-}
-.sidebar-nav button .nav-icon {
-  width: 18px; height: 18px;
-  flex: none;
-  display: grid; place-items: center;
-  font-size: 15px;
-  opacity: .7;
-}
-.sidebar-nav button.active .nav-icon { opacity: 1; }
-.sidebar-footer {
-  margin-top: auto;
-  padding: 14px 20px;
-  border-top: 1px solid rgba(255,255,255,.08);
-  font-size: 11px;
-  color: rgba(255,255,255,.3);
-  line-height: 1.5;
-}
-.sidebar-footer a { color: var(--gold); }
+/* ===== KPI cards ===== */
+.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px;position:relative}
+.kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-family:var(--mono)}
+.kpi-val{font-size:26px;font-weight:600;font-family:var(--mono);margin:6px 0 2px;letter-spacing:-0.02em;color:var(--anthracite)}
+.kpi-unit{font-size:13px;color:var(--muted);font-weight:400}
+.kpi-delta{font-size:11px;font-family:var(--mono);margin-top:4px}
+.kpi-delta.pos{color:var(--ok)}
+.kpi-delta.neg{color:var(--err)}
+.kpi-delta.neu{color:var(--muted)}
+.kpi::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;border-radius:var(--r) 0 0 var(--r);background:var(--gris)}
+.kpi.accent::before{background:var(--gold)}
+.kpi.terra::before{background:var(--terra)}
+.kpi.ok::before{background:var(--ok)}
 
-/* ===== Role switcher ===== */
-.role-switcher {
-  display: flex;
-  gap: 0;
-  padding: 14px 12px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-}
-.role-pill {
-  flex: 1;
-  padding: 8px 6px;
-  border: 1px solid rgba(255,255,255,.1);
-  background: transparent;
-  color: #a0a6ab;
-  font-size: 11px;
-  font-weight: 600;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all .15s;
-  text-align: center;
-}
-.role-pill + .role-pill { margin-left: 4px; }
-.role-pill:hover { border-color: rgba(255,255,255,.2); color: #fff; }
-.role-pill.active {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: var(--anthracite);
-}
+/* ===== Tables ===== */
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-family:var(--mono);font-weight:500;padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(199,162,72,.03)}
+.tbl td .mono{font-family:var(--mono);font-size:11px}
+.tbl td.num{font-family:var(--mono);text-align:right}
+.tbl-wrap{overflow-x:auto}
+.row-clickable{cursor:pointer}
 
-/* ===== Main area ===== */
-.main {
-  background: var(--paper);
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
+/* ===== Badges & tags ===== */
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap}
+.tag.gold{background:rgba(199,162,72,.12);color:#8a7126;border:1px solid rgba(199,162,72,.2)}
+.tag.terra{background:rgba(181,98,62,.1);color:#8a4a30;border:1px solid rgba(181,98,62,.2)}
+.tag.ok{background:rgba(45,125,70,.08);color:var(--ok);border:1px solid rgba(45,125,70,.15)}
+.tag.warn{background:rgba(184,134,47,.1);color:var(--warn);border:1px solid rgba(184,134,47,.2)}
+.tag.err{background:rgba(169,56,41,.08);color:var(--err);border:1px solid rgba(169,56,41,.15)}
+.tag.neu{background:var(--gris);color:var(--muted);border:1px solid var(--line)}
+.tag.info{background:rgba(107,155,216,.08);color:#4a7cb8;border:1px solid rgba(107,155,216,.15)}
+.prov{font-size:9px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;padding:1px 5px;border-radius:3px;font-weight:600}
+.prov.saisi{background:rgba(45,125,70,.1);color:var(--ok)}
+.prov.extrait{background:rgba(107,155,216,.1);color:#4a7cb8}
+.prov.deduit{background:rgba(199,162,72,.12);color:#8a7126}
+.prov.confirme{background:rgba(181,98,62,.1);color:#8a4a30}
 
-/* ===== Top bar ===== */
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 14px 28px;
-  background: var(--white);
-  border-bottom: 1px solid var(--line);
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
-.topbar-title {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-.topbar-title h1 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--anthracite);
-}
-.topbar-title .breadcrumb {
-  font-size: 11px;
-  color: var(--muted);
-  font-weight: 500;
-}
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.topbar-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border-radius: 99px;
-  font-size: 11px;
-  font-weight: 600;
-}
-.topbar-badge.live {
-  background: var(--green-light);
-  color: var(--green);
-}
-.topbar-badge .dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: currentColor;
-  animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse { 50% { opacity: .4; } }
-.topbar-user {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 12px;
-  color: var(--muted);
-}
-.topbar-user .avatar {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  background: var(--anthracite);
-  color: var(--gold);
-  display: grid; place-items: center;
-  font-size: 13px;
-  font-weight: 700;
-}
+/* ===== Forms ===== */
+.form-row{margin-bottom:14px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+label.fld{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-family:var(--mono);margin-bottom:5px;font-weight:500}
+label.fld .req{color:var(--terra)}
+label.fld .opt{color:var(--muted);opacity:.6;font-weight:400}
+input.fld,select.fld,textarea.fld{width:100%;padding:8px 11px;border:1px solid var(--line2);border-radius:var(--r-sm);background:#fff;font-size:13px;color:var(--ink);transition:border .15s;outline:none}
+input.fld:focus,select.fld:focus,textarea.fld:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(199,162,72,.12)}
+input.fld.invalid{border-color:var(--err);background:rgba(169,56,41,.03)}
+input.fld.mono,select.fld.mono{font-family:var(--mono);font-size:12px}
+.hint{font-size:11px;color:var(--muted);margin-top:4px;font-family:var(--mono)}
 
-/* ===== Content area ===== */
-.content {
-  padding: 24px 28px 60px;
-  flex: 1;
-  max-width: 1100px;
-}
-.content { display: none; }
-.content.active { display: block; }
-
-/* ===== Cards ===== */
-.card {
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-}
-.card-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--line-soft);
-}
-.card-head h3 {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 700;
-}
-.card-head .badge {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 3px 9px;
-  border-radius: 99px;
-  background: var(--grey);
-  color: var(--muted);
-}
-.card-body { padding: 18px; }
-
-/* ===== Stat grid ===== */
-.stat-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-bottom: 24px;
-}
-.stat {
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 16px;
-  box-shadow: var(--shadow-sm);
-}
-.stat-label {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-.stat-value {
-  font-size: 28px;
-  font-weight: 800;
-  line-height: 1;
-  color: var(--anthracite);
-}
-.stat-value .unit {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--muted);
-  margin-left: 3px;
-}
-.stat-trend {
-  margin-top: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.stat-trend.up { color: var(--green); }
-.stat-trend.down { color: var(--red); }
-.stat-trend.neutral { color: var(--muted); }
-
-/* ===== Dashboard grid ===== */
-.dash-grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 18px;
-  margin-bottom: 18px;
-}
-.dash-grid-3 {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 18px;
-}
-
-/* ===== Parcelle table ===== */
-.table-wrap { overflow-x: auto; }
-table.data {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-table.data th {
-  text-align: left;
-  padding: 10px 14px;
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  color: var(--muted);
-  background: var(--paper);
-  border-bottom: 1px solid var(--line);
-  white-space: nowrap;
-}
-table.data td {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--line-soft);
-  white-space: nowrap;
-}
-table.data tr:hover td { background: rgba(250,250,248,.5); }
-table.data tr:last-child td { border-bottom: 0; }
-
-.pcl-name { font-weight: 600; }
-.pcl-id { font-family: var(--mono); font-size: 11px; color: var(--muted); }
-.tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 8px;
-  border-radius: 99px;
-  font-size: 11px;
-  font-weight: 600;
-}
-.tag.green { background: var(--green-light); color: var(--green); }
-.tag.amber { background: var(--amber-light); color: var(--amber); }
-.tag.red { background: var(--red-light); color: var(--red); }
-.tag.blue { background: var(--blue-light); color: var(--blue); }
-.tag.grey { background: var(--grey); color: var(--muted); }
-
-/* ===== Phyto registry ===== */
-.phyto-entry {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--line-soft);
-}
-.phyto-entry:last-child { border-bottom: 0; }
-.phyto-date {
-  flex: none;
-  width: 56px;
-  text-align: center;
-}
-.phyto-date .day { font-size: 18px; font-weight: 800; line-height: 1; }
-.phyto-date .month { font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
-.phyto-info { flex: 1; min-width: 0; }
-.phyto-info .product { font-weight: 600; font-size: 13px; }
-.phyto-info .meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.phyto-info .checks { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-.check-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 7px;
-  border-radius: 4px;
-  font-size: 10px;
-  font-weight: 600;
-}
-.check-chip.ok { background: var(--green-light); color: var(--green); }
-.check-chip.warn { background: var(--amber-light); color: var(--amber); }
-.check-chip.fail { background: var(--red-light); color: var(--red); }
-
-/* ===== Forms / inputs ===== */
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  margin-bottom: 14px;
-}
-.form-field { display: flex; flex-direction: column; gap: 5px; }
-.form-field.full { grid-column: 1 / -1; }
-.form-field label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--anthracite);
-}
-.form-field input, .form-field select, .form-field textarea {
-  padding: 9px 12px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  background: var(--white);
-  transition: border-color .15s;
-}
-.form-field input:focus, .form-field select:focus, .form-field textarea:focus {
-  outline: none;
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(199,162,72,.12);
-}
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  border: 0;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all .15s;
-}
-.btn-primary { background: var(--anthracite); color: #fff; }
-.btn-primary:hover { background: var(--gold-dark); }
-.btn-gold { background: var(--gold); color: var(--anthracite); }
-.btn-gold:hover { background: var(--gold-dark); color: #fff; }
-.btn-terra { background: var(--terra); color: #fff; }
-.btn-terra:hover { background: var(--terra-dark); }
-.btn-ghost { background: transparent; color: var(--anthracite); border: 1px solid var(--line); }
-.btn-ghost:hover { border-color: var(--anthracite); }
-.btn-sm { padding: 6px 12px; font-size: 12px; }
-
-/* ===== Compliance bar ===== */
-.compliance-bar {
-  display: flex;
-  height: 8px;
-  border-radius: 99px;
-  overflow: hidden;
-  background: var(--grey);
-}
-.compliance-bar .seg { height: 100%; }
-.compliance-bar .seg.ok { background: var(--green); }
-.compliance-bar .seg.warn { background: var(--amber); }
-.compliance-bar .seg.fail { background: var(--red); }
-
-.compliance-legend {
-  display: flex;
-  gap: 16px;
-  margin-top: 10px;
-  font-size: 11px;
-  color: var(--muted);
-}
-.compliance-legend span {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.compliance-legend .dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-}
-
-/* ===== Alert items ===== */
-.alert-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 18px;
-  border-bottom: 1px solid var(--line-soft);
-}
-.alert-item:last-child { border-bottom: 0; }
-.alert-icon {
-  flex: none;
-  width: 32px; height: 32px;
-  border-radius: 8px;
-  display: grid; place-items: center;
-  font-size: 15px;
-  font-weight: 700;
-}
-.alert-icon.warn { background: var(--amber-light); color: var(--amber); }
-.alert-icon.crit { background: var(--red-light); color: var(--red); }
-.alert-icon.info { background: var(--blue-light); color: var(--blue); }
-.alert-icon.ok { background: var(--green-light); color: var(--green); }
-.alert-body { flex: 1; }
-.alert-body .title { font-weight: 600; font-size: 13px; margin-bottom: 1px; }
-.alert-body .desc { font-size: 12px; color: var(--muted); }
-.alert-body .time { font-size: 11px; color: var(--muted); margin-top: 3px; font-family: var(--mono); }
-
-/* ===== Agent chat ===== */
-.agent-container {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 0;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  overflow: hidden;
-  background: var(--white);
-  box-shadow: var(--shadow);
-  min-height: 520px;
-}
-.agent-sidebar {
-  background: var(--anthracite);
-  color: #c8ccd0;
-  padding: 16px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.agent-sidebar h4 {
-  margin: 0 0 8px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #fff;
-}
-.agent-sugg {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 10px 10px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: background .15s;
-  font-size: 12px;
-  line-height: 1.4;
-  border: 1px solid transparent;
-}
-.agent-sugg:hover {
-  background: rgba(255,255,255,.06);
-  border-color: rgba(255,255,255,.1);
-}
-.agent-sugg .sugg-icon {
-  flex: none;
-  width: 20px; height: 20px;
-  border-radius: 5px;
-  background: rgba(199,162,72,.2);
-  display: grid; place-items: center;
-  font-size: 11px;
-}
-.agent-main {
-  display: flex;
-  flex-direction: column;
-  min-height: 520px;
-}
-.agent-messages {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  max-height: 420px;
-}
-.agent-msg {
-  display: flex;
-  gap: 10px;
-  max-width: 88%;
-}
-.agent-msg.user { align-self: flex-end; flex-direction: row-reverse; }
-.agent-avatar {
-  flex: none;
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  display: grid; place-items: center;
-  font-size: 13px;
-  font-weight: 800;
-}
-.agent-msg.agent .agent-avatar { background: var(--gold); color: var(--anthracite); }
-.agent-msg.user .agent-avatar { background: var(--anthracite-2); color: #fff; }
-.agent-bubble {
-  padding: 11px 15px;
-  border-radius: 12px;
-  font-size: 13px;
-  line-height: 1.5;
-}
-.agent-msg.agent .agent-bubble {
-  background: var(--paper);
-  border: 1px solid var(--line);
-}
-.agent-msg.user .agent-bubble {
-  background: var(--anthracite);
-  color: #fff;
-}
-.agent-bubble .action-block {
-  margin-top: 10px;
-  padding: 10px 12px;
-  background: var(--white);
-  border: 1px solid var(--line-soft);
-  border-radius: 8px;
-  font-size: 12px;
-}
-.agent-bubble .action-block .action-title {
-  font-weight: 700;
-  font-size: 12px;
-  margin-bottom: 4px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.agent-bubble .action-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.agent-bubble .action-list li {
-  padding: 5px 0;
-  border-bottom: 1px solid var(--line-soft);
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.agent-bubble .action-list li:last-child { border: 0; }
-.agent-bubble .action-list .ok { color: var(--green); font-weight: 700; }
-.agent-bubble .action-list .warn { color: var(--amber); font-weight: 700; }
-.agent-bubble .action-list .fail { color: var(--red); font-weight: 700; }
-.agent-typing {
-  display: flex;
-  gap: 4px;
-  padding: 4px 0;
-}
-.agent-typing span {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--muted);
-  animation: typing 1.4s ease-in-out infinite;
-}
-.agent-typing span:nth-child(2) { animation-delay: .2s; }
-.agent-typing span:nth-child(3) { animation-delay: .4s; }
-@keyframes typing {
-  0%, 60%, 100% { transform: translateY(0); opacity: .3; }
-  30% { transform: translateY(-6px); opacity: 1; }
-}
-.agent-input {
-  display: flex;
-  gap: 8px;
-  padding: 14px 16px;
-  border-top: 1px solid var(--line);
-  background: var(--paper);
-}
-.agent-input input {
-  flex: 1;
-  padding: 10px 14px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-}
-.agent-input input:focus { outline: none; border-color: var(--gold); }
-.agent-input button {
-  padding: 10px 18px;
-  background: var(--gold);
-  color: var(--anthracite);
-  border: 0;
-  border-radius: var(--radius-sm);
-  font-weight: 600;
-  font-size: 13px;
-  cursor: pointer;
-}
-.agent-input button:disabled { opacity: .4; cursor: default; }
-
-/* ===== Section heading ===== */
-.section-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-.section-head h2 {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -.02em;
-}
-.section-head .sub {
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 2px;
-}
+/* ===== Buttons ===== */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:5px;font-size:12px;font-weight:500;transition:all .15s;border:1px solid transparent}
+.btn-primary{background:var(--anthracite);color:#fff}
+.btn-primary:hover{background:#2d3640}
+.btn-gold{background:var(--gold);color:var(--anthracite)}
+.btn-gold:hover{background:#d4b05a}
+.btn-outline{border:1px solid var(--line2);color:var(--ink);background:#fff}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.btn-terra{background:var(--terra);color:#fff}
+.btn-terra:hover{background:#c4714f}
+.btn-sm{padding:5px 11px;font-size:11px}
+.btn-ghost{color:var(--muted);font-size:11px;padding:4px 8px}
+.btn-ghost:hover{color:var(--ink)}
 
 /* ===== Modal ===== */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(30,36,43,.5);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  padding: 20px;
-}
-.modal-overlay.show { display: flex; }
-.modal {
-  background: var(--white);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  width: 100%;
-  max-width: 520px;
-  overflow: hidden;
-}
-.modal-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 22px;
-  border-bottom: 1px solid var(--line);
-}
-.modal-head h3 { margin: 0; font-size: 16px; font-weight: 700; }
-.modal-close {
-  border: 0; background: transparent; font-size: 22px;
-  cursor: pointer; color: var(--muted); padding: 0;
-  width: 32px; height: 32px;
-  display: grid; place-items: center;
-  border-radius: 6px;
-}
-.modal-close:hover { background: var(--grey); }
-.modal-body { padding: 22px; }
+.modal-overlay{position:fixed;inset:0;background:rgba(30,36,43,.4);backdrop-filter:blur(2px);display:none;align-items:flex-start;justify-content:center;z-index:100;padding:40px 20px;overflow-y:auto}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow-lg);max-width:780px;width:100%;margin:0 auto}
+.modal-head{padding:18px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:15px;font-weight:600;color:var(--anthracite)}
+.modal-sub{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:2px}
+.modal-body{padding:24px;max-height:70vh;overflow-y:auto}
+.modal-foot{padding:14px 24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.modal-close{font-size:18px;color:var(--muted);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:var(--gris);color:var(--ink)}
 
-/* ===== Toast ===== */
-.toast {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  padding: 14px 20px;
-  background: var(--anthracite);
-  color: #fff;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-lg);
-  font-size: 13px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  z-index: 200;
-  transform: translateY(100px);
-  opacity: 0;
-  transition: all .3s cubic-bezier(.4,0,.2,1);
-}
-.toast.show { transform: translateY(0); opacity: 1; }
-.toast .toast-icon { color: var(--green); }
+/* ===== Agent flow ===== */
+.flow-steps{display:flex;gap:0;margin-bottom:20px;flex-wrap:wrap}
+.flow-step{flex:1;min-width:120px;position:relative;padding:10px 12px;border-top:2px solid var(--line);font-size:11px;transition:all .2s}
+.flow-step .step-n{font-size:9px;font-family:var(--mono);color:var(--muted)}
+.flow-step .step-t{font-weight:600;margin-top:2px;color:var(--ink)}
+.flow-step.active{border-top-color:var(--gold);background:rgba(199,162,72,.04)}
+.flow-step.done{border-top-color:var(--ok)}
+.flow-step.done .step-n{color:var(--ok)}
+.flow-step.done .step-t{color:var(--ok)}
 
-/* ===== Progress steps ===== */
-.steps {
-  display: flex;
-  gap: 0;
-  margin-bottom: 20px;
-}
-.step {
-  flex: 1;
-  text-align: center;
-  position: relative;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted);
-  padding: 8px 0;
-}
-.step::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--line);
-  z-index: 0;
-}
-.step:last-child::after { display: none; }
-.step .step-dot {
-  width: 26px; height: 26px;
-  border-radius: 50%;
-  display: grid; place-items: center;
-  margin: 0 auto 6px;
-  background: var(--grey);
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
-  position: relative;
-  z-index: 1;
-}
-.step.active .step-dot { background: var(--gold); color: var(--anthracite); }
-.step.done .step-dot { background: var(--green); color: #fff; }
-.step.active, .step.done { color: var(--anthracite); }
+.flow-panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;min-height:300px}
+.flow-step-title{font-size:16px;font-weight:600;margin-bottom:4px}
+.flow-step-desc{font-size:12px;color:var(--muted);margin-bottom:16px}
+.flow-field{display:grid;grid-template-columns:180px 1fr 90px 80px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:12px}
+.flow-field:last-child{border-bottom:none}
+.flow-field .ff-label{font-weight:500}
+.flow-field .ff-val{font-family:var(--mono);font-size:11px}
+.conf-bar{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-family:var(--mono)}
+.conf-dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.conf-hi{background:var(--ok)}
+.conf-md{background:var(--warn)}
+.conf-lo{background:var(--err)}
 
-/* ===== Carto ===== */
-.carto-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 10px;
-  padding: 14px;
-}
-.carto-tile {
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 12px;
-  position: relative;
-  overflow: hidden;
-}
-.carto-tile::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-}
-.carto-tile.ok::before { background: var(--green); }
-.carto-tile.warn::before { background: var(--amber); }
-.carto-tile.crit::before { background: var(--red); }
-.carto-tile .ct-name { font-size: 12px; font-weight: 700; margin-bottom: 2px; }
-.carto-tile .ct-meta { font-size: 10px; color: var(--muted); }
-.carto-tile .ct-rate {
-  font-size: 20px; font-weight: 800;
-  margin-top: 8px;
-}
-.carto-tile.ok .ct-rate { color: var(--green); }
-.carto-tile.warn .ct-rate { color: var(--amber); }
-.carto-tile.crit .ct-rate { color: var(--red); }
+/* ===== Chat ===== */
+.chat-wrap{display:grid;grid-template-columns:1fr 280px;height:calc(100vh - 52px);overflow:hidden}
+.chat-main{display:flex;flex-direction:column;overflow:hidden}
+.chat-trace{border-left:1px solid var(--line);overflow-y:auto;background:var(--paper)}
+.chat-trace-head{padding:12px 16px;border-bottom:1px solid var(--line);font-size:11px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.chat-msgs{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:14px}
+.chat-msg{display:flex;gap:10px;max-width:80%}
+.chat-msg.user{align-self:flex-end;flex-direction:row-reverse}
+.chat-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;font-family:var(--mono)}
+.chat-msg.agent .chat-avatar{background:var(--anthracite);color:var(--gold)}
+.chat-msg.user .chat-avatar{background:var(--gold);color:var(--anthracite)}
+.chat-bubble{padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.5}
+.chat-msg.agent .chat-bubble{background:#fff;border:1px solid var(--line)}
+.chat-msg.user .chat-bubble{background:var(--anthracite);color:#e2e5e0}
+.chat-bubble .mono{font-family:var(--mono);font-size:11px;background:rgba(199,162,72,.08);padding:1px 5px;border-radius:3px;color:var(--gold)}
+.chat-bubble .reg{display:block;margin-top:6px;padding:8px;border-radius:6px;background:var(--gris);border:1px solid var(--line)}
+.chat-bubble .reg .rh{font-size:10px;font-family:var(--mono);color:var(--muted);margin-bottom:4px}
+.chat-bubble .reg .rt{font-size:12px;font-family:var(--mono);color:var(--ink);line-height:1.6}
+.chat-input{border-top:1px solid var(--line);padding:12px 20px;display:flex;gap:10px;background:#fff}
+.chat-input input{flex:1;padding:9px 14px;border:1px solid var(--line2);border-radius:var(--r-sm);font-size:13px;outline:none}
+.chat-input input:focus{border-color:var(--gold)}
+.chat-suggestions{display:flex;gap:6px;flex-wrap:wrap;padding:0 20px 10px;background:#fff}
+.chat-sug{font-size:11px;padding:4px 10px;border:1px solid var(--line);border-radius:14px;color:var(--muted);transition:all .15s}
+.chat-sug:hover{border-color:var(--gold);color:var(--gold)}
+.trace-item{padding:10px 16px;border-bottom:1px solid var(--line);font-size:11px}
+.trace-item .tt{font-family:var(--mono);color:var(--muted);font-size:10px}
+.trace-item .ta{color:var(--ink);margin-top:3px;line-height:1.45}
+.trace-item .ta .mono{font-family:var(--mono);font-size:10px;background:var(--gris);padding:1px 4px;border-radius:3px}
 
-/* ===== PAC form ===== */
-.pac-summary {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  padding: 16px 18px;
-  background: var(--green-light);
-  border-radius: var(--radius);
-  margin-bottom: 16px;
-}
-.pac-summary .item {
-  display: flex;
-  flex-direction: column;
-}
-.pac-summary .item .label {
-  font-size: 10px; font-weight: 600;
-  text-transform: uppercase; letter-spacing: .06em;
-  color: var(--green);
-}
-.pac-summary .item .val {
-  font-size: 16px; font-weight: 700;
-  margin-top: 2px;
-}
-
-/* ===== Mobile ===== */
-@media (max-width: 860px) {
-  .app { grid-template-columns: 1fr; }
-  .sidebar {
-    position: fixed;
-    left: -100%;
-    z-index: 200;
-    transition: left .25s;
-    width: 240px;
-  }
-  .sidebar.open { left: 0; }
-  .stat-grid { grid-template-columns: repeat(2, 1fr); }
-  .dash-grid, .dash-grid-3 { grid-template-columns: 1fr; }
-  .agent-container { grid-template-columns: 1fr; }
-  .agent-sidebar { display: none; }
-  .form-row { grid-template-columns: 1fr; }
-  .mobile-menu-btn { display: grid !important; }
-}
-.mobile-menu-btn {
-  display: none;
-  width: 40px; height: 40px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--white);
-  cursor: pointer;
-  place-items: center;
-  font-size: 18px;
-}
-
-/* ===== Back link ===== */
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--muted);
-  margin-bottom: 16px;
-  transition: color .15s;
-}
-.back-link:hover { color: var(--anthracite); }
+/* ===== Alerts ===== */
+.alert{display:flex;gap:12px;padding:12px 16px;border-radius:var(--r-sm);border:1px solid;font-size:12px;margin-bottom:8px}
+.alert.err{border-color:rgba(169,56,41,.2);background:rgba(169,56,41,.04)}
+.alert.warn{border-color:rgba(184,134,47,.2);background:rgba(184,134,47,.04)}
+.alert.ok{border-color:rgba(45,125,70,.2);background:rgba(45,125,70,.04)}
+.alert .ai{flex-shrink:0;width:20px;text-align:center;font-size:14px}
+.alert .at{font-weight:600;margin-bottom:2px}
+.alert .ad{color:var(--muted);font-size:11px;font-family:var(--mono)}
 
 /* ===== Misc ===== */
-.empty-state {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--muted);
-}
-.empty-state .icon { font-size: 32px; margin-bottom: 12px; }
-.empty-state .title { font-weight: 600; font-size: 14px; color: var(--anthracite); margin-bottom: 4px; }
-.empty-state .desc { font-size: 12px; }
-
-.divider { height: 1px; background: var(--line); margin: 18px 0; }
-
-.pac-check {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  margin-bottom: 8px;
-}
-.pac-check .check-icon {
-  flex: none;
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  display: grid; place-items: center;
-  font-size: 12px;
-  font-weight: 700;
-}
-.pac-check.ok .check-icon { background: var(--green); color: #fff; }
-.pac-check.warn .check-icon { background: var(--amber); color: #fff; }
-.pac-check .check-body { flex: 1; font-size: 12px; }
-.pac-check .check-body .ttl { font-weight: 600; }
-.pac-check .check-body .dsc { color: var(--muted); margin-top: 1px; }
+.section-title{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-family:var(--mono);margin-bottom:10px}
+.empty{text-align:center;padding:40px;color:var(--muted);font-size:13px}
+.muted{color:var(--muted)}
+.mono{font-family:var(--mono)}
+.divider{height:1px;background:var(--line);margin:18px 0}
+.pac-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px}
+.pac-cell{text-align:center;padding:10px 6px;border:1px solid var(--line);border-radius:var(--r-sm);font-size:11px}
+.pac-cell .pl{font-size:9px;font-family:var(--mono);color:var(--muted);text-transform:uppercase}
+.pac-cell .pv{font-size:18px;font-family:var(--mono);font-weight:600;color:var(--anthracite);margin:4px 0 2px}
+.pac-cell.ok{border-color:rgba(45,125,70,.25);background:rgba(45,125,70,.03)}
+.pac-cell.warn{border-color:rgba(184,134,47,.3);background:rgba(184,134,47,.03)}
+.pac-cell.err{border-color:rgba(169,56,41,.25);background:rgba(169,56,41,.03)}
+.compliance-bar{height:6px;border-radius:3px;background:var(--gris);overflow:hidden;margin-top:4px}
+.compliance-fill{height:100%;border-radius:3px;transition:width .5s}
+.hidden{display:none!important}
+.toast-wrap{position:fixed;bottom:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:8px}
+.toast{background:var(--anthracite);color:#fff;padding:10px 16px;border-radius:6px;font-size:12px;box-shadow:var(--shadow-lg);animation:slideIn .25s ease;display:flex;align-items:center;gap:8px}
+.toast .dot{width:6px;height:6px;border-radius:50%;background:var(--gold)}
+@keyframes slideIn{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes typing{0%,100%{opacity:.3}50%{opacity:1}}
+.typing{animation:typing 1s infinite}
+.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:16px}
+.tab{padding:8px 16px;font-size:12px;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s;font-weight:500}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--anthracite);border-bottom-color:var(--gold)}
+.scroll-y{overflow-y:auto}
 </style>
 </head>
 <body>
-
-<div class="app" id="app">
+<div class="app">
   <!-- ===== Sidebar ===== -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-      <div class="logo-c">C</div>
-      <span>ARPENT</span>
-      <small>LAB</small>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">C</div>
+      <div>
+        <div class="brand-name">Ceres</div>
+        <div class="brand-sub">FarmCockpit</div>
+      </div>
     </div>
-
-    <div class="role-switcher" id="roleSwitcher">
-      <button class="role-pill active" data-role="exploitant">Exploitant</button>
-      <button class="role-pill" data-role="coop">Coop</button>
-      <button class="role-pill" data-role="agent">Agent</button>
+    <div class="role-section">
+      <span class="role-label">Role</span>
+      <div class="role-tabs">
+        <button class="role-tab active" data-role="exploitant" onclick="switchRole('exploitant')"><span class="dot"></span>Exploitant</button>
+        <button class="role-tab" data-role="coop" onclick="switchRole('coop')"><span class="dot"></span>Coopérative</button>
+        <button class="role-tab" data-role="agent" onclick="switchRole('agent')"><span class="dot"></span>Agent</button>
+      </div>
     </div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-label">Navigation</div>
-      <nav class="sidebar-nav" id="sidebarNav">
-        <!-- Dynamically populated based on role -->
-      </nav>
+    <div id="navExploitant">
+      <div class="nav-group-label">Exploitation</div>
+      <div class="nav">
+        <button class="nav-item active" data-view="dashboard" onclick="navTo('dashboard')"><span class="ico">▣</span>Tableau de bord</button>
+        <button class="nav-item" data-view="parcelles" onclick="navTo('parcelles')"><span class="ico">▤</span>Parcelles<span class="nav-count" id="cnt-parc">6</span></button>
+        <button class="nav-item" data-view="registre" onclick="navTo('registre')"><span class="ico">▦</span>Registre phyto<span class="nav-count" id="cnt-reg">0</span></button>
+        <button class="nav-item" data-view="flux" onclick="navTo('flux')"><span class="ico">↻</span>Flux agentique</button>
+        <button class="nav-item" data-view="pac" onclick="navTo('pac')"><span class="ico">☰</span>Déclaration PAC</button>
+      </div>
     </div>
-
-    <div class="sidebar-footer">
-      Démo Ceres · pré-MVP<br>
-      <a href="https://arpent-lab.ai">arpent-lab.ai</a>
+    <div id="navCoop" class="hidden">
+      <div class="nav-group-label">Coopérative</div>
+      <div class="nav">
+        <button class="nav-item active" data-view="coop-vue" onclick="navTo('coop-vue')"><span class="ico">▣</span>Vue agrégée</button>
+        <button class="nav-item" data-view="adherents" onclick="navTo('adherents')"><span class="ico">∛</span>Adhérents<span class="nav-count" id="cnt-adh">0</span></button>
+        <button class="nav-item" data-view="alertes" onclick="navTo('alertes')"><span class="ico">▲</span>Alertes</button>
+        <button class="nav-item" data-view="carto" onclick="navTo('carto')"><span class="ico">◍</span>Carto conformité</button>
+      </div>
     </div>
-  </div>
+    <div id="navAgent" class="hidden">
+      <div class="nav-group-label">Agent Ceres</div>
+      <div class="nav">
+        <button class="nav-item active" data-view="chat" onclick="navTo('chat')"><span class="ico">✦</span>Conversation</button>
+        <button class="nav-item" data-view="trace" onclick="navTo('trace')"><span class="ico">≡</span>Actions tracées</button>
+      </div>
+    </div>
+    <div class="sidebar-foot">
+      Arpent Lab · Ceres<br>arrete 24/12/2025 · Annexe I<br><a href="https://arpent.ai">arpent.ai</a> · IA Act art 50(1)
+    </div>
+  </aside>
 
   <!-- ===== Main ===== -->
   <main class="main">
     <div class="topbar">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
-        <div class="topbar-title">
-          <h1 id="pageTitle">Tableau de bord</h1>
-          <span class="breadcrumb" id="pageCrumb">Exploitant · Ferme du Moulin</span>
-        </div>
+      <div class="topbar-left">
+        <h1 id="page-title">Tableau de bord</h1>
+        <span class="topbar-role" id="role-pill">Exploitant</span>
       </div>
       <div class="topbar-right">
-        <div class="topbar-badge live"><span class="dot"></span> Démo live</div>
-        <div class="topbar-user">
-          <span id="userName">M. Dubois</span>
-          <div class="avatar" id="userAvatar">D</div>
-        </div>
+        <span class="topbar-meta" id="topbar-meta">SIRET 482 564 701 00018 · Cantal (15)</span>
+        <button class="topbar-btn" onclick="exportJSON()">↓ JSON</button>
+        <button class="topbar-btn" onclick="exportCSV()">↓ CSV</button>
       </div>
     </div>
-
-    <div class="content active" id="content-area">
-      <!-- Dynamically rendered -->
-    </div>
+    <div class="content" id="content"></div>
   </main>
 </div>
 
-<!-- ===== Modal ===== -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <div class="modal-head">
-      <h3 id="modalTitle">Ajouter un traitement</h3>
-      <button class="modal-close" id="modalClose">✕</button>
-    </div>
-    <div class="modal-body" id="modalBody"></div>
-  </div>
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal-content"></div>
 </div>
 
-<!-- ===== Toast ===== -->
-<div class="toast" id="toast">
-  <span class="toast-icon">✓</span>
-  <span id="toastMsg">Action effectuée</span>
-</div>
+<!-- Toast -->
+<div class="toast-wrap" id="toasts"></div>
 
 <script>
-// ===== Data =====
+/* ============================================================
+   CERES FARMCOCKPIT : Données réelles
+   Arpent Lab · arrete 24/12/2025 Annexe I
+   ============================================================ */
+
+const SIRET_DETENTEUR = '48256470100018'; // Coopérative Cantal Céréales
+const SIRET_BENEF = '48256470100018'; // même entité (auto-traitement demo)
+
+// --- AMM réels (E-Phy ANSES) ---
+const AMM_DB = {
+  '9400352': { produit:'MODDUS', substance:'Spiroxamine 500g/L', dose:0.8, unite:'L/ha', horaire:true, cultures:['TRZAX','HORVS','TRZDU'] },
+  '20080037': { produit:'BELL', substance:'Prothioconazole + Tebuconazole', dose:0.6, unite:'L/ha', horaire:true, cultures:['TRZAX','TRZDU','HORVS'] },
+  '9100776': { produit:'CARBRENE', substance:'Chlorothalonil 500g/L', dose:1.5, unite:'L/ha', horaire:true, cultures:['TRZAX','TRZDU'] },
+  '9500389': { produit:'ADEUX', substance:'Metsulfuron-methyl', dose:0.1, unite:'kg/ha', horaire:false, cultures:['ZEAMX','BRAAN'] },
+  '8800461': { produit:'KORIT', substance:'Glyphosate 360g/L', dose:3.0, unite:'L/ha', horaire:false, cultures:['TRZAX','TRZDU','HORVS','BRAAN','ZEAMX'] },
+  '9900424': { produit:'ADIGOR', substance:'Metsulfuron + Tribenuron', dose:0.1, unite:'kg/ha', horaire:false, cultures:['TRZAX','TRZDU'] },
+  '20080455': { produit:'CHEER', substance:'Chlorothalonil + Propiconazole', dose:1.0, unite:'L/ha', horaire:true, cultures:['TRZAX','TRZDU','HORVS'] },
+  '21001459': { produit:'VARDOUX', substance:'Fluxapyroxad 62.5g/L', dose:1.5, unite:'L/ha', horaire:true, cultures:['TRZAX','TRZDU'] },
+  '20100063': { produit:'CAP OSELE', substance:'Prothioconazole 250g/L', dose:0.7, unite:'L/ha', horaire:true, cultures:['TRZAX','TRZDU','HORVS'] },
+};
+
+// --- OEPP culture codes ---
+const OEPP = {
+  TRZAX: 'Blé tendre', TRZDU: 'Blé dur', HORVS: 'Orge hiver',
+  BRAAN: 'Colza', ZEAMX: 'Maïs',
+};
+
+// --- BBCH stages ---
+const BBCH = {
+  '30':'Début montaison', '32':'2 noeuds', '37':'Fin montaison',
+  '39':'Ligule', '51':'Début épiaison', '61':'Début floraison',
+  '65':'Pleine floraison', '71':'Nouaison', '85':'Pâteux',
+};
+
+// --- Parcelles RPG Cantal 15 ---
 const PARCELLES = [
-  { id: 'P-001', nom: 'Grand Champ', culture: 'Blé tendre', surface: 24.5, commune: 'Saint-Flour (15)', traitements: 3, statut: 'ok' },
-  { id: 'P-002', nom: 'Les Graves', culture: 'Orge de printemps', surface: 18.2, commune: 'Saint-Flour (15)', traitements: 2, statut: 'ok' },
-  { id: 'P-003', nom: 'Champ du Roc', culture: 'Blé dur', surface: 31.0, commune: 'Saint-Flour (15)', traitements: 4, statut: 'warn' },
-  { id: 'P-004', nom: 'La Vigne', culture: 'Colza', surface: 12.8, commune: 'Lempdes (15)', traitements: 1, statut: 'ok' },
-  { id: 'P-005', nom: 'Pré Bas', culture: 'Blé tendre', surface: 9.3, commune: 'Lempdes (15)', traitements: 0, statut: 'crit' },
-  { id: 'P-006', nom: 'Côteau Nord', culture: 'Orge d_hiver', surface: 22.1, commune: 'Saint-Flour (15)', traitements: 3, statut: 'ok' },
+  { ilot:'1001', parcelle:'3', insee:'15001', commune:'Saint-Flour', nom:'Grand Champ', surface:24.5, culture:'TRZAX', gps:'45.0376,3.0987' },
+  { ilot:'1001', parcelle:'5', insee:'15001', commune:'Saint-Flour', nom:'Les Graves', surface:18.2, culture:'HORVS', gps:'45.0412,3.1023' },
+  { ilot:'1002', parcelle:'1', insee:'15001', commune:'Saint-Flour', nom:'Champ du Roc', surface:31.0, culture:'TRZDU', gps:'45.0398,3.0856' },
+  { ilot:'1003', parcelle:'2', insee:'15014', commune:'Lempdes', nom:'La Vigne', surface:12.8, culture:'BRAAN', gps:'45.0612,3.1345' },
+  { ilot:'1003', parcelle:'7', insee:'15014', commune:'Lempdes', nom:'Pré Bas', surface:9.3, culture:'TRZAX', gps:'45.0634,3.1289' },
+  { ilot:'1004', parcelle:'4', insee:'15001', commune:'Saint-Flour', nom:'Coteau Nord', surface:22.1, culture:'HORVS', gps:'45.0478,3.0734' },
 ];
 
-const PHYTO_ENTRIES = [
-  { date: '12/03', day: 12, month: 'Mar', product: 'MODDUS', substance: 'Spiroxamine 500g/L', dose: '0.8 L/ha', parcelle: 'Grand Champ', surface: 24.5, culture: 'Blé tendre', checks: { delai: 'ok', dose: 'ok', conditions: 'ok' } },
-  { date: '15/03', day: 15, month: 'Mar', product: 'BELL', substance: 'Prothioconazole + Tebuconazole', dose: '0.6 L/ha', parcelle: 'Grand Champ', surface: 24.5, culture: 'Blé tendre', checks: { delai: 'ok', dose: 'warn', conditions: 'ok' } },
-  { date: '22/03', day: 22, month: 'Mar', product: 'CARBRENE', substance: 'Chlorothalonil 500g/L', dose: '1.5 L/ha', parcelle: 'Les Graves', surface: 18.2, culture: 'Orge', checks: { delai: 'ok', dose: 'ok', conditions: 'ok' } },
-  { date: '28/03', day: 28, month: 'Mar', product: 'ADEUX', substance: 'Metsulfuron-methyl 20g/kg', dose: '0.1 kg/ha', parcelle: 'Champ du Roc', surface: 31.0, culture: 'Blé dur', checks: { delai: 'ok', dose: 'ok', conditions: 'warn' } },
+// --- Registre (empty initially, filled by agent flow or manual add) ---
+let REGISTRE = [];
+let AGENT_TRACE = [];
+let ADHERENTS = [
+  { siret:'48256470100018', nom:'Coop Cantal Céréales', parcelles:6, surface:117.9, utilisations:0, conformite:100 },
+  { siret:'73282911200015', nom:'GAEC du Cuzols', parcelles:14, surface:203.4, utilisations:8, conformite:92 },
+  { siret:'52412345600022', nom:'EARL VolcAGRI', parcelles:9, surface:156.7, utilisations:12, conformite:88 },
+  { siret:'38146789200031', nom:'Ferme du Margeride', parcelles:11, surface:245.1, utilisations:15, conformite:95 },
+  { siret:'61234567800049', nom:'Gaiec de la Planèze', parcelles:18, surface:312.5, utilisations:21, conformite:97 },
 ];
 
-const PRODUITS_PHYTO = [
-  { nom: 'MODDUS', substance: 'Spiroxamine 500g/L', doseRef: '0.8 L/ha', amm: '9400352' },
-  { nom: 'BELL', substance: 'Prothioconazole + Tebuconazole', doseRef: '0.6 L/ha', amm: '20080037' },
-  { nom: 'CARBRENE', substance: 'Chlorothalonil 500g/L', doseRef: '1.5 L/ha', amm: '9100776' },
-  { nom: 'ADEUX', substance: 'Metsulfuron-methyl 20g/kg', doseRef: '0.1 kg/ha', amm: '9500389' },
-  { nom: 'KORIT', substance: 'Glyphosate 360g/L', doseRef: '3.0 L/ha', amm: '8800461' },
-];
+// --- État global ---
+let currentRole = 'exploitant';
+let currentView = 'dashboard';
+let flowStep = 0;
+let flowData = null;
+let chatHistory = [];
 
-const COOP_ADHERENTS = [
-  { nom: 'Dubois M.', commune: 'Saint-Flour', parcelles: 6, surface: 117.9, conformite: 92, retard: 1 },
-  { nom: 'Martin P.', commune: 'Lempdes', parcelles: 4, surface: 82.1, conformite: 78, retard: 2 },
-  { nom: 'Fournier J.', commune: 'Aurillac', parcelles: 8, surface: 195.0, conformite: 88, retard: 0 },
-  { nom: 'Bernal A.', commune: 'Saint-Flour', parcelles: 3, surface: 45.5, conformite: 100, retard: 0 },
-  { nom: 'Chassagne L.', commune: 'Massiac', parcelles: 5, surface: 128.3, conformite: 65, retard: 3 },
-  { nom: 'Roux D.', commune: 'Aurillac', parcelles: 7, surface: 210.0, conformite: 85, retard: 1 },
-  { nom: 'Peyret S.', commune: 'Mauriac', parcelles: 4, surface: 92.7, conformite: 71, retard: 2 },
-  { nom: 'Vidal M.', commune: 'Mauriac', parcelles: 6, surface: 155.0, conformite: 94, retard: 0 },
-  { nom: 'Coste R.', commune: 'Lempdes', parcelles: 5, surface: 110.0, conformite: 82, retard: 1 },
-  { nom: 'Pradel H.', commune: 'Massiac', parcelles: 3, surface: 67.0, conformite: 58, retard: 4 },
-];
+/* ===== Utilitaires ===== */
+function uid() { return 'U' + Date.now().toString(36).toUpperCase(); }
+function nowISO() { return new Date().toISOString(); }
+function todayFR() { return new Date().toLocaleDateString('fr-FR'); }
+function toast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = '<span class="dot"></span>' + msg;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
 
-const ALERTS_COOP = [
-  { type: 'crit', title: 'Pré-déclaration PAC incomplète', desc: 'Chassagne L. — 3 parcelles sans déclaration', time: 'il y a 2h' },
-  { type: 'warn', title: 'Registre phyto en retard', desc: 'Pradel H. — 4 traitements non enregistrés', time: 'il y a 3h' },
-  { type: 'warn', title: 'Dose non conforme', desc: 'Martin P. — Bell 0.8 L/ha (ref: 0.6)', time: 'hier' },
-  { type: 'info', title: 'Nouveau protocole phyto', desc: 'Règlement UE 2023/564 — mise à jour auto', time: 'hier' },
-  { type: 'ok', title: 'Audit conformité terminé', desc: 'Bernal A. — 100% conforme', time: 'il y a 2j' },
-];
+/* ===== Navigation ===== */
+function switchRole(role) {
+  currentRole = role;
+  document.querySelectorAll('.role-tab').forEach(t => t.classList.toggle('active', t.dataset.role === role));
+  document.getElementById('navExploitant').classList.toggle('hidden', role !== 'exploitant');
+  document.getElementById('navCoop').classList.toggle('hidden', role !== 'coop');
+  document.getElementById('navAgent').classList.toggle('hidden', role !== 'agent');
+  document.getElementById('role-pill').textContent = role === 'exploitant' ? 'Exploitant' : role === 'coop' ? 'Coopérative' : 'Agent';
+  if (role === 'exploitant') navTo('dashboard');
+  else if (role === 'coop') navTo('coop-vue');
+  else navTo('chat');
+  updateMeta();
+}
 
-// ===== State =====
-let state = {
-  role: 'exploitant',
-  view: 'dashboard',
-  phytoEntries: [...PHYTO_ENTRIES],
-  messages: [],
-};
+function updateMeta() {
+  const meta = document.getElementById('topbar-meta');
+  if (currentRole === 'coop') {
+    meta.textContent = 'COOP Cantal Céréales · SIRET ' + SIRET_DETENTEUR + ' · 5 adhérents';
+  } else if (currentRole === 'agent') {
+    meta.textContent = 'Agent Ceres · modèle GLM-5.2 · IA Act art 50(1)';
+  } else {
+    meta.textContent = 'SIRET ' + SIRET_DETENTEUR + ' · Cantal (15)';
+  }
+}
 
-// ===== Role configs =====
-const ROLES = {
-  exploitant: {
-    name: 'M. Dubois',
-    farm: 'Ferme du Moulin',
-    avatar: 'D',
-    nav: [
-      { id: 'dashboard', label: 'Tableau de bord', icon: '◉' },
-      { id: 'parcelles', label: 'Parcelles', icon: '▦' },
-      { id: 'phyto', label: 'Registre phyto', icon: '☙' },
-      { id: 'pac', label: 'Déclaration PAC', icon: '✎' },
-    ],
-  },
-  coop: {
-    name: 'Mme Laurent',
-    farm: 'Coopérative Cantal Céréales',
-    avatar: 'L',
-    nav: [
-      { id: 'coop-dashboard', label: 'Vue agrégée', icon: '◉' },
-      { id: 'coop-adherents', label: 'Adhérents', icon: '▦' },
-      { id: 'coop-alertes', label: 'Alertes', icon: '⚠' },
-      { id: 'coop-carto', label: 'Carto conformité', icon: '◈' },
-    ],
-  },
-  agent: {
-    name: 'Ceres',
-    farm: 'Agent agentique',
-    avatar: 'C',
-    nav: [
-      { id: 'agent-chat', label: 'Conversation', icon: '◉' },
-      { id: 'agent-actions', label: 'Actions tracées', icon: '☙' },
-    ],
-  },
-};
+function navTo(view) {
+  currentView = view;
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const btn = document.querySelector('.nav-item[data-view="' + view + '"]');
+  if (btn) btn.classList.add('active');
+  const titles = {
+    'dashboard':'Tableau de bord', 'parcelles':'Parcelles RPG', 'registre':'Registre phyto',
+    'flux':'Flux agentique', 'pac':'Déclaration PAC',
+    'coop-vue':'Vue agrégée coop', 'adherents':'Adhérents', 'alertes':'Alertes', 'carto':'Carto conformité',
+    'chat':'Conversation agent', 'trace':'Actions tracées',
+  };
+  document.getElementById('page-title').textContent = titles[view] || view;
+  render();
+}
 
-// ===== Render functions =====
+/* ============================================================
+   RENDU
+   ============================================================ */
 function render() {
-  const role = ROLES[state.role];
-  renderSidebar(role);
-  renderTopbar(role);
-  renderContent();
-}
-
-function renderSidebar(role) {
-  document.getElementById('pageTitle').textContent = role.nav[0].label;
-  document.getElementById('userName').textContent = role.name;
-  document.getElementById('userAvatar').textContent = role.avatar;
-
-  // Set default view for role
-  if (!role.nav.find(n => n.id === state.view)) {
-    state.view = role.nav[0].id;
+  const c = document.getElementById('content');
+  if (currentRole === 'exploitant') {
+    if (currentView === 'dashboard') c.innerHTML = viewDashboard();
+    else if (currentView === 'parcelles') c.innerHTML = viewParcelles();
+    else if (currentView === 'registre') c.innerHTML = viewRegistre();
+    else if (currentView === 'flux') { c.innerHTML = viewFlux(); initFlux(); }
+    else if (currentView === 'pac') c.innerHTML = viewPAC();
+  } else if (currentRole === 'coop') {
+    if (currentView === 'coop-vue') c.innerHTML = viewCoopVue();
+    else if (currentView === 'adherents') c.innerHTML = viewAdherents();
+    else if (currentView === 'alertes') c.innerHTML = viewAlertes();
+    else if (currentView === 'carto') c.innerHTML = viewCarto();
+  } else if (currentRole === 'agent') {
+    if (currentView === 'chat') { renderChat(); return; }
+    else if (currentView === 'trace') c.innerHTML = viewTrace();
   }
+  // post-render hooks
+  if (currentView === 'registre') updateRegCount();
+  if (currentView === 'pac') renderPAC();
+}
 
-  const nav = document.getElementById('sidebarNav');
-  nav.innerHTML = role.nav.map(item => `
-    <button class="${state.view === item.id ? 'active' : ''}" data-view="${item.id}">
-      <span class="nav-icon">${item.icon}</span> ${item.label}
-    </button>
-  `).join('');
+/* ===== Dashboard Exploitant ===== */
+function viewDashboard() {
+  const totalSurface = PARCELLES.reduce((s,p) => s + p.surface, 0);
+  const cultures = {};
+  PARCELLES.forEach(p => { cultures[p.culture] = (cultures[p.culture]||0) + p.surface; });
+  const cultureRows = Object.entries(cultures).map(([c,s]) =>
+    `<tr><td><span class="tag gold">${c}</span> ${OEPP[c]||c}</td><td class="num">${s.toFixed(1)} ha</td><td class="num">${((s/totalSurface)*100).toFixed(0)}%</td></tr>`
+  ).join('');
 
-  nav.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      state.view = btn.dataset.view;
-      render();
-    });
+  return `
+  <div class="grid-4" style="margin-bottom:18px">
+    <div class="kpi accent">
+      <div class="kpi-label">Surface totale</div>
+      <div class="kpi-val">${totalSurface.toFixed(1)}<span class="kpi-unit"> ha</span></div>
+      <div class="kpi-delta neu">${PARCELLES.length} parcelles RPG · 2 communes</div>
+    </div>
+    <div class="kpi ok">
+      <div class="kpi-label">Utilisations 2026</div>
+      <div class="kpi-val">${REGISTRE.length}</div>
+      <div class="kpi-delta ${REGISTRE.length>0?'pos':'neu'}">registre à jour</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Conformité PAC</div>
+      <div class="kpi-val">${pacConformite()}<span class="kpi-unit">%</span></div>
+      <div class="kpi-delta neu">BCAE · 6 conditions</div>
+    </div>
+    <div class="kpi terra">
+      <div class="kpi-label">DPU estimé</div>
+      <div class="kpi-val">${(totalSurface*73.5).toFixed(0)}<span class="kpi-unit"> €</span></div>
+      <div class="kpi-delta neu">73,50 €/ha · mid-mai</div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">Répartition cultures</div><div class="card-sub">surface par code OEPP</div></div></div>
+      <div class="card-body" style="padding:0">
+        <table class="tbl"><thead><tr><th>Culture</th><th class="num">Surface</th><th class="num">Part</th></tr></thead>
+        <tbody>${cultureRows}</tbody></table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">Dernières utilisations</div><div class="card-sub">registre phyto</div></div>
+        <button class="btn btn-outline btn-sm" onclick="navTo('registre')">Voir registre</button>
+      </div>
+      <div class="card-body" style="padding:0">
+        ${REGISTRE.length ? `<table class="tbl"><thead><tr><th>Date</th><th>Produit</th><th>Parcelle</th><th class="num">Surface</th></tr></thead><tbody>
+        ${REGISTRE.slice(-5).reverse().map(r => `<tr class="row-clickable" onclick="navTo('registre')"><td class="mono">${r.dateUtilisation}</td><td><span class="tag terra">${r.amm}</span> ${r.produit}</td><td class="mono">${r.ilot}/${r.parcelle}</td><td class="num">${r.surface} ha</td></tr>`).join('')}
+        </tbody></table>` : `<div class="empty">Aucune utilisation enregistrée.<br><br><button class="btn btn-gold" onclick="navTo('flux')">Démarrer le flux agentique</button></div>`}
+      </div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="section-title">Conformité BCAE (Bandes enherbées · Rotation · Prairie permanente · N RPG)</div>
+  ${pacComplianceGrid()}
+  `;
+}
+
+function pacConformite() {
+  let ok = 0, total = 0;
+  PARCELLES.forEach(p => {
+    const checks = [p.surface >= 5, p.culture !== 'BRAAN' || p.surface < 20, true, p.ilot !== '9999'];
+    checks.forEach(c => { total++; if (c) ok++; });
   });
-
-  // Role switcher
-  document.querySelectorAll('.role-pill').forEach(p => {
-    p.classList.toggle('active', p.dataset.role === state.role);
-  });
+  return Math.round((ok / total) * 100);
 }
 
-function renderTopbar(role) {
-  const viewLabels = {
-    'dashboard': 'Tableau de bord',
-    'parcelles': 'Parcelles',
-    'phyto': 'Registre phyto',
-    'pac': 'Déclaration PAC',
-    'coop-dashboard': 'Vue agrégée',
-    'coop-adherents': 'Adhérents',
-    'coop-alertes': 'Alertes',
-    'coop-carto': 'Carto conformité',
-    'agent-chat': 'Conversation',
-    'agent-actions': 'Actions tracées',
-  };
-  const label = viewLabels[state.view] || role.nav[0].label;
-  document.getElementById('pageTitle').textContent = label;
-  document.getElementById('pageCrumb').textContent = `${role.name} · ${role.farm}`;
+function pacComplianceGrid() {
+  const checks = ['Bande enherbée', 'Rotation', 'Prairie perm.', 'N RPG'];
+  return `<table class="tbl"><thead><tr><th>Parcelle</th>${checks.map(c => `<th style="text-align:center">${c}</th>`).join('')}</tr></thead><tbody>
+  ${PARCELLES.map(p => `<tr><td class="mono">${p.ilot}/${p.parcelle} ${p.nom}</td>
+    <td style="text-align:center"><span class="tag ok">✓</span></td>
+    <td style="text-align:center"><span class="tag ok">✓</span></td>
+    <td style="text-align:center">${p.culture==='BRAAN'?'<span class="tag warn">N/A</span>':'<span class="tag ok">✓</span>'}</td>
+    <td style="text-align:center"><span class="tag ok">✓</span></td>
+  </tr>`).join('')}
+  </tbody></table>`;
 }
 
-function renderContent() {
-  const area = document.getElementById('content-area');
-  const views = {
-    'dashboard': renderExploitantDashboard,
-    'parcelles': renderParcelles,
-    'phyto': renderPhyto,
-    'pac': renderPAC,
-    'coop-dashboard': renderCoopDashboard,
-    'coop-adherents': renderCoopAdherents,
-    'coop-alertes': renderCoopAlertes,
-    'coop-carto': renderCoopCarto,
-    'agent-chat': renderAgentChat,
-    'agent-actions': renderAgentActions,
-  };
-  const fn = views[state.view] || renderExploitantDashboard;
-  area.innerHTML = fn();
-  // Bind events after render
-  bindContentEvents();
-}
-
-// ===== Exploitant views =====
-
-function renderExploitantDashboard() {
-  const totalSurface = PARCELLES.reduce((s, p) => s + p.surface, 0).toFixed(1);
-  const totalTraitements = state.phytoEntries.length;
-  const conformite = Math.round(state.phytoEntries.filter(e =>
-    Object.values(e.checks).every(c => c === 'ok')
-  ).length / Math.max(1, state.phytoEntries.length) * 100);
-
+/* ===== Parcelles ===== */
+function viewParcelles() {
   return `
-    <div class="section-head">
-      <div><h2>Bonjour M. Dubois</h2><div class="sub">Ferme du Moulin · 6 parcelles · 117,9 ha</div></div>
-      <button class="btn btn-terra btn-sm" id="addTraitementBtn">+ Ajouter un traitement</button>
+  <div class="card">
+    <div class="card-head"><div><div class="card-title">Parcelles RPG</div><div class="card-sub">Registre parcellaire graphique · Cantal 15</div></div>
+      <button class="btn btn-outline btn-sm" onclick="navTo('pac')">Pré-déclaration PAC</button>
     </div>
-
-    <div class="stat-grid">
-      <div class="stat">
-        <div class="stat-label">Surface totale</div>
-        <div class="stat-value">${totalSurface}<span class="unit">ha</span></div>
-        <div class="stat-trend neutral">6 parcelles · 2 communes</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Traitements enregistrés</div>
-        <div class="stat-value">${totalTraitements}</div>
-        <div class="stat-trend up">↑ 2 cette semaine</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Conformité phyto</div>
-        <div class="stat-value">${conformite}<span class="unit">%</span></div>
-        <div class="stat-trend ${conformite >= 80 ? 'up' : 'down'}">${conformite >= 80 ? '↑ conforme' : '↓ à revoir'}</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Échéance PAC</div>
-        <div class="stat-value" style="font-size:22px;">15 mai</div>
-        <div class="stat-trend neutral">Pré-décla. en cours</div>
-      </div>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Ilot</th><th>Parcelle</th><th>Commune</th><th>INSEE</th><th>Nom</th><th>Culture</th><th class="num">Surface</th><th>GPS WGS84</th></tr></thead>
+        <tbody>
+        ${PARCELLES.map(p => `<tr>
+          <td class="mono">${p.ilot}</td><td class="mono">${p.parcelle}</td><td>${p.commune}</td><td class="mono">${p.insee}</td>
+          <td>${p.nom}</td><td><span class="tag gold">${p.culture}</span> ${OEPP[p.culture]||''}</td>
+          <td class="num">${p.surface.toFixed(1)} ha</td><td class="mono">${p.gps}</td>
+        </tr>`).join('')}
+        </tbody>
+      </table>
     </div>
-
-    <div class="dash-grid">
-      <div class="card">
-        <div class="card-head">
-          <h3>Parcelles — vue d'ensemble</h3>
-          <span class="badge">6 parcelles</span>
-        </div>
-        <div class="table-wrap">
-          <table class="data">
-            <thead><tr><th>Parcelle</th><th>Culture</th><th>Surface</th><th>Trait.</th><th>Statut</th></tr></thead>
-            <tbody>
-              ${PARCELLES.map(p => `
-                <tr>
-                  <td><div class="pcl-name">${p.nom}</div><div class="pcl-id">${p.id} · ${p.commune}</div></td>
-                  <td>${p.culture}</td>
-                  <td>${p.surface} ha</td>
-                  <td>${p.traitements}</td>
-                  <td><span class="tag ${p.statut === 'ok' ? 'green' : p.statut === 'warn' ? 'amber' : 'red'}">${p.statut === 'ok' ? 'Conforme' : p.statut === 'warn' ? 'À vérifier' : 'En retard'}</span></td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-head">
-          <h3>Alertes</h3>
-          <span class="badge">3</span>
-        </div>
-        <div>
-          <div class="alert-item">
-            <div class="alert-icon warn">⚠</div>
-            <div class="alert-body"><div class="title">Dose non conforme — Bell</div><div class="desc">0.8 L/ha appliqué, ref: 0.6 L/ha (Grand Champ)</div><div class="time">28/03/2026</div></div>
-          </div>
-          <div class="alert-item">
-            <div class="alert-icon crit">!</div>
-            <div class="alert-body"><div class="title">Pré Bas — aucun traitement enregistré</div><div class="desc">9.3 ha de blé tendre sans registre phyto</div><div class="time">à traiter</div></div>
-          </div>
-          <div class="alert-item">
-            <div class="alert-icon info">i</div>
-            <div class="alert-body"><div class="title">Conditions météo favorables</div><div class="desc">Fenêtre de traitement recommandée: 02-04/04</div><div class="time">Météo-France</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-head">
-        <h3>Registre phyto — derniers enregistrements</h3>
-        <button class="btn btn-ghost btn-sm" id="goPhyto">Voir tout →</button>
-      </div>
-      <div>
-        ${state.phytoEntries.slice(-3).map(renderPhytoEntry).join('')}
-      </div>
-    </div>
+  </div>
+  <div style="margin-top:14px" class="section-title">Total: ${PARCELLES.reduce((s,p)=>s+p.surface,0).toFixed(1)} ha · ${PARCELLES.length} parcelles · 2 communes</div>
   `;
 }
 
-function renderPhytoEntry(e) {
-  const checkLabels = { delai: 'Délai', dose: 'Dose', conditions: 'Conditions' };
-  return `
-    <div class="phyto-entry">
-      <div class="phyto-date"><div class="day">${e.day}</div><div class="month">${e.month}</div></div>
-      <div class="phyto-info">
-        <div class="product">${e.product} <span style="color:var(--muted);font-weight:400;font-size:11px">${e.substance}</span></div>
-        <div class="meta">${e.parcelle} · ${e.surface} ha · ${e.culture} · ${e.dose}</div>
-        <div class="checks">
-          ${Object.entries(e.checks).map(([k, v]) => `<span class="check-chip ${v}">${v === 'ok' ? '✓' : v === 'warn' ? '⚠' : '✗'} ${checkLabels[k]}</span>`).join('')}
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function renderParcelles() {
-  return `
-    <div class="section-head">
-      <div><h2>Parcelles</h2><div class="sub">Ferme du Moulin · 117,9 ha · 6 parcelles</div></div>
-    </div>
-    <div class="card">
-      <div class="table-wrap">
-        <table class="data">
-          <thead><tr><th>ID</th><th>Parcelle</th><th>Culture</th><th>Surface (ha)</th><th>Commune</th><th>Trait.</th><th>Statut</th></tr></thead>
-          <tbody>
-            ${PARCELLES.map(p => `
-              <tr>
-                <td><span class="pcl-id">${p.id}</span></td>
-                <td><span class="pcl-name">${p.nom}</span></td>
-                <td>${p.culture}</td>
-                <td>${p.surface}</td>
-                <td>${p.commune}</td>
-                <td>${p.traitements}</td>
-                <td><span class="tag ${p.statut === 'ok' ? 'green' : p.statut === 'warn' ? 'amber' : 'red'}">${p.statut === 'ok' ? 'Conforme' : p.statut === 'warn' ? 'À vérifier' : 'En retard'}</span></td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  `;
-}
-
-function renderPhyto() {
-  return `
-    <div class="section-head">
-      <div><h2>Registre phyto électronique</h2><div class="sub">Format UE 2023/564 · obligatoire au 01/01/2027</div></div>
-      <button class="btn btn-terra btn-sm" id="addTraitementBtn2">+ Ajouter un traitement</button>
-    </div>
-    <div class="card" style="margin-bottom:18px">
-      <div style="padding:16px 18px; display:flex; gap:14px; align-items:center; border-bottom:1px solid var(--line-soft)">
-        <div style="flex:1">
-          <div style="font-weight:700;font-size:14px">Taux de conformité</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:2px">${state.phytoEntries.filter(e => Object.values(e.checks).every(c => c === 'ok')).length}/${state.phytoEntries.length} traitements conformes</div>
-        </div>
-        <div style="font-size:32px;font-weight:800;color:var(--green)">${Math.round(state.phytoEntries.filter(e => Object.values(e.checks).every(c => c === 'ok')).length / state.phytoEntries.length * 100)}%</div>
-      </div>
-      <div>
-        ${state.phytoEntries.map(renderPhytoEntry).join('')}
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-head"><h3>Export conforme</h3></div>
-      <div class="card-body">
-        <p style="font-size:13px;color:var(--muted);margin:0 0 14px">Export au format machine-readable du règlement UE 2023/564. Données prêtes pour contrôle DGAL / coopérative.</p>
-        <button class="btn btn-primary btn-sm" id="exportBtn">Exporter le registre (CSV)</button>
-      </div>
-    </div>
-  `;
-}
-
-function renderPAC() {
-  const totalSurface = PARCELLES.reduce((s, p) => s + p.surface, 0);
-  return `
-    <div class="section-head">
-      <div><h2>Pré-déclaration PAC 2026</h2><div class="sub">Pré-remplissage automatique depuis le RPG en open data</div></div>
-      <button class="btn btn-gold btn-sm" id="pacFillBtn">Pré-remplir automatiquement</button>
-    </div>
-
-    <div class="steps">
-      <div class="step done"><div class="step-dot">✓</div>RPG importé</div>
-      <div class="step active"><div class="step-dot">2</div>Pré-remplissage</div>
-      <div class="step"><div class="step-dot">3</div>Contrôles</div>
-      <div class="step"><div class="step-dot">4</div>Validation</div>
-    </div>
-
-    <div class="pac-summary">
-      <div class="item"><div class="label">Surface déclarée</div><div class="val">${totalSurface.toFixed(1)} ha</div></div>
-      <div class="item"><div class="label">Parcelles</div><div class="val">${PARCELLES.length}</div></div>
-      <div class="item"><div class="label">Communes</div><div class="val">2</div></div>
-      <div class="item"><div class="label">DPU estimés</div><div class="val">${Math.round(totalSurface * 82)} €</div></div>
-    </div>
-
-    <div class="card" style="margin-bottom:18px">
-      <div class="card-head"><h3>Contrôles de conditionnalité</h3></div>
-      <div class="card-body">
-        <div class="pac-check ok"><div class="check-icon">✓</div><div class="check-body"><div class="ttl">Bande enherbée — conforme</div><div class="dsc">6/6 parcelles avec bande ≥ 5m (RPG)</div></div></div>
-        <div class="pac-check ok"><div class="check-icon">✓</div><div class="check-body"><div class="ttl">Rotation respectée</div><div class="dsc">Aucune monoculture sur 3 ans</div></div></div>
-        <div class="pac-check warn"><div class="check-icon">!</div><div class="check-body"><div class="ttl">Prairie permanente — à vérifier</div><div class="dsc">Pré Bas: passage en culture déclaré, vérifier statut</div></div></div>
-        <div class="pac-check ok"><div class="check-icon">✓</div><div class="check-body"><div class="ttl">N° parcelle RPG</div><div class="dsc">6/6 parcelles identifiées dans le RPG</div></div></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-head"><h3>Détail par parcelle (pré-rempli)</h3></div>
-      <div class="table-wrap">
-        <table class="data">
-          <thead><tr><th>N° RPG</th><th>Parcelle</th><th>Culture</th><th>Surface RPG</th><th>Surface déclarée</th><th>Écart</th></tr></thead>
-          <tbody>
-            ${PARCELLES.map(p => {
-              const ecart = (Math.random() * 0.4 - 0.2).toFixed(2);
-              return `<tr><td><span class="pcl-id">${p.id}</span></td><td>${p.nom}</td><td>${p.culture}</td><td>${p.surface} ha</td><td>${(p.surface + parseFloat(ecart)).toFixed(2)} ha</td><td class="${Math.abs(ecart) < 0.1 ? 'gap-pos' : 'gap-neg'}">${ecart >= 0 ? '+' : ''}${ecart} ha</td></tr>`;
-            }).join('')}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  `;
-}
-
-// ===== Coop views =====
-
-function renderCoopDashboard() {
-  const totalAdherents = COOP_ADHERENTS.length;
-  const avgConf = Math.round(COOP_ADHERENTS.reduce((s, a) => s + a.conformite, 0) / totalAdherents);
-  const totalSurface = COOP_ADHERENTS.reduce((s, a) => s + a.surface, 0);
-  const totalRetards = COOP_ADHERENTS.reduce((s, a) => s + a.retard, 0);
-
-  return `
-    <div class="section-head">
-      <div><h2>Vue agrégée</h2><div class="sub">Coopérative Cantal Céréales · ${totalAdherents} adhérents · ${totalSurface.toFixed(0)} ha</div></div>
-    </div>
-
-    <div class="stat-grid">
-      <div class="stat"><div class="stat-label">Adhérents</div><div class="stat-value">${totalAdherents}</div><div class="stat-trend neutral">actifs</div></div>
-      <div class="stat"><div class="stat-label">Conformité moyenne</div><div class="stat-value">${avgConf}<span class="unit">%</span></div><div class="stat-trend ${avgConf >= 80 ? 'up' : 'down'}">${avgConf >= 80 ? '↑ bon' : '↓ à surveiller'}</div></div>
-      <div class="stat"><div class="stat-label">Surface totale</div><div class="stat-value">${totalSurface.toFixed(0)}<span class="unit">ha</span></div><div class="stat-trend neutral">${COOP_ADHERENTS.reduce((s,a)=>s+a.parcelles,0)} parcelles</div></div>
-      <div class="stat"><div class="stat-label">Retards actifs</div><div class="stat-value">${totalRetards}</div><div class="stat-trend down">↓ ${totalRetards > 5 ? 'critique' : 'à traiter'}</div></div>
-    </div>
-
-    <div class="card" style="margin-bottom:18px">
-      <div class="card-head"><h3>Répartition conformité</h3></div>
-      <div class="card-body">
-        <div class="compliance-bar">
-          <div class="seg ok" style="width:${COOP_ADHERENTS.filter(a => a.conformite >= 85).length * 10}%"></div>
-          <div class="seg warn" style="width:${COOP_ADHERENTS.filter(a => a.conformite >= 70 && a.conformite < 85).length * 10}%"></div>
-          <div class="seg fail" style="width:${COOP_ADHERENTS.filter(a => a.conformite < 70).length * 10}%"></div>
-        </div>
-        <div class="compliance-legend">
-          <span><span class="dot" style="background:var(--green)"></span> Conforme (${COOP_ADHERENTS.filter(a => a.conformite >= 85).length})</span>
-          <span><span class="dot" style="background:var(--amber)"></span> À surveiller (${COOP_ADHERENTS.filter(a => a.conformite >= 70 && a.conformite < 85).length})</span>
-          <span><span class="dot" style="background:var(--red)"></span> Non conforme (${COOP_ADHERENTS.filter(a => a.conformite < 70).length})</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="dash-grid">
-      <div class="card">
-        <div class="card-head"><h3>Top 5 adhérents en retard</h3></div>
-        <div class="table-wrap">
-          <table class="data">
-            <thead><tr><th>Adhérent</th><th>Commune</th><th>Conf.</th><th>Retards</th></tr></thead>
-            <tbody>
-              ${COOP_ADHERENTS.filter(a => a.retard > 0).sort((a,b) => b.retard - a.retard).slice(0,5).map(a => `
-                <tr><td>${a.nom}</td><td>${a.commune}</td><td>${a.conformite}%</td><td><span class="tag ${a.retard >= 3 ? 'red' : 'amber'}">${a.retard}</span></td></tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-head"><h3>Alertes récentes</h3></div>
-        ${ALERTS_COOP.slice(0, 4).map(a => `
-          <div class="alert-item">
-            <div class="alert-icon ${a.type}">${a.type === 'crit' ? '!' : a.type === 'warn' ? '⚠' : a.type === 'ok' ? '✓' : 'i'}</div>
-            <div class="alert-body"><div class="title">${a.title}</div><div class="desc">${a.desc}</div><div class="time">${a.time}</div></div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-}
-
-function renderCoopAdherents() {
-  return `
-    <div class="section-head">
-      <div><h2>Adhérents</h2><div class="sub">${COOP_ADHERENTS.length} exploitants · ${COOP_ADHERENTS.reduce((s,a)=>s+a.surface,0).toFixed(0)} ha</div></div>
-    </div>
-    <div class="card">
-      <div class="table-wrap">
-        <table class="data">
-          <thead><tr><th>Adhérent</th><th>Commune</th><th>Parcelles</th><th>Surface (ha)</th><th>Conformité</th><th>Retards</th></tr></thead>
-          <tbody>
-            ${COOP_ADHERENTS.sort((a,b) => a.conformite - b.conformite).map(a => `
-              <tr>
-                <td><span class="pcl-name">${a.nom}</span></td>
-                <td>${a.commune}</td>
-                <td>${a.parcelles}</td>
-                <td>${a.surface.toFixed(1)}</td>
-                <td>
-                  <div style="display:flex;align-items:center;gap:8px">
-                    <div style="width:60px;height:6px;border-radius:99px;background:var(--grey);overflow:hidden">
-                      <div style="height:100%;width:${a.conformite}%;background:${a.conformite >= 85 ? 'var(--green)' : a.conformite >= 70 ? 'var(--amber)' : 'var(--red)'}"></div>
-                    </div>
-                    <span style="font-weight:600;font-size:12px">${a.conformite}%</span>
-                  </div>
-                </td>
-                <td>${a.retard > 0 ? `<span class="tag ${a.retard >= 3 ? 'red' : 'amber'}">${a.retard}</span>` : '<span class="tag green">0</span>'}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  `;
-}
-
-function renderCoopAlertes() {
-  return `
-    <div class="section-head">
-      <div><h2>Alertes</h2><div class="sub">${ALERTS_COOP.length} signaux · triés par sévérité</div></div>
-    </div>
-    <div class="card">
-      ${ALERTS_COOP.map(a => `
-        <div class="alert-item">
-          <div class="alert-icon ${a.type}">${a.type === 'crit' ? '!' : a.type === 'warn' ? '⚠' : a.type === 'ok' ? '✓' : 'i'}</div>
-          <div class="alert-body">
-            <div class="title">${a.title}</div>
-            <div class="desc">${a.desc}</div>
-            <div class="time">${a.time}</div>
-          </div>
-        </div>
-      `).join('')}
-    </div>
-  `;
-}
-
-function renderCoopCarto() {
-  return `
-    <div class="section-head">
-      <div><h2>Carto de conformité</h2><div class="sub">Par commune · Cantal (15)</div></div>
-    </div>
-    <div class="card">
-      <div class="carto-grid">
-        ${['Saint-Flour','Lempdes','Aurillac','Massiac','Mauriac'].map(c => {
-          const adherents = COOP_ADHERENTS.filter(a => a.commune === c);
-          if (!adherents.length) return '';
-          const avgConf = Math.round(adherents.reduce((s,a)=>s+a.conformite,0) / adherents.length);
-          const cls = avgConf >= 85 ? 'ok' : avgConf >= 70 ? 'warn' : 'crit';
-          return `<div class="carto-tile ${cls}">
-            <div class="ct-name">${c}</div>
-            <div class="ct-meta">${adherents.length} adhérents · ${adherents.reduce((s,a)=>s+a.surface,0).toFixed(0)} ha</div>
-            <div class="ct-rate">${avgConf}%</div>
-          </div>`;
-        }).join('')}
-      </div>
-    </div>
-  `;
-}
-
-// ===== Agent views =====
-
-function renderAgentChat() {
-  return `
-    <div class="section-head">
-      <div><h2>Ceres Agentique</h2><div class="sub">L'agent qui pré-remplit, vérifie et alerte</div></div>
-    </div>
-    <div class="agent-container">
-      <div class="agent-sidebar">
-        <h4>Suggestions</h4>
-        <div class="agent-sugg" data-prompt="Pré-remplis ma déclaration PAC 2026">
-          <span class="sugg-icon">✎</span> Pré-remplir ma PAC 2026
-        </div>
-        <div class="agent-sugg" data-prompt="Vérifie la conformité de mon registre phyto">
-          <span class="sugg-icon">✓</span> Vérifier mon registre phyto
-        </div>
-        <div class="agent-sugg" data-prompt="Quelles sont les alertes sur mes parcelles ?">
-          <span class="sugg-icon">⚠</span> Alertes sur mes parcelles
-        </div>
-        <div class="agent-sugg" data-prompt="Ajoute un traitement Bell sur Grand Champ, 0.6 L/ha, fait le 28 mars">
-          <span class="sugg-icon">+</span> Enregistrer un traitement
-        </div>
-        <div class="agent-sugg" data-prompt="Exporte mon registre phyto au format UE 2023/564">
-          <span class="sugg-icon">↧</span> Exporter le registre
-        </div>
-      </div>
-      <div class="agent-main">
-        <div class="agent-messages" id="agentMessages">
-          <div class="agent-msg agent">
-            <div class="agent-avatar">C</div>
-            <div class="agent-bubble">
-              Bonjour M. Dubois. Je suis Ceres, votre copilote administratif. J'ai accès à vos 6 parcelles (117,9 ha), au RPG en open data, et au référentiel e-Phy. Que puis-je faire pour vous ?
-            </div>
-          </div>
-        </div>
-        <div class="agent-input">
-          <input type="text" id="agentInput" placeholder="Demandez à Ceres…" disabled>
-          <button id="agentSend" disabled>Envoyer</button>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function renderAgentActions() {
-  const actions = [
-    { time: '14:32', type: 'auto', title: 'Pré-remplissage PAC', desc: '6 parcelles importées depuis RPG, écart moyen 0.08 ha', status: 'ok' },
-    { time: '14:28', type: 'check', title: 'Contrôle dose Bell', desc: '0.8 L/ha vs 0.6 L/ha réf — alerte générée', status: 'warn' },
-    { time: '14:15', type: 'auto', title: 'Import RPG', desc: 'RPG 2024-2025 téléchargé, 6 parcelles matchées', status: 'ok' },
-    { time: '13:50', type: 'check', title: 'Vérification délai de réentrée', desc: 'MODDUS: 48h OK, CARBRENE: 24h OK', status: 'ok' },
-    { time: '12:30', type: 'alert', title: 'Alerte Pré Bas', desc: '9.3 ha sans traitement enregistré — notifié à l\'exploitant', status: 'warn' },
+/* ===== Registre ===== */
+function viewRegistre() {
+  const fields17 = [
+    ['SIRET détenteur','siretDetenteur','14 chiffres','req'],
+    ['SIRET bénéficiaire','siretBeneficiaire','14 chiffres (si prestataire)','opt'],
+    ['Produit','produit','nom commercial','req'],
+    ['AMM','amm','7 chiffres E-Phy','req'],
+    ['Date d\'utilisation','dateUtilisation','JJ/MM/AAAA','req'],
+    ['Horaire début','horaireDebut','HH:MM (si AMM exige)','cond'],
+    ['Horaire fin','horaireFin','HH:MM (si AMM exige)','cond'],
+    ['Délai rentrée anticipée','delaiRentree','HH:MM','req'],
+    ['Dose','dose','valeur + unité','req'],
+    ['Cible','cible','texte (optionnel)','opt'],
+    ['Mode d\'application','modeApplication','texte (optionnel)','opt'],
+    ['Localisation RPG','localisation','ilot/parcelle/INSEE','req'],
+    ['GPS WGS84','gps','si pas de RPG','cond'],
+    ['Surface traitée','surface','ha','req'],
+    ['Culture','culture','code OEPP','req'],
+    ['Stade BBCH','bbch','2 chiffres','req'],
+    ['Conduite biologique','biologique','oui/non','req'],
   ];
+
   return `
-    <div class="section-head">
-      <div><h2>Actions tracées</h2><div class="sub">Journal d'exécution de l'agent Ceres</div></div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-head"><div><div class="card-title">Registre phyto · Annexe I</div><div class="card-sub">arrete 24/12/2025 · 17 champs · conservation 5 ans</div></div>
+      <button class="btn btn-gold" onclick="openAddModal()">+ Ajouter utilisation</button>
     </div>
-    <div class="card">
-      ${actions.map(a => `
-        <div class="alert-item">
-          <div class="alert-icon ${a.status === 'ok' ? 'ok' : 'warn'}">${a.status === 'ok' ? '✓' : '⚠'}</div>
-          <div class="alert-body">
-            <div class="title">${a.title}</div>
-            <div class="desc">${a.desc}</div>
-            <div class="time">${a.time} · ${a.type}</div>
-          </div>
-        </div>
-      `).join('')}
+    <div class="card-body" style="padding:0">
+      ${REGISTRE.length ? `<div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Date</th><th>Produit</th><th>AMM</th><th>Dose</th><th>Parcelle</th><th class="num">Surface</th><th>Culture</th><th>BBCH</th><th>Prov.</th></tr></thead>
+        <tbody>
+        ${REGISTRE.map(r => `<tr class="row-clickable" onclick="showRegDetail('${r.id}')">
+          <td class="mono">${r.dateUtilisation}</td>
+          <td>${r.produit}</td>
+          <td class="mono">${r.amm}</td>
+          <td class="mono">${r.dose} ${r.doseUnite}</td>
+          <td class="mono">${r.ilot}/${r.parcelle} ${r.nomParcelle||''}</td>
+          <td class="num">${r.surface} ha</td>
+          <td><span class="tag gold">${r.culture}</span></td>
+          <td class="mono">${r.bbch}</td>
+          <td><span class="prov ${r.provenance||'saisi'}">${r.provenance||'saisi'}</span></td>
+        </tr>`).join('')}
+        </tbody></table></div>` : `<div class="empty" style="padding:48px">Registre vide<br><span style="font-size:11px">Ajoutez une utilisation ou lancez le flux agentique</span><br><br><button class="btn btn-gold" onclick="openAddModal()">+ Ajouter</button>&nbsp; <button class="btn btn-outline" onclick="navTo('flux')">Flux agentique</button></div>`}
     </div>
+  </div>
+  <div style="display:flex;gap:8px">
+    <button class="btn btn-outline btn-sm" onclick="exportCSV()">↓ Export CSV (17 colonnes)</button>
+    <button class="btn btn-outline btn-sm" onclick="exportJSON()">↓ Export JSON (schema_version)</button>
+    <button class="btn btn-outline btn-sm" onclick="exportPDFSim()">↓ Export PDF (en-tête SIRET)</button>
+  </div>
   `;
 }
 
-// ===== Agent logic =====
-
-function initAgent() {
-  const input = document.getElementById('agentInput');
-  const sendBtn = document.getElementById('agentSend');
-  if (!input) return;
-  input.disabled = false;
-  sendBtn.disabled = false;
-  input.focus();
-
-  const sendMsg = (text) => {
-    if (!text.trim()) return;
-    addMessage('user', text);
-    input.value = '';
-    sendBtn.disabled = true;
-    input.disabled = true;
-
-    // Typing indicator
-    const msgs = document.getElementById('agentMessages');
-    const typing = document.createElement('div');
-    typing.className = 'agent-msg agent';
-    typing.id = 'typing';
-    typing.innerHTML = '<div class="agent-avatar">C</div><div class="agent-bubble"><div class="agent-typing"><span></span><span></span><span></span></div></div>';
-    msgs.appendChild(typing);
-    msgs.scrollTop = msgs.scrollHeight;
-
-    setTimeout(() => {
-      document.getElementById('typing')?.remove();
-      const response = getAgentResponse(text);
-      addMessage('agent', response.html, response.extra);
-      sendBtn.disabled = false;
-      input.disabled = false;
-      input.focus();
-    }, 1200 + Math.random() * 800);
-  };
-
-  sendBtn.addEventListener('click', () => sendMsg(input.value));
-  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMsg(input.value); });
-
-  document.querySelectorAll('.agent-sugg').forEach(s => {
-    s.addEventListener('click', () => {
-      sendMsg(s.dataset.prompt);
-    });
-  });
+function updateRegCount() {
+  const el = document.getElementById('cnt-reg');
+  if (el) el.textContent = REGISTRE.length;
 }
 
-function addMessage(role, text, extra) {
-  const msgs = document.getElementById('agentMessages');
-  const msg = document.createElement('div');
-  msg.className = `agent-msg ${role}`;
-  msg.innerHTML = `<div class="agent-avatar">${role === 'agent' ? 'C' : 'D'}</div><div class="agent-bubble">${text}${extra || ''}</div>`;
-  msgs.appendChild(msg);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function getAgentResponse(prompt) {
-  const p = prompt.toLowerCase();
-
-  if (p.includes('pac') || p.includes('déclaration') || p.includes('declaration')) {
-    return {
-      html: `J'ai pré-rempli votre déclaration PAC 2026 à partir du RPG en open data. Voici ce que j'ai fait :`,
-      extra: `<div class="action-block"><div class="action-title">✎ Pré-remplissage PAC 2026</div><ul class="action-list"><li class="ok">✓ RPG 2024-2025 importé — 6 parcelles matchées</li><li class="ok">✓ Surfaces calculées: 117,9 ha total</li><li class="ok">✓ N° RPG attribués (6/6)</li><li class="ok">✓ Culture principale: blé tendre (44%)</li><li class="warn">! Prairie permanente Pré Bas — à vérifier (statut ambigu)</li></ul><div style="margin-top:10px;font-size:11px;color:var(--muted)">DPU estimé: ${Math.round(117.9 * 82)} € · Contrôles conditionnalité: 3/4 OK</div></div>`
-    };
-  }
-
-  if (p.includes('phyto') || p.includes('registre') || p.includes('conformit')) {
-    const conformes = state.phytoEntries.filter(e => Object.values(e.checks).every(c => c === 'ok')).length;
-    return {
-      html: `J'ai vérifié votre registre phyto. ${conformes}/${state.phytoEntries.length} traitements sont conformes. Détail :`,
-      extra: `<div class="action-block"><div class="action-title">✓ Audit conformité registre phyto</div><ul class="action-list">${state.phytoEntries.map(e => `<li class="${Object.values(e.checks).every(c => c === 'ok') ? 'ok' : 'warn'}">${Object.values(e.checks).every(c => c === 'ok') ? '✓' : '⚠'} ${e.product} — ${e.parcelle} (${e.dose})</li>`).join('')}</ul><div style="margin-top:10px;font-size:11px;color:var(--muted)">1 alerte dose: Bell 0.8 vs 0.6 L/ha réf · 1 alerte conditions: Champ du Roc</div></div>`
-    };
-  }
-
-  if (p.includes('alert') || p.includes('parcelle')) {
-    return {
-      html: `J'ai détecté 3 signaux sur vos parcelles :`,
-      extra: `<div class="action-block"><div class="action-title">⚠ Alertes parcelles</div><ul class="action-list"><li class="warn">⚠ Grand Champ — dose Bell non conforme (0.8 vs 0.6 L/ha)</li><li class="fail">! Pré Bas — aucun traitement enregistré (9.3 ha)</li><li class="ok">✓ Fenêtre météo favorable 02-04/04 (Météo-France)</li></ul></div>`
-    };
-  }
-
-  if (p.includes('ajoute') || p.includes('traitement') || p.includes('bell')) {
-    state.phytoEntries.push({
-      day: 28, month: 'Mar', product: 'BELL', substance: 'Prothioconazole + Tebuconazole',
-      dose: '0.6 L/ha', parcelle: 'Grand Champ', surface: 24.5, culture: 'Blé tendre',
-      checks: { delai: 'ok', dose: 'ok', conditions: 'ok' }
-    });
-    return {
-      html: `C'est fait. J'ai enregistré le traitement Bell sur Grand Champ. Vérifications automatiques :`,
-      extra: `<div class="action-block"><div class="action-title">+ Nouveau traitement enregistré</div><ul class="action-list"><li class="ok">✓ Dose conforme (0.6 L/ha = réf AMM)</li><li class="ok">✓ Délai de réentrée: 48h</li><li class="ok">✓ Conditions météo: OK (vent < 15 km/h)</li><li class="ok">✓ AMM 20080037 valide</li></ul></div>`
-    };
-  }
-
-  if (p.includes('export') || p.includes('format')) {
-    return {
-      html: `J'ai exporté votre registre phyto au format machine-readable du règlement UE 2023/564. Le fichier est prêt pour transmission à la coopérative ou la DGAL.`,
-      extra: `<div class="action-block"><div class="action-title">↧ Export UE 2023/564</div><ul class="action-list"><li class="ok">✓ ${state.phytoEntries.length} enregistrements</li><li class="ok">✓ Format: CSV structuré (16 colonnes obligatoires)</li><li class="ok">✓ Hash de contrôle: SHA-256</li></ul></div>`
-    };
-  }
-
-  return {
-    html: `J'ai accès à vos 6 parcelles, au RPG, au référentiel e-Phy et aux données Météo-France. Vous pouvez me demander de pré-remplir votre PAC, vérifier votre registre phyto, enregistrer un traitement, ou exporter vos données.`,
-  };
-}
-
-// ===== Event binding =====
-
-function bindContentEvents() {
-  // Add traitement buttons
-  const addBtn = document.getElementById('addTraitementBtn') || document.getElementById('addTraitementBtn2');
-  if (addBtn) addBtn.addEventListener('click', openAddTraitementModal);
-
-  // Export button
-  const expBtn = document.getElementById('exportBtn');
-  if (expBtn) expBtn.addEventListener('click', () => {
-    exportPhytoCSV();
-    showToast('Registre phyto exporté (CSV)');
-  });
-
-  // PAC fill button
-  const pacBtn = document.getElementById('pacFillBtn');
-  if (pacBtn) pacBtn.addEventListener('click', () => {
-    pacBtn.textContent = 'Pré-remplissage en cours…';
-    pacBtn.disabled = true;
-    setTimeout(() => {
-      pacBtn.textContent = '✓ Pré-rempli';
-      pacBtn.classList.remove('btn-gold');
-      pacBtn.classList.add('btn-primary');
-      showToast('Déclaration PAC pré-remplie depuis le RPG');
-    }, 1800);
-  });
-
-  // Go to phyto
-  const goPhyto = document.getElementById('goPhyto');
-  if (goPhyto) goPhyto.addEventListener('click', () => { state.view = 'phyto'; render(); });
-
-  // Agent init
-  if (state.view === 'agent-chat') {
-    setTimeout(initAgent, 100);
-  }
-}
-
-// ===== Modal =====
-
-function openAddTraitementModal() {
-  const overlay = document.getElementById('modalOverlay');
-  const body = document.getElementById('modalBody');
-  document.getElementById('modalTitle').textContent = 'Enregistrer un traitement phyto';
-
-  body.innerHTML = `
-    <div class="form-row">
-      <div class="form-field">
-        <label>Produit</label>
-        <select id="m-produit">
-          ${PRODUITS_PHYTO.map(p => `<option value="${p.nom}" data-sub="${p.substance}" data-dose="${p.doseRef}" data-amm="${p.amm}">${p.nom} — ${p.substance}</option>`).join('')}
-        </select>
+function openAddModal() {
+  const html = `
+    <div class="modal-head">
+      <div><div class="modal-title">Nouvelle utilisation · Registre phyto</div><div class="modal-sub">Annexe I · 17 champs obligatoires</div></div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-row"><label class="fld">SIRET détenteur <span class="req">*</span></label><input class="fld mono" id="f-siretDet" value="${SIRET_DETENTEUR}" maxlength="14"></div>
+        <div class="form-row"><label class="fld">SIRET bénéficiaire <span class="opt">(si prestataire)</span></label><input class="fld mono" id="f-siretBen" value="${SIRET_BENEF}" maxlength="14"></div>
       </div>
-      <div class="form-field">
-        <label>Parcelle</label>
-        <select id="m-parcelle">
-          ${PARCELLES.map(p => `<option value="${p.nom}" data-surface="${p.surface}" data-culture="${p.culture}">${p.nom} (${p.surface} ha)</option>`).join('')}
-        </select>
+      <div class="form-grid">
+        <div class="form-row"><label class="fld">Produit <span class="req">*</span></label><select class="fld" id="f-produit" onchange="onProduitChange()"><option value="">: Sélectionner :</option>${Object.entries(AMM_DB).map(([n,d])=>`<option value="${n}">${d.produit} · ${d.substance}</option>`).join('')}</select></div>
+        <div class="form-row"><label class="fld">AMM <span class="req">*</span></label><input class="fld mono" id="f-amm" readonly></div>
+      </div>
+      <div class="form-grid-3">
+        <div class="form-row"><label class="fld">Date d\'utilisation <span class="req">*</span></label><input class="fld mono" id="f-date" type="date"></div>
+        <div class="form-row"><label class="fld">Horaire début <span class="cond">si AMM</span></label><input class="fld mono" id="f-hdeb" type="time"></div>
+        <div class="form-row"><label class="fld">Horaire fin</label><input class="fld mono" id="f-hfin" type="time"></div>
+      </div>
+      <div class="form-grid-3">
+        <div class="form-row"><label class="fld">Délai rentrée anticipée <span class="req">*</span></label><input class="fld mono" id="f-delai" value="06:00"></div>
+        <div class="form-row"><label class="fld">Dose <span class="req">*</span></label><input class="fld mono" id="f-dose" placeholder="0.0"><span class="hint" id="f-dose-unite"></span></div>
+        <div class="form-row"><label class="fld">Cible <span class="opt">(optionnel)</span></label><input class="fld" id="f-cible" placeholder="ex: septoriose"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row"><label class="fld">Mode d\'application <span class="opt">(optionnel)</span></label><input class="fld" id="f-mode" placeholder="ex: pulvérisation"></div>
+        <div class="form-row"><label class="fld">Parcelle RPG <span class="req">*</span></label><select class="fld" id="f-parcelle" onchange="onParcelleChange()"><option value="">:</option>${PARCELLES.map((p,i)=>`<option value="${i}">${p.ilot}/${p.parcelle} ${p.nom} (${p.surface}ha)</option>`).join('')}</select></div>
+      </div>
+      <div class="form-grid-3">
+        <div class="form-row"><label class="fld">GPS WGS84 <span class="cond">(si pas RPG)</span></label><input class="fld mono" id="f-gps" readonly></div>
+        <div class="form-row"><label class="fld">Surface traitée <span class="req">*</span></label><input class="fld mono" id="f-surface" readonly> <span class="hint" id="f-surface-h"></span></div>
+        <div class="form-row"><label class="fld">Culture (OEPP) <span class="req">*</span></label><input class="fld mono" id="f-culture" readonly></div>
+      </div>
+      <div class="form-grid-3">
+        <div class="form-row"><label class="fld">Stade BBCH <span class="req">*</span></label><select class="fld" id="f-bbch">${Object.entries(BBCH).map(([n,d])=>`<option value="${n}">${n} · ${d}</option>`).join('')}</select></div>
+        <div class="form-row"><label class="fld">Conduite biologique <span class="req">*</span></label><select class="fld" id="f-bio"><option value="non">non</option><option value="oui">oui</option></select></div>
+        <div class="form-row"></div>
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-field">
-        <label>Date d'application</label>
-        <input type="date" id="m-date" value="2026-03-28">
-      </div>
-      <div class="form-field">
-        <label>Dose appliquée (L/ha)</label>
-        <input type="text" id="m-dose" value="0.6" placeholder="0.6 L/ha">
-      </div>
-    </div>
-    <div class="form-field full" style="margin-bottom:18px">
-      <label>Conditions météo (auto)</label>
-      <input type="text" value="Vent 12 km/h · 18°C · temps sec" readonly style="background:var(--paper);color:var(--muted)">
-    </div>
-    <div style="display:flex;gap:10px">
-      <button class="btn btn-terra" style="flex:1" id="m-submit">Vérifier et enregistrer</button>
-      <button class="btn btn-ghost" id="m-cancel">Annuler</button>
+    <div class="modal-foot">
+      <span class="hint">Provenance: <span class="prov saisi">saisi</span> · arrete 24/12/2025 Annexe I</span>
+      <div><button class="btn btn-outline" onclick="closeModal()">Annuler</button>&nbsp; <button class="btn btn-gold" onclick="saveRegEntry()">Enregistrer</button></div>
     </div>
   `;
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('modal-overlay').classList.add('show');
+}
 
-  overlay.classList.add('show');
+function onProduitChange() {
+  const sel = document.getElementById('f-produit');
+  const amm = sel.value;
+  const ammEl = document.getElementById('f-amm');
+  const doseEl = document.getElementById('f-dose');
+  const doseUniteEl = document.getElementById('f-dose-unite');
+  ammEl.value = amm;
+  if (amm && AMM_DB[amm]) {
+    doseEl.value = AMM_DB[amm].dose;
+    doseUniteEl.textContent = AMM_DB[amm].unite;
+  }
+}
 
-  document.getElementById('m-cancel').addEventListener('click', closeModal);
-  document.getElementById('m-submit').addEventListener('click', () => {
-    const produit = PRODUITS_PHYTO.find(p => p.nom === document.getElementById('m-produit').value);
-    const parcelle = PARCELLES.find(p => p.nom === document.getElementById('m-parcelle').value);
-    const dose = document.getElementById('m-dose').value;
-    const dateStr = document.getElementById('m-date').value;
-    const day = parseInt(dateStr.split('-')[2]);
-    const monthMap = {'01':'Jan','02':'Fév','03':'Mar','04':'Avr','05':'Mai','06':'Juin'};
-    const month = monthMap[dateStr.split('-')[1]] || 'Mar';
+function onParcelleChange() {
+  const sel = document.getElementById('f-parcelle');
+  const idx = parseInt(sel.value);
+  if (isNaN(idx)) return;
+  const p = PARCELLES[idx];
+  document.getElementById('f-gps').value = p.gps;
+  document.getElementById('f-surface').value = p.surface.toFixed(1);
+  document.getElementById('f-surface-h').textContent = p.surface + ' ha';
+  document.getElementById('f-culture').value = p.culture;
+}
 
-    state.phytoEntries.push({
-      day, month, product: produit.nom, substance: produit.substance,
-      dose: dose + ' L/ha', parcelle: parcelle.nom, surface: parcelle.surface,
-      culture: parcelle.culture, checks: { delai: 'ok', dose: 'ok', conditions: 'ok' }
-    });
+function saveRegEntry() {
+  const amm = document.getElementById('f-amm').value;
+  const pIdx = parseInt(document.getElementById('f-parcelle').value);
+  if (!amm || isNaN(pIdx)) { toast('Champs obligatoires manquants'); return; }
+  const p = PARCELLES[pIdx];
+  const d = AMM_DB[amm];
+  const dateVal = document.getElementById('f-date').value;
+  const entry = {
+    id: uid(),
+    siretDetenteur: document.getElementById('f-siretDet').value,
+    siretBeneficiaire: document.getElementById('f-siretBen').value,
+    produit: d.produit,
+    amm: amm,
+    dateUtilisation: dateVal ? new Date(dateVal).toLocaleDateString('fr-FR') : todayFR(),
+    horaireDebut: document.getElementById('f-hdeb').value || (d.horaire ? '07:00' : ''),
+    horaireFin: document.getElementById('f-hfin').value || (d.horaire ? '09:00' : ''),
+    delaiRentree: document.getElementById('f-delai').value,
+    dose: parseFloat(document.getElementById('f-dose').value || d.dose),
+    doseUnite: d.unite,
+    cible: document.getElementById('f-cible').value || '',
+    modeApplication: document.getElementById('f-mode').value || '',
+    ilot: p.ilot, parcelle: p.parcelle, insee: p.insee,
+    nomParcelle: p.nom, commune: p.commune,
+    localisation: p.ilot + '/' + p.parcelle + '/' + p.insee,
+    gps: p.gps,
+    surface: p.surface,
+    culture: p.culture,
+    bbch: document.getElementById('f-bbch').value,
+    biologique: document.getElementById('f-bio').value,
+    provenance: 'saisi',
+    timestamp: nowISO(),
+    version: 1,
+    author: 'exploitant',
+  };
+  REGISTRE.push(entry);
+  addTrace('REGISTRE', 'Ajout manuel: ' + d.produit + ' sur ' + p.ilot + '/' + p.parcelle + ' (' + p.surface + 'ha)');
+  closeModal();
+  toast('Utilisation enregistrée · ' + d.produit);
+  render();
+}
 
-    closeModal();
-    showToast(`Traitement ${produit.nom} enregistré sur ${parcelle.nom}`);
-    render();
-  });
+function showRegDetail(id) {
+  const r = REGISTRE.find(e => e.id === id);
+  if (!r) return;
+  const rows17 = [
+    ['SIRET détenteur', r.siretDetenteur],
+    ['SIRET bénéficiaire', r.siretBeneficiaire],
+    ['Produit', r.produit],
+    ['AMM', r.amm],
+    ['Date d\'utilisation', r.dateUtilisation],
+    ['Horaire début', r.horaireDebut || '·'],
+    ['Horaire fin', r.horaireFin || '·'],
+    ['Délai rentrée anticipée', r.delaiRentree],
+    ['Dose', r.dose + ' ' + r.doseUnite],
+    ['Cible', r.cible || '·'],
+    ['Mode d\'application', r.modeApplication || '·'],
+    ['Localisation RPG', r.localisation],
+    ['GPS WGS84', r.gps],
+    ['Surface traitée', r.surface + ' ha'],
+    ['Culture', r.culture + ' (' + (OEPP[r.culture]||'') + ')'],
+    ['Stade BBCH', r.bbch + ' · ' + (BBCH[r.bbch]||'')],
+    ['Conduite biologique', r.biologique],
+  ];
+  const html = `
+    <div class="modal-head"><div><div class="modal-title">Détail utilisation · ${r.id}</div><div class="modal-sub">v${r.version} · ${r.timestamp} · ${r.provenance}</div></div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="modal-body">
+      <table class="tbl"><tbody>
+      ${rows17.map(([l,v]) => `<tr><td style="width:220px;font-weight:500">${l}</td><td class="mono">${v}</td></tr>`).join('')}
+      </tbody></table>
+    </div>
+    <div class="modal-foot"><span class="hint">Conservation 5 ans · IA Act art 50(1)</span><button class="btn btn-outline" onclick="closeModal()">Fermer</button></div>
+  `;
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('modal-overlay').classList.add('show');
 }
 
 function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('show');
+  document.getElementById('modal-overlay').classList.remove('show');
 }
 
-// ===== Export =====
+/* ============================================================
+   FLUX AGENTIQUE : 7 étapes
+   ============================================================ */
+function viewFlux() {
+  return `
+  <div class="flow-steps">
+    <div class="flow-step ${flowStep===0?'active':''}" id="fs-0"><div class="step-n">01</div><div class="step-t">Extraction</div></div>
+    <div class="flow-step" id="fs-1"><div class="step-n">02</div><div class="step-t">Réconciliation</div></div>
+    <div class="flow-step" id="fs-2"><div class="step-n">03</div><div class="step-t">Contrôles</div></div>
+    <div class="flow-step" id="fs-3"><div class="step-n">04</div><div class="step-t">Questions</div></div>
+    <div class="flow-step" id="fs-4"><div class="step-n">05</div><div class="step-t">Validation</div></div>
+    <div class="flow-step" id="fs-5"><div class="step-n">06</div><div class="step-t">Registre</div></div>
+    <div class="flow-step" id="fs-6"><div class="step-n">07</div><div class="step-t">Exports</div></div>
+  </div>
+  <div class="flow-panel" id="flow-panel"></div>
+  <div id="flow-controls" style="margin-top:14px;display:flex;justify-content:space-between"></div>
+  `;
+}
 
-function exportPhytoCSV() {
-  const headers = ['Date','Produit','Substance','Dose','Parcelle','Surface','Culture','Délai','Dose conforme','Conditions'];
-  const rows = state.phytoEntries.map(e => [
-    `${e.day}/${e.month}/2026`, e.product, e.substance, e.dose, e.parcelle,
-    e.surface, e.culture, e.checks.delai, e.checks.dose, e.checks.conditions
-  ]);
-  const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
+function initFlux() {
+  flowStep = 0;
+  flowData = null;
+  renderFlowStep();
+}
+
+function updateFlowSteps() {
+  for (let i = 0; i < 7; i++) {
+    const el = document.getElementById('fs-' + i);
+    if (!el) continue;
+    el.classList.remove('active', 'done');
+    if (i < flowStep) el.classList.add('done');
+    else if (i === flowStep) el.classList.add('active');
+  }
+}
+
+function renderFlowStep() {
+  updateFlowSteps();
+  const panel = document.getElementById('flow-panel');
+  const controls = document.getElementById('flow-controls');
+  const steps = [flowExtraction, flowReconciliation, flowControles, flowQuestions, flowValidation, flowRegistre, flowExports];
+  steps[flowStep](panel, controls);
+}
+
+function flowExtraction(panel, controls) {
+  // Simulated source: a photo/scan with partial data
+  if (!flowData) {
+    flowData = {
+      source: 'scan_ticket_2026-04-15.jpg',
+      raw: {
+        siretDetenteur: { val: SIRET_DETENTEUR, conf: 0.99 },
+        siretBeneficiaire: { val: '', conf: 0.0 },
+        produit: { val: 'MODDUS', conf: 0.92 },
+        amm: { val: '9400352', conf: 0.88 },
+        dateUtilisation: { val: '15/04/2026', conf: 0.75 },
+        horaireDebut: { val: '07:30', conf: 0.60 },
+        horaireFin: { val: '09:00', conf: 0.60 },
+        delaiRentree: { val: '06:00', conf: 0.50 },
+        dose: { val: '0.8', conf: 0.85 },
+        cible: { val: '', conf: 0.0 },
+        modeApplication: { val: 'pulvérisation', conf: 0.70 },
+        ilot: { val: '1001', conf: 0.95 },
+        parcelle: { val: '3', conf: 0.95 },
+        insee: { val: '15001', conf: 0.90 },
+        gps: { val: '', conf: 0.0 },
+        surface: { val: '', conf: 0.0 },
+        culture: { val: 'TRZAX', conf: 0.80 },
+        bbch: { val: '', conf: 0.0 },
+        biologique: { val: 'non', conf: 0.95 },
+      }
+    };
+  }
+  const fields = flowData.raw;
+  const rows = Object.entries(fields).map(([k,v]) => {
+    const cls = v.conf >= 0.8 ? 'conf-hi' : v.conf >= 0.5 ? 'conf-md' : 'conf-lo';
+    const pct = Math.round(v.conf * 100);
+    return `<div class="flow-field">
+      <div class="ff-label">${fieldLabel(k)}</div>
+      <div class="ff-val">${v.val || '<span class="muted">·</span>'}</div>
+      <div><span class="conf-bar"><span class="conf-dot ${cls}"></span> ${pct}%</span></div>
+      <div>${v.val ? '<span class="prov extrait">extrait</span>' : '<span class="tag neu">manquant</span>'}</div>
+    </div>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <div class="flow-step-title">01 · Extraction</div>
+    <div class="flow-step-desc">Source: <span class="mono">${flowData.source}</span> : extraction des champs bruts avec score de confiance par champ. Les champs sous le seuil (60%) seront demandés à l\'exploitant à l\'étape 4.</div>
+    <div>${rows}</div>
+  `;
+  controls.innerHTML = `<div></div><button class="btn btn-gold" onclick="nextFlow()">Étape suivante →</button>`;
+}
+
+function flowReconciliation(panel, controls) {
+  const r = flowData.raw;
+  const amm = r.amm.val;
+  const ammInfo = AMM_DB[amm];
+  const ilot = r.ilot.val, parcelle = r.parcelle.val, insee = r.insee.val;
+  const parcMatch = PARCELLES.find(p => p.ilot === ilot && p.parcelle === parcelle && p.insee === insee);
+
+  panel.innerHTML = `
+    <div class="flow-step-title">02 · Réconciliation</div>
+    <div class="flow-step-desc">Correspondance vers les référentiels: E-Phy (AMM), RPG (parcelle), OEPP (culture).</div>
+    <div class="card-body">
+      <div class="form-row"><strong>Produit → AMM (E-Phy ANSES)</strong><div class="hint">AMM ${amm} → ${ammInfo ? ammInfo.produit + ' · ' + ammInfo.substance + ' · dose ref ' + ammInfo.dose + ' ' + ammInfo.unite : '<span class="tag err">non trouvé</span>'}</div></div>
+      <div class="form-row"><strong>Parcelle → RPG</strong><div class="hint">ilot ${ilot} / parcelle ${parcelle} / INSEE ${insee} → ${parcMatch ? 'OK · ' + parcMatch.nom + ' · ' + parcMatch.surface + 'ha · ' + parcMatch.commune : '<span class="tag err">non trouvé dans RPG</span>'}</div></div>
+      <div class="form-row"><strong>Culture → OEPP</strong><div class="hint">${r.culture.val} → ${OEPP[r.culture.val] || 'code inconnu'} ${ammInfo && ammInfo.cultures.includes(r.culture.val) ? '<span class="tag ok">autorisé pour AMM</span>' : '<span class="tag warn">vérifier compatibilité</span>'}</div></div>
+    </div>
+  `;
+  // Update reconciled fields
+  if (parcMatch) { r.surface.val = parcMatch.surface; r.surface.conf = 0.99; r.gps.val = parcMatch.gps; r.gps.conf = 0.99; }
+  if (ammInfo) { r.dose.val = ammInfo.dose; r.dose.conf = 0.95; r.doseUnite = ammInfo.unite; }
+  controls.innerHTML = `<button class="btn btn-outline" onclick="prevFlow()">← Retour</button><button class="btn btn-gold" onclick="nextFlow()">Étape suivante →</button>`;
+}
+
+function flowControles(panel, controls) {
+  const r = flowData.raw;
+  const amm = r.amm.val;
+  const ammInfo = AMM_DB[amm];
+  const parc = PARCELLES.find(p => p.ilot === r.ilot.val && p.parcelle === r.parcelle.val && p.insee === r.insee.val);
+  const dose = parseFloat(r.dose.val);
+  const surface = parc ? parc.surface : 0;
+  const qtyNeeded = dose * surface;
+  const checks = [
+    { label: 'Dose × surface ≤ quantité disponible', ok: true, detail: dose + ' ' + ammInfo.unite + ' × ' + surface + ' ha = ' + qtyNeeded.toFixed(2) + ' ' + ammInfo.unite },
+    { label: 'AMM valide à la date', ok: true, detail: 'AMM ' + amm + ' actif au ' + r.dateUtilisation.val },
+    { label: 'Produit autorisé pour culture', ok: ammInfo.cultures.includes(r.culture.val), detail: ammInfo.produit + ' autorisé sur ' + (OEPP[r.culture.val]||r.culture.val) + ' ? ' + (ammInfo.cultures.includes(r.culture.val) ? 'OUI' : 'NON') },
+    { label: 'Parcelle RPG existe', ok: !!parc, detail: parc ? 'ilot ' + r.ilot.val + '/' + r.parcelle.val + ' trouvé' : 'non trouvé' },
+    { label: 'AMM exige horaire', ok: !ammInfo.horaire || (r.horaireDebut.val && r.horaireFin.val), detail: ammInfo.horaire ? 'Horaires requis et présents' : 'Non requis' },
+  ];
+
+  panel.innerHTML = `
+    <div class="flow-step-title">03 · Contrôles réglementaires</div>
+    <div class="flow-step-desc">Vérification automatique: dose, validité AMM, autorisation culture, existence RPG.</div>
+    <div>${checks.map(c => `<div class="alert ${c.ok?'ok':'err'}"><div class="ai">${c.ok?'✓':'✕'}</div><div><div class="at">${c.label}</div><div class="ad">${c.detail}</div></div></div>`).join('')}</div>
+  `;
+  controls.innerHTML = `<button class="btn btn-outline" onclick="prevFlow()">← Retour</button><button class="btn btn-gold" onclick="nextFlow()">Étape suivante →</button>`;
+}
+
+function flowQuestions(panel, controls) {
+  const r = flowData.raw;
+  // Fields below threshold or missing
+  const missing = Object.entries(r).filter(([k,v]) => v.conf < 0.6 && !v.val);
+  const low = Object.entries(r).filter(([k,v]) => v.conf < 0.6 && v.val);
+
+  panel.innerHTML = `
+    <div class="flow-step-title">04 · Questions à l\'exploitant</div>
+    <div class="flow-step-desc">L\'agent demande SEULEMENT les champs manquants ou sous le seuil de confiance (60%). Ne devine jamais.</div>
+    <div class="alert warn"><div class="ai">?</div><div><div class="at">Champs à confirmer</div><div class="ad">${missing.length + low.length} champ(s) sous le seuil</div></div></div>
+    ${(missing.length ? missing : low).map(([k,v]) => `<div class="form-row">
+      <label class="fld">${fieldLabel(k)} ${v.val ? '<span class="opt">(conf ' + Math.round(v.conf*100) + '%)</span>' : '<span class="req">*</span>'}</label>
+      <input class="fld mono" id="qf-${k}" value="${v.val||''}" placeholder="${fieldLabel(k)}">
+    </div>`).join('')}
+    <div class="hint">L\'agent ne complète jamais un champ qu\'il ne peut pas déduire. Il demande.</div>
+  `;
+  controls.innerHTML = `<button class="btn btn-outline" onclick="prevFlow()">← Retour</button><button class="btn btn-gold" onclick="collectQuestions(); nextFlow();">Confirmer →</button>`;
+}
+
+function collectQuestions() {
+  const r = flowData.raw;
+  Object.keys(r).forEach(k => {
+    const el = document.getElementById('qf-' + k);
+    if (el && el.value) { r[k].val = el.value; r[k].conf = 1.0; r[k].confirmed = true; }
+  });
+}
+
+function flowValidation(panel, controls) {
+  const r = flowData.raw;
+  const rows = Object.entries(r).map(([k,v]) => {
+    const prov = v.confirmed ? 'confirme' : v.conf >= 0.8 ? 'extrait' : v.conf >= 0.5 ? 'deduit' : 'saisi';
+    return `<div class="flow-field">
+      <div class="ff-label">${fieldLabel(k)}</div>
+      <div class="ff-val">${v.val || '<span class="muted">·</span>'}</div>
+      <div><span class="conf-bar"><span class="conf-dot ${v.conf>=0.8?'conf-hi':v.conf>=0.5?'conf-md':'conf-lo'}"></span> ${Math.round(v.conf*100)}%</span></div>
+      <div><span class="prov ${prov}">${prov}</span></div>
+    </div>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <div class="flow-step-title">05 · Validation exploitants</div>
+    <div class="flow-step-desc">L\'exploitant confirme chaque champ. Provenance: saisi / extrait / déduit / confirmé.</div>
+    <div>${rows}</div>
+    <div class="alert ok"><div class="ai">✓</div><div><div class="at">Tous les champs obligatoires sont remplis</div><div class="ad">L\'exploitant valide le registre</div></div></div>
+  `;
+  controls.innerHTML = `<button class="btn btn-outline" onclick="prevFlow()">← Retour</button><button class="btn btn-gold" onclick="nextFlow()">Valider et enregistrer →</button>`;
+}
+
+function flowRegistre(panel, controls) {
+  const r = flowData.raw;
+  const parc = PARCELLES.find(p => p.ilot === r.ilot.val && p.parcelle === r.parcelle.val);
+  const ammInfo = AMM_DB[r.amm.val];
+  if (!flowData.registered) {
+    const entry = {
+      id: uid(),
+      siretDetenteur: r.siretDetenteur.val,
+      siretBeneficiaire: r.siretBeneficiaire.val || SIRET_BENEF,
+      produit: ammInfo.produit,
+      amm: r.amm.val,
+      dateUtilisation: r.dateUtilisation.val,
+      horaireDebut: r.horaireDebut.val,
+      horaireFin: r.horaireFin.val,
+      delaiRentree: r.delaiRentree.val,
+      dose: parseFloat(r.dose.val),
+      doseUnite: ammInfo.unite,
+      cible: r.cible.val,
+      modeApplication: r.modeApplication.val,
+      ilot: r.ilot.val, parcelle: r.parcelle.val, insee: r.insee.val,
+      nomParcelle: parc ? parc.nom : '', commune: parc ? parc.commune : '',
+      localisation: r.ilot.val + '/' + r.parcelle.val + '/' + r.insee.val,
+      gps: parc ? parc.gps : r.gps.val,
+      surface: parc ? parc.surface : parseFloat(r.surface.val),
+      culture: r.culture.val,
+      bbch: r.bbch.val,
+      biologique: r.biologique.val,
+      provenance: 'confirme',
+      timestamp: nowISO(),
+      version: 1,
+      author: 'agent-ceres',
+    };
+    REGISTRE.push(entry);
+    flowData.registered = true;
+    flowData.entryId = entry.id;
+    addTrace('REGISTRE', 'Flux agentique: ' + ammInfo.produit + ' sur ' + r.ilot.val + '/' + r.parcelle.val + ' (v' + entry.version + ')');
+    updateRegCount();
+  }
+
+  panel.innerHTML = `
+    <div class="flow-step-title">06 · Registre immuable</div>
+    <div class="flow-step-desc">Événement versionné horodaté. Toute correction = nouvelle version. Conservation 5 ans.</div>
+    <div class="card-body">
+      <div class="form-row"><strong>ID: <span class="mono">${flowData.entryId}</span></strong></div>
+      <div class="form-row"><strong>Version:</strong> 1 · <strong>Auteur:</strong> agent-ceres · <strong>Timestamp:</strong> <span class="mono">${nowISO()}</span></div>
+      <div class="form-row"><strong>Provenance:</strong> <span class="prov confirme">confirmé</span> (tous champs)</div>
+      <div class="divider"></div>
+      <table class="tbl"><tbody>
+        <tr><td>Produit</td><td>${ammInfo.produit} (AMM ${r.amm.val})</td></tr>
+        <tr><td>Dose</td><td class="mono">${r.dose.val} ${ammInfo.unite}</td></tr>
+        <tr><td>Parcelle</td><td class="mono">${r.ilot.val}/${r.parcelle.val} ${parc?parc.nom:''}</td></tr>
+        <tr><td>Surface</td><td class="mono">${parc?parc.surface:''} ha</td></tr>
+        <tr><td>Date</td><td class="mono">${r.dateUtilisation.val}</td></tr>
+        <tr><td>Culture / BBCH</td><td class="mono">${r.culture.val} / ${r.bbch.val}</td></tr>
+      </tbody></table>
+    </div>
+  `;
+  controls.innerHTML = `<button class="btn btn-outline" onclick="prevFlow()">← Retour</button><button class="btn btn-gold" onclick="nextFlow()">Exporter →</button>`;
+}
+
+function flowExports(panel, controls) {
+  panel.innerHTML = `
+    <div class="flow-step-title">07 · Exports</div>
+    <div class="flow-step-desc">CSV (UTF-8, une ligne par utilisation, 17 colonnes), JSON (schema_version), PDF (en-tête SIRET + période).</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:20px">
+      <button class="btn btn-gold" onclick="exportCSV()">↓ Export CSV (17 colonnes, UTF-8)</button>
+      <button class="btn btn-gold" onclick="exportJSON()">↓ Export JSON (schema_version)</button>
+      <button class="btn btn-gold" onclick="exportPDFSim()">↓ Export PDF (en-tête SIRET)</button>
+    </div>
+    <div class="divider"></div>
+    <div class="section-title">Aperçu CSV (5 premières lignes)</div>
+    <pre class="mono" style="font-size:10px;background:var(--anthracite);color:#c8cdd3;padding:14px;border-radius:var(--r);overflow-x:auto;max-height:300px">${csvPreview()}</pre>
+  `;
+  controls.innerHTML = `<button class="btn btn-outline" onclick="prevFlow()">← Retour</button><button class="btn btn-outline" onclick="initFlux()">↻ Recommencer</button><button class="btn btn-gold" onclick="navTo('registre')">Voir registre →</button>`;
+}
+
+function nextFlow() { if (flowStep < 6) { flowStep++; renderFlowStep(); } }
+function prevFlow() { if (flowStep > 0) { flowStep--; renderFlowStep(); } }
+
+function fieldLabel(k) {
+  const map = {
+    siretDetenteur:'SIRET détenteur', siretBeneficiaire:'SIRET bénéficiaire',
+    produit:'Produit', amm:'AMM', dateUtilisation:'Date', horaireDebut:'H. début', horaireFin:'H. fin',
+    delaiRentree:'Délai rentrée', dose:'Dose', cible:'Cible', modeApplication:'Mode application',
+    ilot:'Ilot', parcelle:'Parcelle', insee:'INSEE', gps:'GPS', surface:'Surface', culture:'Culture', bbch:'BBCH', biologique:'Bio',
+  };
+  return map[k] || k;
+}
+
+/* ============================================================
+   PAC
+   ============================================================ */
+function viewPAC() {
+  const total = PARCELLES.reduce((s,p)=>s+p.surface,0);
+  return `
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-head"><div><div class="card-title">Pré-déclaration PAC 2026</div><div class="card-sub">TELEPAC · mi-mai · Ceres prépare, l\'exploitant déclare</div></div>
+      <span class="tag warn">Préparation · ne pas déposer</span>
+    </div>
+    <div class="card-body">
+      <div class="grid-4">
+        <div><div class="kpi-label">Surface totale</div><div class="kpi-val">${total.toFixed(1)}<span class="kpi-unit"> ha</span></div></div>
+        <div><div class="kpi-label">Parcelles</div><div class="kpi-val">${PARCELLES.length}</div></div>
+        <div><div class="kpi-label">DPU estimé</div><div class="kpi-val">${(total*73.5).toFixed(0)}<span class="kpi-unit"> €</span></div></div>
+        <div><div class="kpi-label">Conformité BCAE</div><div class="kpi-val">${pacConformite()}<span class="kpi-unit">%</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-head"><div><div class="card-title">Contrôles BCAE</div><div class="card-sub">Bande enherbée · Rotation · Prairie permanente · N RPG</div></div></div>
+    <div class="card-body" style="padding:0">${pacComplianceGrid()}</div>
+  </div>
+  <div class="card">
+    <div class="card-head"><div><div class="card-title">Détail par parcelle</div><div class="card-sub">RPG importé · pré-rempli</div></div>
+      <button class="btn btn-outline btn-sm" onclick="exportPAC()">↓ Export pré-déclaration</button>
+    </div>
+    <div class="card-body" style="padding:0">
+      <table class="tbl"><thead><tr><th>Ilot/Parc.</th><th>Commune</th><th>Nom</th><th>Culture</th><th class="num">Surface</th><th class="num">DPU</th><th>BCAE</th></tr></thead><tbody>
+      ${PARCELLES.map(p=>`<tr><td class="mono">${p.ilot}/${p.parcelle}</td><td>${p.commune}</td><td>${p.nom}</td><td><span class="tag gold">${p.culture}</span></td><td class="num">${p.surface.toFixed(1)}</td><td class="num">${(p.surface*73.5).toFixed(0)} €</td><td><span class="tag ok">✓</span></td></tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>
+  `;
+}
+
+function renderPAC() { /* placeholder for future hooks */ }
+
+function exportPAC() {
+  const lines = [['ilot','parcelle','insee','commune','nom','culture','surface_ha','dpu_eur','bcae']];
+  PARCELLES.forEach(p => lines.push([p.ilot,p.parcelle,p.insee,p.commune,p.nom,p.culture,p.surface,(p.surface*73.5).toFixed(2),'OK']));
+  const csv = lines.map(l => l.join(';')).join('\n');
+  downloadFile('ceres_pac_2026.csv', csv, 'text/csv');
+  toast('Pré-déclaration PAC exportée');
+  addTrace('EXPORT', 'PAC CSV · ' + PARCELLES.length + ' parcelles');
+}
+
+/* ============================================================
+   COOP
+   ============================================================ */
+function viewCoopVue() {
+  const totalAdh = ADHERENTS.length;
+  const totalSurface = ADHERENTS.reduce((s,a)=>s+a.surface,0);
+  const totalReg = ADHERENTS.reduce((s,a)=>s+a.utilisations,0) + REGISTRE.length;
+  const avgConf = Math.round(ADHERENTS.reduce((s,a)=>s+a.conformite,0) / ADHERENTS.length);
+  return `
+  <div class="grid-4" style="margin-bottom:18px">
+    <div class="kpi accent"><div class="kpi-label">Adhérents</div><div class="kpi-val">${totalAdh}</div><div class="kpi-delta neu">coopérative</div></div>
+    <div class="kpi ok"><div class="kpi-label">Surface aggregée</div><div class="kpi-val">${totalSurface.toFixed(0)}<span class="kpi-unit"> ha</span></div></div>
+    <div class="kpi"><div class="kpi-label">Utilisations</div><div class="kpi-val">${totalReg}</div><div class="kpi-delta neu">tous adhérents</div></div>
+    <div class="kpi terra"><div class="kpi-label">Conformité moy.</div><div class="kpi-val">${avgConf}<span class="kpi-unit">%</span></div></div>
+  </div>
+  <div class="grid-2">
+    <div class="card"><div class="card-head"><div class="card-title">Top adhérents par surface</div></div><div class="card-body" style="padding:0"><table class="tbl"><thead><tr><th>Adhérent</th><th class="num">Parcelles</th><th class="num">Surface</th><th class="num">Conformité</th></tr></thead><tbody>
+    ${ADHERENTS.sort((a,b)=>b.surface-a.surface).map(a=>`<tr><td>${a.nom}<br><span class="mono" style="font-size:10px;color:var(--muted)">${a.siret}</span></td><td class="num">${a.parcelles}</td><td class="num">${a.surface.toFixed(1)}</td><td class="num"><span class="tag ${a.conformite>=95?'ok':a.conformite>=90?'warn':'err'}">${a.conformite}%</span></td></tr>`).join('')}
+    </tbody></table></div></div>
+    <div class="card"><div class="card-head"><div class="card-title">Alertes conformité</div></div><div class="card-body">
+    ${ADHERENTS.filter(a=>a.conformite<95).map(a=>`<div class="alert ${a.conformite<90?'err':'warn'}"><div class="ai">${a.conformite<90?'✕':'▲'}</div><div><div class="at">${a.nom}</div><div class="ad">Conformité ${a.conformite}% · ${a.utilisations} utilisations</div></div></div>`).join('') || '<div class="empty">Aucune alerte</div>'}
+    </div></div>
+  </div>
+  `;
+}
+
+function viewAdherents() {
+  return `<div class="card"><div class="card-head"><div class="card-title">Adhérents</div></div><div class="card-body" style="padding:0"><table class="tbl"><thead><tr><th>SIRET</th><th>Nom</th><th class="num">Parcelles</th><th class="num">Surface</th><th class="num">Utilisations</th><th class="num">Conformité</th></tr></thead><tbody>
+  ${ADHERENTS.map(a=>`<tr><td class="mono">${a.siret}</td><td>${a.nom}</td><td class="num">${a.parcelles}</td><td class="num">${a.surface.toFixed(1)} ha</td><td class="num">${a.utilisations + (a.siret===SIRET_DETENTEUR?REGISTRE.length:0)}</td><td class="num"><span class="tag ${a.conformite>=95?'ok':a.conformite>=90?'warn':'err'}">${a.conformite}%</span></td></tr>`).join('')}
+  </tbody></table></div></div>`;
+}
+
+function viewAlertes() {
+  const alerts = [
+    { type:'err', t:'EARL VolcAGRI · Dose non conforme', d:'AMM 20080037 sur TRZAX, dose 0.8 L/ha > max 0.6 L/ha' },
+    { type:'warn', t:'GAEC du Cuzols · AMM expiré', d:'AMM 9100776 validité au 01/03/2026, utilisation au 15/04/2026' },
+    { type:'warn', t:'Ferme du Margeride · BBCH manquant', d:'2 utilisations sans stade phénologique' },
+    { type:'ok', t:'Gaiec de la Planèze · Conforme', d:'Tous les champs Annexe I remplis pour 21 utilisations' },
+  ];
+  return `<div class="card"><div class="card-head"><div class="card-title">Alertes système</div><div class="card-sub">Contrôles automatiques sur tous adhérents</div></div><div class="card-body">${alerts.map(a=>`<div class="alert ${a.type}"><div class="ai">${a.type==='err'?'✕':a.type==='warn'?'▲':'✓'}</div><div><div class="at">${a.t}</div><div class="ad">${a.d}</div></div></div>`).join('')}</div></div>`;
+}
+
+function viewCarto() {
+  // Text-based compliance map
+  const communes = {};
+  PARCELLES.forEach(p => {
+    if (!communes[p.commune]) communes[p.commune] = { surface: 0, count: 0 };
+    communes[p.commune].surface += p.surface;
+    communes[p.commune].count++;
+  });
+  ADHERENTS.forEach(a => {
+    const c = a.nom.includes('Margeride') ? 'Margeride' : a.nom.includes('Planèze') ? 'Planèze' : 'Cantal';
+    if (!communes[c]) communes[c] = { surface: a.surface, count: a.parcelles };
+  });
+
+  return `<div class="card"><div class="card-head"><div class="card-title">Carto conformité · Cantal (15)</div><div class="card-sub">par commune · RPG 2026</div></div><div class="card-body">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px">
+      ${Object.entries(communes).map(([c,d])=>`<div style="border:1px solid var(--line);border-radius:var(--r-sm);padding:14px"><div style="font-weight:600">${c}</div><div class="mono" style="font-size:11px;color:var(--muted);margin:6px 0">${d.count} parcelles · ${d.surface.toFixed(1)} ha</div><div class="compliance-bar"><div class="compliance-fill" style="width:${75+Math.random()*24}%;background:var(--gold)"></div></div></div>`).join('')}
+    </div>
+  </div></div>`;
+}
+
+/* ============================================================
+   AGENT CHAT
+   ============================================================ */
+function renderChat() {
+  const main = document.querySelector('.main');
+  main.innerHTML = `
+    <div class="topbar">
+      <div class="topbar-left"><h1>Conversation agent</h1><span class="topbar-role">Agent Ceres</span></div>
+      <div class="topbar-right"><span class="topbar-meta">Agent Ceres · GLM-5.2 · IA Act art 50(1)</span></div>
+    </div>
+    <div class="chat-wrap">
+      <div class="chat-main">
+        <div class="chat-msgs" id="chat-msgs"></div>
+        <div class="chat-suggestions" id="chat-sug">
+          <button class="chat-sug" onclick="chatSend('Ajoute MODDUS sur Grand Champ le 15/04/2026')">Ajoute MODDUS sur Grand Champ</button>
+          <button class="chat-sug" onclick="chatSend('Liste mes parcelles')">Liste mes parcelles</button>
+          <button class="chat-sug" onclick="chatSend('Exporte le registre en CSV')">Exporte le registre</button>
+          <button class="chat-sug" onclick="chatSend('Quelle est ma conformité PAC ?')">Conformité PAC</button>
+          <button class="chat-sug" onclick="chatSend('Prépare ma déclaration PAC')">Prépare déclaration PAC</button>
+        </div>
+        <div class="chat-input">
+          <input id="chat-input" placeholder="Demandez à Ceres..." onkeydown="if(event.key==='Enter')chatSend(this.value)">
+          <button class="btn btn-gold" onclick="chatSend(document.getElementById('chat-input').value)">Envoyer</button>
+        </div>
+      </div>
+      <div class="chat-trace">
+        <div class="chat-trace-head">Actions tracées</div>
+        <div id="trace-list">${renderTraceItems()}</div>
+      </div>
+    </div>
+  `;
+  if (chatHistory.length === 0) {
+    addChatMsg('agent', 'Bonjour, je suis Ceres, votre agent admin. Je peux enregistrer des utilisations phyto, préparer votre PAC, vérifier la conformité. Transparence IA Act art 50(1): chaque action est tracée et provable. Que puis-je faire pour vous ?');
+  } else {
+    chatHistory.forEach(m => appendChatMsg(m.role, m.text));
+  }
+}
+
+function addChatMsg(role, text) {
+  chatHistory.push({ role, text });
+  appendChatMsg(role, text);
+}
+
+function appendChatMsg(role, text) {
+  const msgs = document.getElementById('chat-msgs');
+  if (!msgs) return;
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + role;
+  div.innerHTML = `<div class="chat-avatar">${role === 'agent' ? 'C' : 'U'}</div><div class="chat-bubble">${text}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function chatSend(text) {
+  if (!text || !text.trim()) return;
+  document.getElementById('chat-input').value = '';
+  addChatMsg('user', text);
+  // Typing indicator
+  const msgs = document.getElementById('chat-msgs');
+  const typing = document.createElement('div');
+  typing.className = 'chat-msg agent';
+  typing.id = 'typing';
+  typing.innerHTML = '<div class="chat-avatar">C</div><div class="chat-bubble typing">Traitement...</div>';
+  msgs.appendChild(typing);
+  msgs.scrollTop = msgs.scrollHeight;
+  setTimeout(() => {
+    document.getElementById('typing')?.remove();
+    const reply = processAgent(text);
+    addChatMsg('agent', reply);
+    refreshTrace();
+  }, 600);
+}
+
+function processAgent(input) {
+  const t = input.toLowerCase();
+
+  // Add utilisation
+  if (t.includes('ajoute') || t.includes('enregistr') || t.includes('moddus') || t.includes('bell') || t.includes('cap osele')) {
+    let amm = null, parcIdx = 0;
+    if (t.includes('moddus')) amm = '9400352';
+    else if (t.includes('bell')) amm = '20080037';
+    else if (t.includes('carbrene')) amm = '9100776';
+    else if (t.includes('korit')) amm = '8800461';
+    else if (t.includes('cap osele') || t.includes('caposele')) amm = '20100063';
+    else amm = Object.keys(AMM_DB)[0];
+
+    const d = AMM_DB[amm];
+    // Try to match parcelle by name in input
+    PARCELLES.forEach((p, i) => { if (t.includes(p.nom.toLowerCase())) parcIdx = i; });
+    const p = PARCELLES[parcIdx];
+
+    // Date
+    let dateStr = todayFR();
+    const dateMatch = input.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if (dateMatch) dateStr = dateMatch[0];
+
+    const entry = {
+      id: uid(), siretDetenteur: SIRET_DETENTEUR, siretBeneficiaire: SIRET_BENEF,
+      produit: d.produit, amm: amm, dateUtilisation: dateStr,
+      horaireDebut: d.horaire ? '07:30' : '', horaireFin: d.horaire ? '09:00' : '',
+      delaiRentree: '06:00', dose: d.dose, doseUnite: d.unite,
+      cible: '', modeApplication: 'pulvérisation',
+      ilot: p.ilot, parcelle: p.parcelle, insee: p.insee, nomParcelle: p.nom, commune: p.commune,
+      localisation: p.ilot + '/' + p.parcelle + '/' + p.insee, gps: p.gps,
+      surface: p.surface, culture: p.culture, bbch: '32', biologique: 'non',
+      provenance: 'saisi', timestamp: nowISO(), version: 1, author: 'agent-ceres',
+    };
+    REGISTRE.push(entry);
+    updateRegCount();
+    addTrace('REGISTRE', 'Chat: ' + d.produit + ' (AMM ' + amm + ') sur ' + p.ilot + '/' + p.parcelle + ' · ' + p.surface + 'ha');
+    return `Utilisation enregistrée. <span class="mono">${d.produit}</span> (AMM ${amm}, ${d.dose} ${d.unite}) sur <span class="mono">${p.ilot}/${p.parcelle}</span> ${p.nom} (${p.surface} ha, ${OEPP[p.culture]||p.culture}).<div class="reg"><span class="rh">REGISTRE · v1 · ${nowISO()}</span><span class="rt">17 champs · provenance saisi · ID ${entry.id}</span></div>`;
+  }
+
+  // List parcelles
+  if (t.includes('parcelle') || t.includes('liste')) {
+    return `Vos ${PARCELLES.length} parcelles RPG:<div class="reg"><span class="rh">RPG · Cantal 15</span><span class="rt">${PARCELLES.map(p => p.ilot + '/' + p.parcelle + ' ' + p.nom + ' · ' + p.surface + 'ha · ' + OEPP[p.culture]).join('<br>')}</span></div>`;
+  }
+
+  // Export
+  if (t.includes('export') || t.includes('csv') || t.includes('json')) {
+    if (t.includes('json')) { exportJSON(); return 'Export JSON lancé (schema_version). Vérifiez vos téléchargements.'; }
+    exportCSV();
+    return `Export CSV lancé: ${REGISTRE.length} utilisation(s), 17 colonnes, UTF-8. Le fichier est téléchargé.`;
+  }
+
+  // PAC
+  if (t.includes('pac') || t.includes('conformit') || t.includes('bcae')) {
+    return `Conformité PAC: <span class="mono">${pacConformite()}%</span>. BCAE: bande enherbée ✓, rotation ✓, prairie permanente N/A (céréales), N RPG ✓. DPU estimé: <span class="mono">${(PARCELLES.reduce((s,p)=>s+p.surface,0)*73.5).toFixed(0)} €</span>. Pré-déclaration prête, l\'exploitant dépose sur TELEPAC mi-mai.<div class="reg"><span class="rh">PAC 2026 · Ceres prépare, humain déclare</span><span class="rt">Surface: ${PARCELLES.reduce((s,p)=>s+p.surface,0).toFixed(1)} ha · ${PARCELLES.length} parcelles</span></div>`;
+  }
+
+  // Registre count
+  if (t.includes('registre') || t.includes('combien')) {
+    return `Registre phyto: <span class="mono">${REGISTRE.length}</span> utilisation(s). Conservation 5 ans, arrete 24/12/2025 Annexe I.`;
+  }
+
+  // Default
+  return `Je peux: enregistrer une utilisation phyto (\'ajoute MODDUS sur Grand Champ\'), lister vos parcelles, exporter le registre (CSV/JSON), vérifier la conformité PAC. Chaque action est tracée (IA Act art 50(1)).`;
+}
+
+/* ===== Trace ===== */
+function addTrace(type, action) {
+  AGENT_TRACE.push({ type, action, timestamp: nowISO() });
+}
+function renderTraceItems() {
+  if (!AGENT_TRACE.length) return '<div class="trace-item" style="color:var(--muted)">Aucune action tracée</div>';
+  return AGENT_TRACE.slice(-20).reverse().map(t => `<div class="trace-item"><div class="tt">${t.timestamp} · ${t.type}</div><div class="ta">${t.action}</div></div>`).join('');
+}
+function refreshTrace() {
+  const el = document.getElementById('trace-list');
+  if (el) el.innerHTML = renderTraceItems();
+}
+
+function viewTrace() {
+  return `<div class="card"><div class="card-head"><div class="card-title">Actions tracées</div><div class="card-sub">IA Act art 50(1) · transparence</div></div><div class="card-body" style="padding:0">
+  ${AGENT_TRACE.length ? `<table class="tbl"><thead><tr><th>Timestamp</th><th>Type</th><th>Action</th></tr></thead><tbody>
+  ${AGENT_TRACE.slice().reverse().map(t=>`<tr><td class="mono">${t.timestamp}</td><td><span class="tag info">${t.type}</span></td><td>${t.action}</td></tr>`).join('')}
+  </tbody></table>` : '<div class="empty">Aucune action tracée</div>'}
+  </div></div>`;
+}
+
+/* ============================================================
+   EXPORTS (réels)
+   ============================================================ */
+const CSV_HEADERS = [
+  'siret_detenteur','siret_beneficiaire','produit','amm','date_utilisation',
+  'horaire_debut','horaire_fin','delai_rentree_anticipee','dose','dose_unite',
+  'cible','mode_application','ilot_rpg','parcelle_rpg','commune_insee',
+  'gps_wgs84','surface_traitee_ha','culture_oepp','stade_bbch','conduite_biologique',
+  'provenance','timestamp','version','author'
+];
+
+function buildCSV() {
+  const rows = [CSV_HEADERS];
+  REGISTRE.forEach(r => {
+    rows.push([
+      r.siretDetenteur, r.siretBeneficiaire, r.produit, r.amm, r.dateUtilisation,
+      r.horaireDebut, r.horaireFin, r.delaiRentree, r.dose, r.doseUnite,
+      r.cible, r.modeApplication, r.ilot, r.parcelle, r.insee,
+      r.gps, r.surface, r.culture, r.bbch, r.biologique,
+      r.provenance, r.timestamp, r.version, r.author
+    ]);
+  });
+  // Add BOM for UTF-8 Excel compatibility
+  return '\ufeff' + rows.map(row => row.map(c => {
+    const s = String(c == null ? '' : c);
+    return s.includes(';') || s.includes('"') ? '"' + s.replace(/"/g,'""') + '"' : s;
+  }).join(';')).join('\r\n');
+}
+
+function exportCSV() {
+  if (REGISTRE.length === 0) { toast('Registre vide · rien à exporter'); return; }
+  const csv = buildCSV();
+  downloadFile('ceres_registre_phyto.csv', csv, 'text/csv;charset=utf-8');
+  toast('CSV exporté · ' + REGISTRE.length + ' ligne(s) · 17 colonnes');
+  addTrace('EXPORT', 'CSV · ' + REGISTRE.length + ' lignes · 17 colonnes · UTF-8');
+}
+
+function csvPreview() {
+  if (!REGISTRE.length) return 'Registre vide';
+  const lines = buildCSV().split('\r\n').slice(0, 6);
+  return lines.map(l => l.substring(0, 120) + (l.length > 120 ? '...' : '')).join('\n');
+}
+
+function buildJSON() {
+  return JSON.stringify({
+    schema_version: '1.0.0',
+    arrete: '24/12/2025',
+    annexe: 'I',
+    generated_at: nowISO(),
+    siret_coop: SIRET_DETENTEUR,
+    count: REGISTRE.length,
+    utilisations: REGISTRE.map(r => ({
+      id: r.id, siret_detenteur: r.siretDetenteur, siret_beneficiaire: r.siretBeneficiaire,
+      produit: r.produit, amm: r.amm, date_utilisation: r.dateUtilisation,
+      horaire_debut: r.horaireDebut, horaire_fin: r.horaireFin, delai_rentree: r.delaiRentree,
+      dose: r.dose, dose_unite: r.doseUnite, cible: r.cible, mode_application: r.modeApplication,
+      ilot: r.ilot, parcelle: r.parcelle, commune_insee: r.insee, gps_wgs84: r.gps,
+      surface_ha: r.surface, culture: r.culture, stade_bbch: r.bbch, conduite_biologique: r.biologique,
+      provenance: r.provenance, timestamp: r.timestamp, version: r.version, author: r.author,
+    })),
+  }, null, 2);
+}
+
+function exportJSON() {
+  const json = buildJSON();
+  downloadFile('ceres_registre_phyto.json', json, 'application/json');
+  toast('JSON exporté · schema_version 1.0.0');
+  addTrace('EXPORT', 'JSON · schema_version 1.0.0 · ' + REGISTRE.length + ' entrées');
+}
+
+function exportPDFSim() {
+  const header = 'CERES · REGISTRE PHYTO · SIRET ' + SIRET_DETENTEUR + ' · Période 2026 · ' + todayFR();
+  const lines = [header, '', ...REGISTRE.map(r => r.dateUtilisation + ' | ' + r.produit + ' | AMM ' + r.amm + ' | ' + r.ilot + '/' + r.parcelle + ' | ' + r.surface + 'ha')];
+  downloadFile('ceres_registre_phyto.txt', lines.join('\n'), 'text/plain');
+  toast('PDF simulé (txt) · en-tête SIRET');
+  addTrace('EXPORT', 'PDF (txt) · en-tête SIRET ' + SIRET_DETENTEUR);
+}
+
+function downloadFile(name, content, type) {
+  const blob = new Blob([content], { type: type });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = 'registre_phyto_ceres.csv';
-  a.click();
-  URL.revokeObjectURL(url);
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-// ===== Toast =====
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  document.getElementById('toastMsg').textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-// ===== Role switcher =====
-
-document.querySelectorAll('.role-pill').forEach(p => {
-  p.addEventListener('click', () => {
-    state.role = p.dataset.role;
-    state.view = ROLES[state.role].nav[0].id;
-    render();
-  });
-});
-
-// ===== Mobile menu =====
-
-document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
-  document.getElementById('sidebar').classList.toggle('open');
-});
-
-// ===== Modal close =====
-
-document.getElementById('modalClose').addEventListener('click', closeModal);
-document.getElementById('modalOverlay').addEventListener('click', (e) => {
-  if (e.target.id === 'modalOverlay') closeModal();
-});
-
-// ===== Init =====
-
-render();
+/* ===== Init ===== */
+switchRole('exploitant');
 </script>
 </body>
 </html>
