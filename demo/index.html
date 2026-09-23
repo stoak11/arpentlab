@@ -886,10 +886,8 @@ const NAV_CONFIG = {
   agent: [
     { id:'agent-chat', label:'Conversation', ico:'⚙' },
     { id:'agent-actions', label:'Actions tracees', ico:'≡' },
-    { id:'sources-primaires', label:'Sources primaires', ico:'▤' },
-    { id:'documentation-produit', label:'Documentation produit', ico:'○' },
-    { id:'recommandations', label:'Recommandations', ico:'→' },
-    { id:'conseils-reglementaires', label:'Conseils reglementaires', ico:'⚠' },
+    { id:'agent-parametrage', label:'Parametrage', ico:'◈' },
+    { id:'agent-architecture', label:'Architecture & explicabilite', ico:'▤' },
   ],
 };
 
@@ -911,10 +909,8 @@ const TITLES = {
   'coop-carto': 'Carto conformite',
   'agent-chat': 'Conversation',
   'agent-actions': 'Actions tracees',
-  'sources-primaires': 'Sources primaires',
-  'documentation-produit': 'Documentation produit',
-  'recommandations': 'Recommandations',
-  'conseils-reglementaires': 'Conseils reglementaires',
+  'agent-parametrage': 'Parametrage agent',
+  'agent-architecture': 'Architecture & explicabilite',
 };
 
 /* ============================================================
@@ -2598,180 +2594,99 @@ function renderTrace() {
   ).join('');
 }
 
-/* ===== Sources ===== */
-function renderSources() {
-  const regHtml = SOURCES_REG.map(s => {
-    const meta = [];
-    if (s.nor) meta.push(`<span>NOR: <b>${s.nor}</b></span>`);
-    if (s.jorf) meta.push(`<span>${s.jorf}</span>`);
-    if (s.date) meta.push(`<span>${s.date}</span>`);
-    return `<div class="src-card">
-      <h4>${s.name}</h4>
-      <div class="src-meta"><span>${s.url}</span>${meta.join('')}</div>
-      <div class="src-use">Ceres: ${s.use} / Maj: ${s.freq}</div>
-    </div>`;
-  }).join('');
+/* ===== Parametrage agent ===== */
+function renderParametrage() {
+  const models = [
+    { couche: 'Orchestration', modele: 'GPT-4o (pilote)', role: 'intent + selection des tools + proposition', alt: 'Mistral Large en prod EU' },
+    { couche: 'Extraction documentaire', modele: 'GPT-4o vision', role: 'lecture factures PDF / scans → JSON structure', alt: 'Document AI' },
+    { couche: 'Embeddings / RAG', modele: 'text-embedding-3-large', role: 'indexation referentiels + donnees fermier', alt: 'embedding souverain' },
+    { couche: 'Prevision rendement', modele: 'Gradient Boosting (GBM)', role: 'regression tabulaire, PAS un LLM', alt: '—' },
+  ];
+  const skills = [
+    ['get_parcels', 'Parcelles', 'TelePAC (RPG)', 'P0'],
+    ['get_invoices', 'Factures multi-fournisseurs', 'Coop + negociants + email', 'P0'],
+    ['fill_phyto_registry', 'Pre-remplir registre phyto', 'LLM + RAG', 'P0'],
+    ['prepare_pac_declaration', 'Pre-remplir PAC', 'TelePAC + Ceres', 'P0'],
+    ['track_inventory', 'Stocks intrants', 'factures + traitements', 'P0'],
+    ['get_parcel_costs', 'Cout par parcelle', 'factures + traitements', 'P0'],
+    ['get_market_prices', 'Prix de marche', 'Euronext, indices', 'P0'],
+    ['check_conditionality', 'Conditionnalite PAC', 'regles + LLM', 'P0'],
+    ['detect_anomalies', 'Non-conformites', 'LLM + regles', 'P0'],
+    ['submit_to_telepac', 'Soumission PAC', 'TelePAC', 'P0'],
+    ['export_phyto', 'Export registre', 'Ceres', 'P0'],
+    ['get_weather', 'Meteo 7j', 'Meteo-France', 'P1'],
+    ['get_deadlines', 'Echeances', 'calendrier Ceres', 'P1'],
+    ['get_documents', 'Classer documents', 'Email + Coop + MSA', 'P1'],
+    ['recommend_treatment_window', 'Fenetre traitement', 'meteo + regles', 'P1'],
+    ['get_treatments', 'Traitements enregistres', 'registre interne', 'P1'],
+  ];
+  const guardrails = [
+    ['Validation humaine', 'Aucune soumission sans clic explicite du fermier'],
+    ['Dose ≤ AMM', 'Toute dose verifiee contre l\'AMM (regle deterministe)'],
+    ['Culture autorisee', 'Produit autorise sur la culture cible (E-Phy)'],
+    ['Parcelle existe', 'La parcelle doit exister dans le RPG'],
+    ['Provenance', 'Chaque champ porte sa source + version referentiel'],
+    ['Registre immuable', 'Aucune modif a posteriori, corrections horodatees'],
+    ['Consentement', 'Donnees parcellaires jamais partagees sans consentement'],
+    ['Audit complet', 'Toute action journalisee et horodatee'],
+  ];
 
-  const dataHtml = SOURCES_DATA.map(s => {
-    return `<div class="src-card">
-      <h4>${s.name}</h4>
-      <div class="src-meta"><span>${s.url}</span><span>${s.ver}</span><span>Maj: ${s.freq}</span></div>
-      <div class="src-use">Ceres: ${s.use}</div>
-    </div>`;
-  }).join('');
+  const modelRows = models.map(m => `<tr><td><b>${m.couche}</b></td><td>${m.modele}</td><td style="font-size:12px;color:var(--ink-2)">${m.role}</td><td style="font-size:11px;color:var(--muted)">${m.alt}</td></tr>`).join('');
+  const skillRows = skills.map(s => `<tr><td><code style="font-size:11px">${s[0]}</code></td><td>${s[1]}</td><td style="font-size:12px;color:var(--ink-2)">${s[2]}</td><td><span class="badge ${s[3]==='P0'?'badge-green':'badge-amber'}">${s[3]}</span></td></tr>`).join('');
+  const gr = guardrails.map(g => `<div class="advice-card"><h4>${g[0]}</h4><p style="font-size:12px;color:var(--ink-2)">${g[1]}</p></div>`).join('');
 
-  document.getElementById('sources-content').innerHTML =
-    `<div class="src-cat-label">Reglementaire</div>` + regHtml +
-    `<div class="src-cat-label">Donnees et referentiels</div>` + dataHtml;
-}
+  document.getElementById('parametrage-content').innerHTML = `
+    <div class="card"><div class="card-head"><div class="card-title">Modeles</div><div class="card-meta">4 couches, choix tranches</div></div>
+      <div class="card-body"><table><thead><tr><th>Couche</th><th>Modele retenu</th><th>Role</th><th>Alternative</th></tr></thead><tbody>${modelRows}</tbody></table>
+      <p style="font-size:12px;color:var(--ink-2);margin-top:10px">Bascule GPT-4o → Mistral Large en production : prevue et non optionnelle (souverainete des donnees agricoles). Prevision = GBM, pas un LLM.</p></div></div>
 
-/* ===== Doc produit ===== */
-function renderDoc() {
-  document.getElementById('doc-content').innerHTML = `
-    <div class="card">
-      <div class="card-head"><div class="card-title">PRD - Produit</div><div class="card-meta">Ceres / copilote administratif</div></div>
-      <div class="card-body">
-        <p style="font-size:13px; margin-bottom:14px;">Ceres est un copilote administratif agricole. Deux faces: Prev (previsions rendement) et Agentique (automatisation registre phyto + declarations). Le fermier valide, Ceres prepare.</p>
-        <div class="prd-grid">
-          <div class="prd-face">
-            <span class="pf-tag pf-prev">Prev</span>
-            <h4>Previsions de rendement</h4>
-            <p>Modeles predictifs sur donnees parcellaires, meteo, satellite et historique. Estimation rendement par parcelle, par culture, par campagne.</p>
-          </div>
-          <div class="prd-face">
-            <span class="pf-tag pf-agent">Agentique</span>
-            <h4>Automatisation registre + declarations</h4>
-            <p>Saisie agentique du registre phyto, pre-remplissage PAC, controles de conformite, exports. L'agent prepare, l'humain declare.</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="card"><div class="card-head"><div class="card-title">Skills (tools) de l\'agent</div><div class="card-meta">16 tools · fonction calling</div></div>
+      <div class="card-body"><table><thead><tr><th>Tool</th><th>Role</th><th>Source</th><th>Priorite</th></tr></thead><tbody>${skillRows}</tbody></table></div></div>
 
-    <div class="card">
-      <div class="card-head"><div class="card-title">Protocole - flux 7 etapes</div><div class="card-meta">Extraction -> Exports</div></div>
-      <div class="card-body">
-        <div class="proto">
-          <div class="proto-step"><div class="ps-num">1</div><div class="ps-name">Extraction</div><div class="ps-desc">factures / carnets</div></div>
-          <div class="proto-step"><div class="ps-num">2</div><div class="ps-name">Reconciliation</div><div class="ps-desc">E-Phy / RPG / OEPP</div></div>
-          <div class="proto-step"><div class="ps-num">3</div><div class="ps-name">Controles</div><div class="ps-desc">doses / mentions</div></div>
-          <div class="proto-step"><div class="ps-num">4</div><div class="ps-name">Questions</div><div class="ps-desc">clarifications</div></div>
-          <div class="proto-step"><div class="ps-num">5</div><div class="ps-name">Validation</div><div class="ps-desc">fermier decide</div></div>
-          <div class="proto-step"><div class="ps-num">6</div><div class="ps-name">Registre</div><div class="ps-desc">immuable / horodate</div></div>
-          <div class="proto-step"><div class="ps-num">7</div><div class="ps-name">Exports</div><div class="ps-desc">CSV / JSON / PDF</div></div>
-        </div>
-        <p style="font-size:12px; color:var(--ink-2); margin-top:10px;">Chaque champ porte sa provenance. L'agent prepare, l'humain declare. Le registre est immuable: aucune modification a posteriori, uniquement correction horodatee.</p>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-head"><div class="card-title">Roadmap</div><div class="card-meta">Phase 0 -> Phase 4</div></div>
-      <div class="card-body">
-        <div class="roadmap">
-          <div class="rm-phase"><div class="rm-tag">Phase 0</div><div class="rm-name">Prototype + demo</div><div class="rm-date">Sept 2026</div></div>
-          <div class="rm-phase"><div class="rm-tag">Phase 1</div><div class="rm-name">MVP phyto + PAC</div><div class="rm-date">Q4 2026 (3 mois)</div></div>
-          <div class="rm-phase"><div class="rm-tag">Phase 2</div><div class="rm-name">Onboarding coop</div><div class="rm-date">Q1 2027</div></div>
-          <div class="rm-phase"><div class="rm-tag">Phase 3</div><div class="rm-name">Moat donnees + Prev</div><div class="rm-date">Q2 2027</div></div>
-          <div class="rm-phase"><div class="rm-tag">Phase 4</div><div class="rm-name">Effet de reseau</div><div class="rm-date">H2 2027</div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-head"><div class="card-title">Plan de mise en production</div><div class="card-meta">Infra / RGPD / AI Act</div></div>
-      <div class="card-body">
-        <div class="advice-grid">
-          <div class="advice-card"><h4>Infrastructure</h4>
-            <p style="font-size:12px; color:var(--ink-2);">Hebergement FR (region France centrale), donnees en France. Conformite RGPD. DPA sous-traitant signe avec chaque cooperative cliente.</p>
-          </div>
-          <div class="advice-card"><h4>Referentiels versions</h4>
-            <p style="font-size:12px; color:var(--ink-2);">E-Phy, RPG, OEPP, BBCH versionnes. Chaque version horodatee et conservee. Le registre lie chaque entree a la version du referentiel utilise.</p>
-          </div>
-          <div class="advice-card"><h4>Conservation</h4>
-            <p style="font-size:12px; color:var(--ink-2);">5 ans minimum pour le registre phyto (arrete 24/12/2025). Registre immuable, aucune modification a posteriori.</p>
-          </div>
-          <div class="advice-card"><h4>AI Act</h4>
-            <p style="font-size:12px; color:var(--ink-2);">Art 50(1) transparence: l'utilisateur sait qu'il dialogue avec une IA. Pas d'annexe III (pas de decision automatisee sur prestation publique essentielle). Classification IA-03.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-head"><div class="card-title">Architecture</div><div class="card-meta">Flux + couches</div></div>
-      <div class="card-body">
-        <p style="font-size:12px; color:var(--ink-2); margin-bottom:10px;"><b>Flux:</b> Facture/carnet -> Extraction -> Reconciliation (E-Phy, RPG, OEPP) -> Controles -> Questions -> Validation -> Registre immuable -> Exports (CSV/JSON/PDF)</p>
-        <div class="advice-grid">
-          <div class="advice-card"><h4>Couche KERN</h4>
-            <p style="font-size:12px; color:var(--ink-2);">RAG sur referentiels, agents de saisie, connecteurs E-Phy / RPG / TelePAC / Meteo-France. Extraction LLM + reconciliation structurelle.</p>
-          </div>
-          <div class="advice-card"><h4>UI + Data layer</h4>
-            <p style="font-size:12px; color:var(--ink-2);">Interface fermier (chat + formulaires valides), data layer immutable (registre horodate, scelle, versionne). Exports standards.</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="card"><div class="card-head"><div class="card-title">Guardrails</div><div class="card-meta">non negociables</div></div>
+      <div class="card-body"><div class="advice-grid">${gr}</div></div></div>
   `;
 }
 
-/* ===== Recos ===== */
-function renderRecos() {
-  document.getElementById('recos-content').innerHTML = `
-    <div class="reco"><h4><span class="r-ico">&#9679;</span> Positionnement</h4><p>Couche agentique de saisie, pas un logiciel de gestion parcellaire de plus. Se connecter a MesParcelles, Geofolia, Smag par export CSV/JSON. Ceres ne concurrence pas, il orchestre.</p></div>
-    <div class="reco"><h4><span class="r-ico">&#9679;</span> Canal d'entree</h4><p>Le conseiller cerealier (Tom) comme premier utilisateur. Il tient les carnets, il est ETA/prestataire: cas SIRET detenteur different du beneficiaire couvert. Point d'entree naturel dans la coop.</p></div>
-    <div class="reco"><h4><span class="r-ico">&#9679;</span> Pricing</h4><p>Pilote: 7500 EUR/an. DiagIA: 10000 EUR. Tarif jour: 850 EUR. B2B2C: la coop paie, le fermier utilise.</p></div>
-    <div class="reco"><h4><span class="r-ico">&#9679;</span> Distribution</h4><p>B2B2C via cooperatives. La coop paie la licence, le fermier utilise dans le cadre de son adhesion. RGPD art 28: accord de sous-traitance avec la coop.</p></div>
-    <div class="reco"><h4><span class="r-ico">&#9679;</span> Priorite produit</h4><p>1) Registre phyto (seul flux date) 2) PAC 3) Traceabilite 4) Cahiers des charges 5) Assurance. Le registre phyto est le flux le plus contraignant et le moins bien solutionne.</p></div>
-    <div class="reco"><h4><span class="r-ico">&#9679;</span> Moat (avantage defensif)</h4><p>Donnees parcellaires consolidees via le volet agentique alimentent Ceres Prev. Le volet agentique finance la donnee que le ML ne peut pas acheter ailleurs. Effet de reseau: plus de coops = plus de donnees = meilleurs modeles.</p></div>
+/* ===== Architecture & explicabilite ===== */
+function renderArchitecture() {
+  const steps = [
+    ['1', 'Demande', 'langage naturel ou chips'],
+    ['2', 'Intent', 'orchestrateur comprend'],
+    ['3', 'Tools', 'selection function calling'],
+    ['4', 'Retrieval', 'coop / TelePAC / MSA / meteo'],
+    ['5', 'Extraction', 'factures → JSON structure'],
+    ['6', 'Reconciliation', 'E-Phy / RPG / OEPP / BBCH'],
+    ['7', 'Controles', 'guardrails deterministes'],
+    ['8', 'Validation', 'le fermier decide'],
+  ];
+  const stepHtml = steps.map(s => `<div class="proto-step"><div class="ps-num">${s[0]}</div><div class="ps-name">${s[1]}</div><div class="ps-desc">${s[2]}</div></div>`).join('');
+
+  document.getElementById('architecture-content').innerHTML = `
+    <div class="card"><div class="card-head"><div class="card-title">Le flux en 8 etapes</div><div class="card-meta">l\'agent prepare, l\'humain valide</div></div>
+      <div class="card-body"><div class="proto">${stepHtml}</div>
+      <p style="font-size:12px;color:var(--ink-2);margin-top:10px">Le fermier intervient en une seule etape : la validation. Tout le reste est automatique et trace.</p></div></div>
+
+    <div class="card"><div class="card-head"><div class="card-title">Explicabilite par construction</div><div class="card-meta">le contrat de donnees de Ceres</div></div>
+      <div class="card-body"><div class="advice-grid">
+        <div class="advice-card"><h4>Provenance par champ</h4><p style="font-size:12px;color:var(--ink-2)">Chaque donnee extraite reference sa source (facture / carnet) et la version du referentiel utilise (E-Phy, RPG, OEPP, BBCH).</p></div>
+        <div class="advice-card"><h4>Registre immuable</h4><p style="font-size:12px;color:var(--ink-2)">Aucune modification a posteriori. Uniquement des corrections horodatees. Le registre est scelle.</p></div>
+        <div class="advice-card"><h4>Journal des actions</h4><p style="font-size:12px;color:var(--ink-2)">Chaque action de l\'agent est journalisee : type, source, horodatage, validation humaine. Visible dans Actions tracees.</p></div>
+        <div class="advice-card"><h4>Controles deterministes</h4><p style="font-size:12px;color:var(--ink-2)">Dose ≤ AMM, culture autorisee, parcelle existante : des regles, pas de l\'inference. Un LLM n\'invente pas la conformite.</p></div>
+      </div></div></div>
+
+    <div class="card"><div class="card-head"><div class="card-title">Couches techniques</div><div class="card-meta">KERN / Agent / Data / UI</div></div>
+      <div class="card-body"><table><thead><tr><th>Couche</th><th>Contenu</th><th>Choix</th></tr></thead><tbody>
+        <tr><td><b>KERN</b></td><td>RAG, extraction, connecteurs, regles de controle</td><td>Python (FastAPI), PostgreSQL + PostGIS</td></tr>
+        <tr><td><b>Agent</b></td><td>Orchestrateur LLM + function calling + guardrails</td><td>GPT-4o → Mistral Large</td></tr>
+        <tr><td><b>Data</b></td><td>Registre immuable, referentiels versionnes</td><td>PostgreSQL append-only</td></tr>
+        <tr><td><b>UI</b></td><td>Eagle view, chat + chips, formulaires pre-remplis</td><td>React/Next.js</td></tr>
+      </tbody></table>
+      <p style="font-size:12px;color:var(--ink-2);margin-top:10px">Hebergement souverain EU (OVHcloud / Scaleway). Connecteurs : E-Phy ANSES, RPG, TelePAC, Meteo-France, Coop ERP, Sentinel-2.</p></div></div>
   `;
 }
 
-/* ===== Conseils ===== */
-function renderConseils() {
-  document.getElementById('conseils-content').innerHTML = `
-    <div class="card">
-      <div class="card-head"><div class="card-title">Calendrier de conformite</div><div class="card-meta">2026 -> 2030</div></div>
-      <div class="card-body">
-        <div class="timeline">
-          <div class="tl-item"><div class="tl-date">01/01/2026</div><div class="tl-text">Nouvelles mentions obligatoires entrees en vigueur (annee pedagogique)</div></div>
-          <div class="tl-item"><div class="tl-date">01/01/2027</div><div class="tl-text">Format electronique obligatoire pour les registres phyto</div></div>
-          <div class="tl-item"><div class="tl-date">31/01/2028</div><div class="tl-text">Conversion des usages 2027 en format electronique</div></div>
-          <div class="tl-item"><div class="tl-date">31/01/2029</div><div class="tl-text">Conversion des usages 2028 en format electronique</div></div>
-          <div class="tl-item"><div class="tl-date">01/01/2030</div><div class="tl-text">Conversion sous 30 jours des usages en cours</div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-head"><div class="card-title">Sanctions</div><div class="card-meta">Reduction des aides PAC</div></div>
-      <div class="card-body" style="padding:0;">
-        <table>
-          <thead><tr><th>Anomalie</th><th>Sanction</th></tr></thead>
-          <tbody>
-            <tr><td>Anomalie mineure</td><td>Reduction 1-3% des aides</td></tr>
-            <tr><td>Repetition d'anomalies mineures</td><td><span class="badge badge-amber">10%</span></td></tr>
-            <tr><td>Falsification de registre</td><td><span class="badge badge-red">15-100%</span></td></tr>
-            <tr><td>Refus de controle</td><td><span class="badge badge-red">100%</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="advice-grid">
-      <div class="advice-card"><h4>Conservation</h4><p style="font-size:12px; color:var(--ink-2);">5 ans minimum pour le registre phyto. Ceres conserve les registres en l'etat immuable, horodate et scelle.</p></div>
-      <div class="advice-card"><h4>AI Act - transparence</h4><p style="font-size:12px; color:var(--ink-2);">Art 50(1): l'utilisateur sait qu'il dialogue avec une IA. Pas d'annexe III (pas de decision automatisee sur prestation publique essentielle). Classification IA-03 (assistant).</p></div>
-      <div class="advice-card"><h4>RGPD</h4><p style="font-size:12px; color:var(--ink-2);">Ceres est sous-traitant (DPA client). Donnees exploitant = donnees personnelles (SIRET = personne physique). Registre phyto geolocalise = donnees personnelles. Fiche VERT / ORANGE / ROUGE selon exposition.</p></div>
-      <div class="advice-card"><h4>Points a faire valider par expert</h4>
-        <ul style="font-size:12px; color:var(--ink-2); padding-left:16px; margin-top:6px;">
-          <li>Definition legale de "sans tarder"</li>
-          <li>Niveau d'integrite (horodatage, scellement)</li>
-          <li>Acceptabilite du CSV/JSON en controle</li>
-          <li>Qualification: registre prepare par IA puis confirme par exploitants</li>
-          <li>Responsabilite editeur en cas d'erreur de reconciliation AMM</li>
-        </ul>
-      </div>
-    </div>
-  `;
-}
+/* ===== Chat ===== */
 
 /* ===== Chat ===== */
 function renderSuggestions() {
@@ -2999,24 +2914,14 @@ App.registerView('agent-actions', function() {
   return '\n<div class="page-head">\n  <div class="page-title">Actions tracees</div>\n  <div class="page-sub">Journal horodate des actions de l\'agent / 8 entrees</div>\n</div>\n<div class="card">\n  <div class="card-body" id="trace-list" style="padding:8px 18px;"></div>\n</div>\n';
 });
 
-App.registerView('sources-primaires', function() {
-  App._onMount = function() { renderSources(); };
-  return '\n<div class="page-head">\n  <div class="page-title">Sources primaires</div>\n  <div class="page-sub">Referentiels reglementaires, donnees et normes utilises par Ceres</div>\n</div>\n<div id="sources-content"></div>\n';
+App.registerView('agent-parametrage', function() {
+  App._onMount = function() { renderParametrage(); };
+  return '\n<div class="page-head">\n  <div class="page-title">Parametrage agent</div>\n  <div class="page-sub">Modeles, skills, guardrails : ce qui pilote Ceres</div>\n</div>\n<div id="parametrage-content"></div>\n';
 });
 
-App.registerView('documentation-produit', function() {
-  App._onMount = function() { renderDoc(); };
-  return '\n<div class="page-head">\n  <div class="page-title">Documentation produit</div>\n  <div class="page-sub">PRD / protocole / roadmap / mise en production / architecture</div>\n</div>\n<div id="doc-content"></div>\n';
-});
-
-App.registerView('recommandations', function() {
-  App._onMount = function() { renderRecos(); };
-  return '\n<div class="page-head">\n  <div class="page-title">Recommandations strategiques</div>\n  <div class="page-sub">Positionnement, canal, pricing, priorites, moat</div>\n</div>\n<div id="recos-content"></div>\n';
-});
-
-App.registerView('conseils-reglementaires', function() {
-  App._onMount = function() { renderConseils(); };
-  return '\n<div class="page-head">\n  <div class="page-title">Conseils reglementaires</div>\n  <div class="page-sub">Calendrier, sanctions, conservation, AI Act, RGPD, points d\'expert</div>\n</div>\n<div id="conseils-content"></div>\n';
+App.registerView('agent-architecture', function() {
+  App._onMount = function() { renderArchitecture(); };
+  return '\n<div class="page-head">\n  <div class="page-title">Architecture & explicabilite</div>\n  <div class="page-sub">Le flux en 8 etapes, la provenance par champ, le registre immuable</div>\n</div>\n<div id="architecture-content"></div>\n';
 });
 
 
