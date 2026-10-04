@@ -314,7 +314,7 @@ export function evaluer(bundle, profil, modes, options) {
     });
   }
 
-  const calendrier = construireCalendrier(bundle, cartes, ref, fin, cal);
+  const calendrier = construireCalendrier(bundle, cartes, ref, fin, cal, p);
   sortBy(cartes, (c) => [STATUT_ORDRE[c.statut], COULEUR_ORDRE[c.couleur], c.id]);
 
   const compte = Object.fromEntries(Object.keys(COULEUR_ORDRE).map((k) => [k, 0]));
@@ -358,7 +358,7 @@ export function evaluer(bundle, profil, modes, options) {
   };
 }
 
-function construireCalendrier(bundle, cartes, ref, fin, cal) {
+function construireCalendrier(bundle, cartes, ref, fin, cal, profil) {
   const obligations = Object.fromEntries(bundle.obligations.map((ob) => [ob.id, ob]));
   const evenements = [];
   const continues = [];
@@ -368,6 +368,8 @@ function construireCalendrier(bundle, cartes, ref, fin, cal) {
     const datesPonctuelles = new Set();
     let aUnEvenement = false;
     for (const ech of ob.echeances || []) {
+      // A deadline may target part of the farms (e.g. vines only): skip it when the profile rules it out.
+      if (ech.condition && evaluerCondition(ech.condition, profil)[0] === false) continue;
       const rec = ech.recurrence;
       let approx = false;
       let d;

@@ -344,7 +344,7 @@ function renderTime(r) {
     <div class="panel">
       <h3>Avec Ceres</h3>
       <p><span class="big" style="color:var(--terra)">${h1(t.gain_immediat)} h</span> par an récupérables dès aujourd'hui${t.gain_a_venir >= 1 ? `, et ${h1(t.gain_a_venir)} h de plus avec les modules en préparation` : ""}.</p>
-      <p>Soit environ <b>${Math.round(t.valeur_gain_total_eur).toLocaleString("fr-FR")} €</b> par an, au taux de
+      <p>Soit environ <b>${((h1(t.gain_immediat) + (t.gain_a_venir >= 1 ? h1(t.gain_a_venir) : 0)) * Number(t.valeur_horaire || 0)).toLocaleString("fr-FR")} €</b> par an, au taux de
         <label class="sr-only" for="vh">Valeur d'une heure de votre temps, en euros</label>
         <input class="input" id="vh" data-action="vh" inputmode="numeric" style="display:inline-block;width:76px;min-height:34px;padding:4px 8px" value="${esc(t.valeur_horaire)}"> € de l'heure.</p>
       ${mods.length ? `<ul class="plain-list small">${mods.map((m) => `<li>${esc(m.nom)} : ${h1(m.gain_immediat + m.gain_a_venir)} h/an${m.statut !== "disponible" ? " (en préparation)" : ""}</li>`).join("")}</ul>` : ""}
