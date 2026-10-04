@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ma feuille de route réglementaire · Arpent Lab</title>
+  <meta name="description" content="Outil gratuit pour exploitants agricoles et coopératives : décrivez votre exploitation, obtenez la liste des obligations qui vous concernent, leurs échéances et le temps qu'elles vous prennent.">
+  <meta name="theme-color" content="#FAFAF8">
+  <link rel="canonical" href="https://arpent-lab.ai/diagnostic/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Ma feuille de route réglementaire · Arpent Lab">
+  <meta property="og:description" content="Vous ne savez plus quelles obligations vous concernent ? En cinq minutes, obtenez votre feuille de route : une carte par obligation, vos échéances, votre synthèse.">
+  <meta property="og:url" content="https://arpent-lab.ai/diagnostic/">
+  <link rel="icon" type="image/png" href="../assets/arpent-logo-brandbook.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/autodiag.css">
+</head>
+<body>
+  <a class="skip-link" href="#app">Aller au contenu</a>
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="https://arpent-lab.ai/">ARPENT <small>LAB</small></a>
+      <nav aria-label="Navigation">
+        <a class="hide-sm" href="https://arpent-lab.ai/#ceres">Ceres</a>
+        <a href="https://arpent-lab.ai/#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="app" tabindex="-1">
+    <noscript><div class="wrap loading">Cet outil a besoin de JavaScript pour calculer votre feuille de route dans votre navigateur.</div></noscript>
+    <div class="wrap loading" id="boot">Chargement du référentiel…</div>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <p id="disclaimer"></p>
+      <h2>Vos données</h2>
+      <p>Le diagnostic est calculé dans votre navigateur : vos réponses ne quittent votre appareil que si vous demandez à recevoir votre synthèse. Elles servent alors à vous l'envoyer, à préparer votre session d'essai Ceres si vous le souhaitez et, si vous l'acceptez, à vous recontacter et à améliorer nos outils. Responsable du traitement : Arpent Lab. Pour accéder à vos données ou les faire supprimer : <a href="mailto:contact@arpent-lab.ai?subject=Mes%20donn%C3%A9es%20diagnostic">contact@arpent-lab.ai</a>.</p>
+      <p class="small" id="version"></p>
+    </div>
+  </footer>
+
+  <script type="module" src="assets/app.mjs"></script>
+</body>
+</html>
