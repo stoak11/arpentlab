@@ -202,16 +202,23 @@ function renderResults() {
     <section class="results"><div class="wrap" id="res-root">
       <div class="toolbar">
         <button class="btn btn-ghost" data-action="edit">Modifier mes réponses</button>
-        <button class="btn btn-ghost" data-action="print">Imprimer ou enregistrer en PDF</button>
         <button class="btn-link" data-action="reset">Recommencer</button>
       </div>
       <p class="eyebrow">Arpent Lab · Feuille de route réglementaire</p>
       <h1 tabindex="-1" id="res-title" style="font-size:clamp(1.8rem,4vw,2.6rem);margin:0 0 6px">Votre feuille de route réglementaire</h1>
       <p class="muted" id="res-date"></p>
       <div id="res-kpis"></div>
+      <aside class="trial-cta" aria-labelledby="trial-cta-title">
+        <div>
+          <p class="eyebrow" style="margin:0 0 4px">Session d'essai Ceres offerte</p>
+          <h2 id="trial-cta-title" style="margin:0 0 6px">Recevez votre feuille de route complète et votre espace Ceres déjà paramétré</h2>
+          <p style="margin:0">Synthèse détaillée, agenda de vos échéances et accès immédiat à Ceres : carte de vos parcelles, registre, échéances et copilote. Gratuit, sans engagement.</p>
+        </div>
+        <button class="btn btn-primary" data-action="goto-send">Recevoir ma synthèse et mon essai</button>
+      </aside>
       <div id="res-complete"></div>
       <h2 class="section">Vos obligations, une par carte</h2>
-      <p class="section-intro">Pour chaque obligation qui vous concerne, indiquez comment vous la gérez aujourd'hui : votre synthèse, votre temps et votre calendrier se mettent à jour.</p>
+      <p class="section-intro">Pour chaque obligation qui vous concerne, indiquez comment vous la gérez aujourd'hui : votre synthèse, votre temps et votre calendrier se mettent à jour. Cliquez sur un groupe pour le déplier.</p>
       <div id="res-cards"></div>
       <h2 class="section">Le temps que cela vous prend</h2>
       <div id="res-time"></div>
@@ -326,7 +333,7 @@ function renderCards(r) {
       <button data-domaine="" aria-pressed="${!S.domaine}">Tous les domaines</button>
       ${doms.map((d) => `<button data-domaine="${esc(d)}" aria-pressed="${S.domaine === d}">${esc(DOMAINES[d] || d)}</button>`).join("")}
     </div>
-    ${groups.filter(([, l]) => l.length).map(([t, l]) => `<h3 style="margin:22px 0 10px">${t} (${l.length})</h3><div class="cards">${l.map((c) => cardHTML(c, r)).join("")}</div>`).join("")}
+    ${groups.filter(([, l]) => l.length).map(([t, l], i) => `<details class="fold ob-group" data-group="${i}"${(S.openGroups?.[i] ?? i === 0) ? " open" : ""}><summary><h3 style="display:inline;margin:0">${t} (${l.length})</h3></summary><div class="cards" style="margin-top:12px">${l.map((c) => cardHTML(c, r)).join("")}</div></details>`).join("")}
     ${nonc.length ? `<details class="fold"><summary>Non concernées (${nonc.length})</summary><div class="cards" style="margin-top:12px">${nonc.map((c) => cardHTML(c, r)).join("")}</div></details>` : ""}`;
 }
 
@@ -608,9 +615,9 @@ $app.addEventListener("click", (ev) => {
   } else if (a === "edit") {
     S.step = 0;
     go("wizard", "step-title");
-  } else if (a === "print") {
-    for (const d of document.querySelectorAll(".ob details")) d.open = true;
-    window.print();
+  } else if (a === "goto-send") {
+    const box = document.getElementById("res-send");
+    if (box) { box.scrollIntoView({ behavior: "smooth", block: "start" }); const f = box.querySelector("input[name=email], input"); if (f) f.focus({ preventScroll: true }); }
   } else if (a === "ics") {
     ics(compute());
   } else if (a === "goto-complete") {
@@ -618,6 +625,11 @@ $app.addEventListener("click", (ev) => {
     if (box) { box.scrollIntoView({ behavior: "smooth", block: "start" }); const f = box.querySelector("input,select"); if (f) f.focus({ preventScroll: true }); }
   }
 });
+
+$app.addEventListener("toggle", (ev) => {
+  const g = ev.target.dataset?.group;
+  if (g !== undefined) (S.openGroups ||= {})[g] = ev.target.open;
+}, true);
 
 $app.addEventListener("change", (ev) => {
   const el = ev.target;
