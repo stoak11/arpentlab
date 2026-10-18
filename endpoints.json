@@ -1,6 +1,6 @@
 {
-  "autodiag_api": "https://foot-assignments-attempts-scheduling.trycloudflare.com",
+  "autodiag_api": "https://vatican-kde-providers-thumbnail.trycloudflare.com",
   "ceres_app": "https://app.arpent-lab.ai",
-  "mis_a_jour": "2026-10-17T16:31:18+00:00",
+  "mis_a_jour": "2026-10-18T07:27:37+00:00",
   "note": "Adresses publiques des services Autodiag, mises \u00e0 jour automatiquement par ops/supervise.py"
 }
