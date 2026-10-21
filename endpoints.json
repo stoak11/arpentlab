@@ -1,6 +1,6 @@
 {
-  "autodiag_api": "https://static-charged-boxed-pursuit.trycloudflare.com",
+  "autodiag_api": "https://once-guided-champion-venues.trycloudflare.com",
   "ceres_app": "https://app.arpent-lab.ai",
-  "mis_a_jour": "2026-10-20T17:34:27+00:00",
+  "mis_a_jour": "2026-10-21T08:06:50+00:00",
   "note": "Adresses publiques des services Autodiag, mises \u00e0 jour automatiquement par ops/supervise.py"
 }
