@@ -308,8 +308,9 @@
     const FORMSPREE_ID = 'FORMSPREE_ID';
     const FALLBACK_EMAIL = 'contact@arpent-lab.ai';
     // WEBHOOK_URL : endpoint de capture de lead (écrit dans le CRM Notion). Vide = désactivé.
-    // En cas d'échec du webhook, on retombe sur le mail pré-rempli : le lead n'est jamais perdu.
-    const WEBHOOK_URL = 'https://api-added-requiring-cigarette.trycloudflare.com/submit';
+    // Servi par l'API Arpent sur le VPS OVH, adresse stable (plus de tunnel).
+    // En cas d'échec, on retombe sur le mail pré-rempli : le lead n'est jamais perdu.
+    const WEBHOOK_URL = 'https://api.arpent-lab.ai/api/v1/leads';
     const form = document.getElementById('contact-form');
     const status = form.querySelector('.form-status');
     const typeField = document.getElementById('f-type');
@@ -366,7 +367,7 @@
           email: data.get('email'),
           departements: data.get('departements') || '',
           tonnage: data.get('tonnage') || '',
-          decision: data.get('decision') || '',
+          message: data.get('decision') || '',
           _gotcha: data.get('_gotcha') || ''
         };
         try {

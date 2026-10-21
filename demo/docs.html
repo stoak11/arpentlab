@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FarmCockpit - Ceres | Arpent Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --anthracite: #1e242b;
+  --anthracite-2: #283038;
+  --gold: #c7a248;
+  --gold-2: #d6b856;
+  --terra: #b5623e;
+  --paper: #fafaf8;
+  --paper-2: #f2f1ec;
+  --ink: #1e242b;
+  --ink-2: #3a4450;
+  --muted: #727a82;
+  --line: #e3e1d8;
+  --green: #4a8a3e;
+  --amber: #d4a52a;
+  --red: #b53e2e;
+  --blue: #3a6a9e;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Inter', system-ui, sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--terra); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.mono { font-family: var(--mono); }
+
+/* ===== Layout ===== */
+.app { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+.sidebar {
+  background: var(--anthracite);
+  color: #c9cfd4;
+  padding: 20px 14px;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+}
+.brand { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.brand-logo { width: 28px; height: 28px; background: var(--gold); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--anthracite); font-size: 14px; flex-shrink: 0; }
+.brand-name { font-weight: 700; font-size: 14px; color: #fff; }
+.brand-sub { font-size: 10px; color: #889; font-family: var(--mono); }
+.nav { list-style: none; }
+.nav-item { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border-radius: 6px; cursor: pointer; font-size: 12.5px; color: #b0b8be; margin-bottom: 2px; transition: all 0.15s; }
+.nav-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+.nav-item.active { background: var(--gold); color: var(--anthracite); font-weight: 600; }
+.nav-item .icon { width: 14px; text-align: center; flex-shrink: 0; }
+.nav-sub { font-size: 9px; color: #666; font-family: var(--mono); margin-left: auto; }
+.sidebar-foot { margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 10px; color: #666; font-family: var(--mono); line-height: 1.6; }
+
+.main { padding: 24px 28px; max-width: 1100px; }
+.view { display: none; }
+.view.active { display: block; }
+
+/* ===== Header ===== */
+.page-head { margin-bottom: 22px; }
+.page-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.page-sub { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+
+/* ===== Stat grid ===== */
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 22px; }
+.stat-card { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 16px 16px; }
+.stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-family: var(--mono); }
+.stat-value { font-size: 26px; font-weight: 700; margin-top: 6px; line-height: 1; }
+.stat-unit { font-size: 11px; color: var(--muted); font-weight: 400; }
+.stat-trend { font-size: 10px; margin-top: 8px; font-family: var(--mono); }
+.trend-up { color: var(--green); }
+.trend-down { color: var(--red); }
+
+/* ===== Card ===== */
+.card { background: #fff; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 18px; overflow: hidden; }
+.card-head { padding: 14px 18px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; }
+.card-title { font-size: 14px; font-weight: 600; }
+.card-title .ico { color: var(--gold); margin-right: 6px; }
+.card-meta { font-size: 10px; color: var(--muted); font-family: var(--mono); }
+.card-body { padding: 16px 18px; }
+
+/* ===== Table ===== */
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+th { text-align: left; padding: 8px 10px; background: var(--paper-2); border-bottom: 1px solid var(--line); font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); font-weight: 600; }
+td { padding: 9px 10px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--paper); }
+
+/* progress bar */
+.bar { display: inline-block; width: 80px; height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; vertical-align: middle; margin-right: 6px; }
+.bar-fill { height: 100%; border-radius: 3px; }
+.pct { font-family: var(--mono); font-size: 11px; font-weight: 600; }
+
+/* badge */
+.badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; font-family: var(--mono); }
+.badge-ok { background: #d6e8c9; color: #2d5a1e; }
+.badge-warn { background: #f5e6b8; color: #8a6b15; }
+.badge-fail { background: #f0c9c0; color: #8e2e1a; }
+.badge-info { background: #cfd8e8; color: #2a4a6e; }
+.badge-green { background: #d6e8c9; color: #2d5a1e; }
+.badge-amber { background: #f5e6b8; color: #8a6b15; }
+.badge-red { background: #f0c9c0; color: #8e2e1a; }
+.badge-blue { background: #cfd8e8; color: #2a4a6e; }
+
+/* alert */
+.alert { display: flex; gap: 10px; padding: 12px 14px; border-radius: 6px; margin-bottom: 8px; font-size: 12.5px; }
+.alert-ico { width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.alert-crit { background: #f0c9c0; }
+.alert-crit .alert-ico { background: var(--red); color: #fff; }
+.alert-warn { background: #fdf3dc; }
+.alert-warn .alert-ico { background: var(--amber); color: #fff; }
+.alert-info { background: #e1e8f0; }
+.alert-info .alert-ico { background: var(--blue); color: #fff; }
+.alert-ok { background: #e0eed2; }
+.alert-ok .alert-ico { background: var(--green); color: #fff; }
+.alert-title { font-weight: 600; }
+.alert-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* commune cards */
+.geo-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.commune-card { border: 1px solid var(--line); border-radius: 8px; padding: 14px; text-align: center; }
+.commune-name { font-weight: 600; font-size: 13px; margin-bottom: 8px; }
+.commune-pct { font-size: 24px; font-weight: 700; font-family: var(--mono); }
+.commune-meta { font-size: 10px; color: var(--muted); margin-top: 6px; }
+
+/* dist bar */
+.dist { display: flex; height: 22px; border-radius: 4px; overflow: hidden; margin-top: 6px; }
+.dist-green { background: var(--green); }
+.dist-amber { background: var(--amber); }
+.dist-red { background: var(--red); }
+.dist-label { flex: 0 0 25%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; font-weight: 600; font-family: var(--mono); }
+
+/* ===== Chat ===== */
+.chat-wrap { display: grid; grid-template-columns: 1fr 240px; gap: 18px; align-items: start; }
+.chat { background: #fff; border: 1px solid var(--line); border-radius: 8px; display: flex; flex-direction: column; height: 580px; }
+.chat-head { padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; }
+.chat-head .av { width: 30px; height: 30px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--anthracite); font-size: 13px; }
+.chat-head .nm { font-weight: 600; font-size: 14px; }
+.chat-head .st { font-size: 10px; color: var(--green); font-family: var(--mono); }
+.chat-head .st::before { content: ''; display: inline-block; width: 7px; height: 7px; background: var(--green); border-radius: 50%; margin-right: 4px; }
+.chat-body { flex: 1; overflow-y: auto; padding: 16px; }
+.msg { margin-bottom: 16px; }
+.msg .role { font-size: 10px; font-weight: 600; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+.msg .bubble { background: var(--paper-2); padding: 10px 14px; border-radius: 8px; font-size: 13px; border: 1px solid var(--line); }
+.msg.user .role { color: var(--terra); }
+.msg.user .bubble { background: #fff; border-left: 3px solid var(--terra); }
+.msg.assistant .bubble { background: var(--paper-2); }
+.typing { display: none; }
+.typing.active { display: block; }
+.typing-dots span { display: inline-block; width: 6px; height: 6px; background: var(--muted); border-radius: 50%; margin: 0 2px; animation: blink 1.2s infinite; }
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink { 0%, 60%, 100% { opacity: 0.3; } 30% { opacity: 1; } }
+.chat-foot { padding: 12px; border-top: 1px solid var(--line); }
+.chat-input { display: flex; gap: 8px; }
+.chat-input textarea { flex: 1; border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; font-family: var(--sans); font-size: 13px; resize: none; height: 40px; }
+.chat-input textarea:focus { outline: none; border-color: var(--gold); }
+.chat-input button { background: var(--anthracite); color: #fff; border: none; border-radius: 6px; padding: 0 18px; font-weight: 600; cursor: pointer; font-size: 13px; }
+.chat-input button:hover { background: var(--terra); }
+.chat-foot .ai-notice { font-size: 10px; color: var(--muted); font-family: var(--mono); margin-top: 8px; text-align: center; }
+
+.suggestions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.sugg { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font-size: 11px; cursor: pointer; transition: all 0.15s; }
+.sugg:hover { background: var(--gold); color: var(--anthracite); border-color: var(--gold); }
+
+/* action blocks in chat */
+.action-block { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; margin-top: 8px; font-size: 12px; }
+.action-block .ab-head { font-weight: 600; font-size: 11px; color: var(--terra); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+.action-block .ab-row { display: flex; justify-content: space-between; padding: 3px 0; font-size: 11.5px; }
+.action-block .ab-row .k { color: var(--muted); }
+.action-block .ab-row .v { font-family: var(--mono); font-weight: 600; }
+.action-block .ab-ok { color: var(--green); }
+.action-block .ab-warn { color: var(--amber); }
+
+/* chat side panel */
+.chat-side { }
+.chat-side .panel { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 14px; margin-bottom: 14px; }
+.chat-side .panel h4 { font-size: 12px; margin-bottom: 8px; }
+.chat-side .panel p { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+
+/* ===== Trace ===== */
+.trace-item { display: grid; grid-template-columns: 130px 90px 1fr 60px; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); align-items: center; font-size: 12.5px; }
+.trace-item:last-child { border-bottom: none; }
+.trace-time { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+.trace-type { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+.trace-desc { }
+.trace-status { text-align: right; font-size: 10px; font-family: var(--mono); font-weight: 600; }
+
+/* ===== Doc / Sources ===== */
+.src-card { border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; }
+.src-card h4 { font-size: 13px; margin-bottom: 4px; }
+.src-card .src-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; font-size: 10px; font-family: var(--mono); color: var(--muted); }
+.src-card .src-meta span b { color: var(--ink); font-weight: 600; }
+.src-card .src-use { font-size: 11px; color: var(--ink-2); margin-top: 6px; }
+.src-cat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gold); font-weight: 600; margin: 18px 0 10px; }
+
+/* PRD */
+.prd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.prd-face { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+.prd-face h4 { font-size: 13px; margin-bottom: 6px; }
+.prd-face .pf-tag { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 4px; font-family: var(--mono); font-weight: 600; margin-bottom: 8px; }
+.prd-face .pf-prev { background: #cfd8e8; color: #2a4a6e; }
+.prd-face .pf-agent { background: #f5e6b8; color: #8a6b15; }
+.prd-face p { font-size: 12px; color: var(--ink-2); }
+
+/* protocol steps */
+.proto { display: flex; flex-wrap: wrap; gap: 0; margin: 10px 0; }
+.proto-step { flex: 1; text-align: center; position: relative; padding: 0 4px; }
+.proto-step .ps-num { width: 26px; height: 26px; background: var(--anthracite); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin: 0 auto 6px; font-family: var(--mono); }
+.proto-step:not(:last-child)::after { content: ''; position: absolute; top: 12px; right: -50%; width: 100%; height: 2px; background: var(--line); z-index: 0; }
+.proto-step .ps-name { font-size: 10px; font-weight: 600; position: relative; z-index: 1; }
+.proto-step .ps-desc { font-size: 9px; color: var(--muted); margin-top: 2px; font-family: var(--mono); }
+
+/* roadmap */
+.roadmap { display: flex; gap: 0; margin: 16px 0; }
+.rm-phase { flex: 1; padding: 14px; border-right: 1px solid var(--line); }
+.rm-phase:last-child { border-right: none; }
+.rm-phase .rm-tag { font-size: 10px; font-family: var(--mono); color: var(--gold); font-weight: 600; }
+.rm-phase .rm-name { font-size: 12px; font-weight: 600; margin: 4px 0; }
+.rm-phase .rm-date { font-size: 10px; color: var(--muted); font-family: var(--mono); }
+
+/* timeline */
+.timeline { border-left: 2px solid var(--gold); padding-left: 16px; margin: 16px 0; }
+.tl-item { position: relative; margin-bottom: 14px; }
+.tl-item::before { content: ''; position: absolute; left: -21px; top: 4px; width: 8px; height: 8px; background: var(--gold); border-radius: 50%; }
+.tl-date { font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--terra); }
+.tl-text { font-size: 12px; color: var(--ink-2); }
+
+/* reco list */
+.reco { border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 10px; }
+.reco h4 { font-size: 13px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.reco h4 .r-ico { color: var(--gold); }
+.reco p { font-size: 12px; color: var(--ink-2); }
+
+/* advice grid */
+.advice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.advice-card { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+.advice-card h4 { font-size: 13px; margin-bottom: 8px; }
+
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .geo-grid { grid-template-columns: 1fr 1fr; }
+  .chat-wrap { grid-template-columns: 1fr; }
+  .chat-side { display: none; }
+  .prd-grid, .advice-grid { grid-template-columns: 1fr; }
+  .roadmap { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">A</div>
+      <div>
+        <div class="brand-name">FarmCockpit</div>
+        <div class="brand-sub">Ceres / Arpent Lab</div>
+      </div>
+    </div>
+    <ul class="nav">
+      <li class="nav-item active" data-view="coop"><span class="icon">&#9864;</span> Coop <span class="nav-sub">10</span></li>
+      <li class="nav-item" data-view="agent"><span class="icon">&#9881;</span> Agent</li>
+      <li class="nav-item" data-view="trace"><span class="icon">&#9783;</span> Trace</li>
+      <li class="nav-item" data-view="sources"><span class="icon">&#9776;</span> Sources</li>
+      <li class="nav-item" data-view="doc"><span class="icon">&#9678;</span> Produit</li>
+      <li class="nav-item" data-view="recos"><span class="icon">&#8594;</span> Recos</li>
+      <li class="nav-item" data-view="conseils"><span class="icon">&#9888;</span> Regles</li>
+    </ul>
+    <div class="sidebar-foot">
+      Cantal (15)<br>
+      Coop Ceres<br>
+      10 adherents<br>
+      1203.5 ha<br>
+      IA-03 / EU AI Act
+    </div>
+  </aside>
+
+  <div class="main" id="main">
+
+    <!-- ========== COOP ========== -->
+    <div class="view active" id="view-coop">
+      <div class="page-head">
+        <div class="page-title">Coop - Vue agreegee</div>
+        <div class="page-sub">Cooperative cerealiere du Cantal / 10 adherents / 1203.5 ha</div>
+      </div>
+
+      <div class="stat-grid" id="coop-stats"></div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><span class="ico">&#9636;</span> Distribution conformite registre phyto</div>
+          <div class="card-meta">10 adherents</div>
+        </div>
+        <div class="card-body">
+          <div class="dist" id="dist-bar"></div>
+          <div style="margin-top:8px; display:flex; gap:16px; font-size:11px; font-family:var(--mono);">
+            <span><span class="badge badge-green">&nbsp;</span> &ge; 85% conforme</span>
+            <span><span class="badge badge-amber">&nbsp;</span> 70-84%</span>
+            <span><span class="badge badge-red">&nbsp;</span> &lt; 70%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><span class="ico">&#9650;</span> Adherents</div>
+          <div class="card-meta">Tri: conformite (bas en haut)</div>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <table id="adherents-table">
+            <thead>
+              <tr><th>Ferme</th><th>Commune</th><th style="text-align:right">Parcelles</th><th style="text-align:right">Surface</th><th>Conformite</th><th style="text-align:right">Retards</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><span class="ico">&#9888;</span> Alertes</div>
+          <div class="card-meta" id="alert-count"></div>
+        </div>
+        <div class="card-body" id="alerts-box"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><span class="ico">&#9881;</span> Conformite par commune</div>
+          <div class="card-meta">5 communes</div>
+        </div>
+        <div class="card-body">
+          <div class="geo-grid" id="communes"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== AGENT ========== -->
+    <div class="view" id="view-agent">
+      <div class="page-head">
+        <div class="page-title">Agent - Ceres</div>
+        <div class="page-sub">Copilote administratif / saisie agentique</div>
+      </div>
+
+      <div class="chat-wrap">
+        <div>
+          <div class="chat" id="chat">
+            <div class="chat-head">
+              <div class="av">C</div>
+              <div>
+                <div class="nm">Ceres</div>
+                <div class="st">en ligne</div>
+              </div>
+            </div>
+            <div class="chat-body" id="chat-body">
+              <div class="msg assistant">
+                <div class="role">Ceres</div>
+                <div class="bubble">Bonjour. Je suis Ceres, votre copilote administratif. Je prepare vos registres et declarations, vous validez. Posez une question ou cliquez une suggestion ci-dessous.</div>
+              </div>
+            </div>
+            <div class="chat-foot">
+              <div class="chat-input">
+                <textarea id="chat-text" placeholder="Ex: Verifie mon registre phyto..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"></textarea>
+                <button onclick="sendChat()">Envoyer</button>
+              </div>
+              <div class="suggestions" id="sugg-box"></div>
+              <div class="ai-notice">Je suis Ceres, un assistant IA. Vous restez decideur.</div>
+            </div>
+          </div>
+        </div>
+        <div class="chat-side">
+          <div class="panel">
+            <h4>Contexte</h4>
+            <p><b style="color:var(--ink)">Ferme:</b> Dubois M.</p>
+            <p><b style="color:var(--ink)">Commune:</b> Saint-Flour (15)</p>
+            <p><b style="color:var(--ink)">SIRET:</b> 814 520 018 00018</p>
+            <p><b style="color:var(--ink)">Parcelles:</b> 6 / 117.9 ha</p>
+          </div>
+          <div class="panel">
+            <h4>Campagne</h4>
+            <p>2026 en cours</p>
+            <p>PAC: 4 p., 82.1 ha</p>
+            <p>Phyto: 7 traitements</p>
+            <p>Stock: MODDUS, BELL</p>
+          </div>
+          <div class="panel">
+            <h4>Reglement</h4>
+            <p style="font-size:10px;">Arrete 24/12/2025<br>NOR AGRG2536515A</p>
+            <p style="font-size:10px;">Format: UE 2023/564</p>
+            <p style="font-size:10px;">AI Act art 50(1)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== TRACE ========== -->
+    <div class="view" id="view-trace">
+      <div class="page-head">
+        <div class="page-title">Actions tracees</div>
+        <div class="page-sub">Journal horodate des actions de l'agent / 8 entrees</div>
+      </div>
+      <div class="card">
+        <div class="card-body" id="trace-list" style="padding:8px 18px;"></div>
+      </div>
+    </div>
+
+    <!-- ========== SOURCES ========== -->
+    <div class="view" id="view-sources">
+      <div class="page-head">
+        <div class="page-title">Sources primaires</div>
+        <div class="page-sub">Referentiels reglementaires, donnees et normes utilises par Ceres</div>
+      </div>
+      <div id="sources-content"></div>
+    </div>
+
+    <!-- ========== DOC PRODUIT ========== -->
+    <div class="view" id="view-doc">
+      <div class="page-head">
+        <div class="page-title">Documentation produit</div>
+        <div class="page-sub">PRD / protocole / roadmap / mise en production / architecture</div>
+      </div>
+      <div id="doc-content"></div>
+    </div>
+
+    <!-- ========== RECOS ========== -->
+    <div class="view" id="view-recos">
+      <div class="page-head">
+        <div class="page-title">Recommandations strategiques</div>
+        <div class="page-sub">Positionnement, canal, pricing, priorites, moat</div>
+      </div>
+      <div id="recos-content"></div>
+    </div>
+
+    <!-- ========== CONSEILS ========== -->
+    <div class="view" id="view-conseils">
+      <div class="page-head">
+        <div class="page-title">Conseils reglementaires</div>
+        <div class="page-sub">Calendrier, sanctions, conservation, AI Act, RGPD, points d'expert</div>
+      </div>
+      <div id="conseils-content"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ===== DATA ===== */
+const ADHERENTS = [
+  { nom: 'Dubois M.', commune: 'Saint-Flour', parcelles: 6, surface: 117.9, conformite: 92, retards: 1 },
+  { nom: 'Martin P.', commune: 'Lempdes', parcelles: 4, surface: 82.1, conformite: 78, retards: 2 },
+  { nom: 'Fournier J.', commune: 'Aurillac', parcelles: 8, surface: 195.0, conformite: 88, retards: 0 },
+  { nom: 'Bernal A.', commune: 'Saint-Flour', parcelles: 3, surface: 45.5, conformite: 100, retards: 0 },
+  { nom: 'Chassagne L.', commune: 'Massiac', parcelles: 5, surface: 128.3, conformite: 65, retards: 3 },
+  { nom: 'Roux D.', commune: 'Aurillac', parcelles: 7, surface: 210.0, conformite: 85, retards: 1 },
+  { nom: 'Peyret S.', commune: 'Mauriac', parcelles: 4, surface: 92.7, conformite: 71, retards: 2 },
+  { nom: 'Vidal M.', commune: 'Mauriac', parcelles: 6, surface: 155.0, conformite: 94, retards: 0 },
+  { nom: 'Coste R.', commune: 'Lempdes', parcelles: 5, surface: 110.0, conformite: 82, retards: 1 },
+  { nom: 'Pradel H.', commune: 'Massiac', parcelles: 3, surface: 67.0, conformite: 58, retards: 4 },
+];
+
+const ALERTS = [
+  { sev: 'crit', ico: '!', title: 'Chassagne L. - PAC incomplete', sub: '3 parcelles sans culture declaree / Massiac' },
+  { sev: 'crit', ico: '!', title: 'Pradel H. - 4 retards de saisie', sub: 'Registre phyto non a jour / Massiac' },
+  { sev: 'warn', ico: '?', title: 'Martin P. - dose non conforme', sub: 'BELL sur Grand Champ: 1.2 L/ha (max 0.9 L/ha) / Lempdes' },
+  { sev: 'warn', ico: '?', title: 'Peyret S. - retard phyto', sub: 'Traitement du 15/06 non enregistre / Mauriac' },
+  { sev: 'info', ico: 'i', title: 'Nouveau protocole UE 2025/2203', sub: 'Conversion electronique des registres - applicatif au 31/10/2025' },
+  { sev: 'ok',   ico: '&#10003;', title: 'Bernal A. - 100% conforme', sub: '0 retard, 3 parcelles / Saint-Flour' },
+];
+
+const TRACE = [
+  { time: '2026-09-23 09:14:32', type: 'auto', desc: 'Pre-remplissage PAC - 6 parcelles Dubois reconciliees avec RPG 2025', status: 'ok' },
+  { time: '2026-09-23 09:14:55', type: 'check', desc: 'Controle registre phyto - 1 anomalie: dose BELL depasse sur Grand Champ', status: 'warn' },
+  { time: '2026-09-23 09:15:12', type: 'auto', desc: 'Ajout traitement BELL (epoxiconazole) sur parcelle Grand Champ (0.9 L/ha)', status: 'ok' },
+  { time: '2026-09-23 09:15:38', type: 'export', desc: 'Export registre phyto CSV (7 entrees) - telecharge', status: 'ok' },
+  { time: '2026-09-23 09:16:02', type: 'alert', desc: 'Alerte: stock MODDUS restant 1.8 L (seuil 2 L atteint)', status: 'warn' },
+  { time: '2026-09-23 09:16:30', type: 'auto', desc: 'Calcul IFT - parcelle Grand Champ: 2.1 (seuil 4.2 / 3 traitements)', status: 'ok' },
+  { time: '2026-09-23 09:17:05', type: 'check', desc: 'Verification mentions obligatoires - format arrete 24/12/2025 conforme', status: 'ok' },
+  { time: '2026-09-23 09:17:28', type: 'alert', desc: 'Chassagne L. - PAC incomplete: 3 parcelles sans culture', status: 'fail' },
+];
+
+const SOURCES_REG = [
+  { name: 'Arrete du 24/12/2025 (registres phyto)', nor: 'NOR AGRG2536515A', jorf: 'JORF n0306 du 31/12/2025', url: 'legifrance.gouv.fr/jorf/id/JORFTEXT000053228465', use: 'Mentions obligatoires registre phyto electronique', freq: 'ponctuel' },
+  { name: 'Reglement (UE) 2023/564 (format registres)', date: '10/03/2023', url: 'eur-lex.europa.eu', use: 'Format normalise du registre electronique des produits phyto', freq: 'stable' },
+  { name: 'Reglement (UE) 2025/2203 (conversion electronique)', date: '31/10/2025', url: 'eur-lex.europa.eu', use: 'Calendrier de conversion aux usages electroniques', freq: 'ponctuel' },
+  { name: 'Reglement (CE) 1107/2009 (mise sur marche phyto)', date: '21/10/2009', url: 'eur-lex.europa.eu', use: 'Art 67: enregistrement des traitements, AMM', freq: 'stable' },
+  { name: 'Reglement (CE) 178/2002 (traceabilite)', date: '28/01/2002', url: 'eur-lex.europa.eu', use: 'Art 18: traabilite des denrees alimentaires', freq: 'stable' },
+  { name: 'Reglement (UE) 2021/2115 (PAC)', date: '02/12/2021', url: 'eur-lex.europa.eu', use: 'Conditionnalite PAC, BCAE, eco-regimes', freq: 'annuel' },
+  { name: 'Code rural art L253-1, R257-1, L257-3', date: '-', url: 'legifrance.gouv.fr', use: 'Detention, usage et registre des produits phyto', freq: 'stable' },
+  { name: 'Arrete du 16/06/2009 (registre phyto ancien)', date: '16/06/2009', url: 'legifrance.gouv.fr', use: 'Format precedent du registre papier (reference historique)', freq: 'stable' },
+  { name: 'Arrete du 04/05/2017 (protection abeilles)', date: '04/05/2017', url: 'legifrance.gouv.fr', use: 'Conditions usage en presence pollinisateurs', freq: 'stable' },
+  { name: 'Arrete du 20/11/2021 (pollinisateurs)', date: '20/11/2021', url: 'legifrance.gouv.fr', use: 'Protection des pollinisateurs en zone agricole', freq: 'stable' },
+];
+
+const SOURCES_DATA = [
+  { name: 'E-Phy ANSES', url: 'ephy.anses.fr', ver: 'Version 2026.1', use: 'Base produits phytopharmaceutiques, AMM, usages autorises, doses', freq: 'mensuel' },
+  { name: 'RPG (Registre Parcellaire Graphique)', url: 'ign.fr / data.gouv.fr', ver: 'Campagne 2025', use: 'Geometrie parcelles, cultures declarees, superficie', freq: 'annuel' },
+  { name: 'TelePAC', url: 'telepac.agriculture.gouv.fr', ver: 'Campagne 2026', use: 'Declaration PAC, teleportage des formulaires', freq: 'annuel' },
+  { name: 'Agreste', url: 'agreste.agriculture.gouv.fr', ver: 'Series 2015-2025', use: 'Statistiques agricoles, rendements historiques par culture', freq: 'annuel' },
+  { name: 'Meteo-France', url: 'meteofrance.fr', ver: 'Station Saint-Flour (15)', use: 'DDC, precipitations, vent pour conditions traitement', freq: 'quotidien' },
+  { name: 'Sentinel-2 / Copernicus', url: 'copernicus.eu', ver: 'Resolution 10m / NDVI', use: 'Imagerie satellite, suivi croissance, stress cultural', freq: '5-10 j' },
+  { name: 'INSEE', url: 'insee.fr', ver: 'COG 2026', use: 'Codes communes, population, geolocalisation', freq: 'annuel' },
+  { name: 'OEPP/EPPO', url: 'gd.eppo.int', ver: 'Codes cultures', use: 'Codes cultures normalises (TRZAX, TRZDU, HORVS, etc.)', freq: 'stable' },
+  { name: 'BBCH', url: 'bbch-scale.de', ver: 'Monographie BBCH', use: 'Stades phenologiques cultures (germination, floraison, maturite)', freq: 'stable' },
+];
+
+const SUGGESTIONS = [
+  'Pre-remplis ma PAC',
+  'Verifie mon registre phyto',
+  'Ajoute un traitement BELL sur Grand Champ',
+  'Exporte mon registre',
+  'Quelles alertes sur mes parcelles?',
+  'Mon stock de MODDUS?',
+  'Calcule mon IFT',
+];
+
+/* ===== Navigation ===== */
+document.querySelectorAll('.nav-item').forEach(el => {
+  el.addEventListener('click', () => {
+    const v = el.dataset.view;
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.view').forEach(s => s.classList.remove('active'));
+    document.getElementById('view-' + v).classList.add('active');
+  });
+});
+
+/* ===== Coop ===== */
+function renderCoop() {
+  const totalAdh = ADHERENTS.length;
+  const totalSurf = ADHERENTS.reduce((a, e) => a + e.surface, 0);
+  const avgConf = Math.round(ADHERENTS.reduce((a, e) => a + e.conformite, 0) / ADHERENTS.length);
+  const totalRet = ADHERENTS.reduce((a, e) => a + e.retards, 0);
+
+  document.getElementById('coop-stats').innerHTML = [
+    { l: 'Adherents', v: totalAdh, u: '', t: 'Coop Cantal', tc: '' },
+    { l: 'Surface totale', v: totalSurf.toFixed(1), u: ' ha', t: '5 communes', tc: '' },
+    { l: 'Conformite moy.', v: avgConf, u: '%', t: 'registre phyto', tc: '' },
+    { l: 'Retards totaux', v: totalRet, u: '', t: '2 critiques', tc: 'trend-down' },
+  ].map(s => `<div class="stat-card"><div class="stat-label">${s.l}</div><div class="stat-value">${s.v}<span class="stat-unit">${s.u}</span></div><div class="stat-trend ${s.tc}">${s.t}</div></div>`).join('');
+
+  const green = ADHERENTS.filter(e => e.conformite >= 85).length;
+  const amber = ADHERENTS.filter(e => e.conformite >= 70 && e.conformite < 85).length;
+  const red = ADHERENTS.filter(e => e.conformite < 70).length;
+  const total = ADHERENTS.length;
+  document.getElementById('dist-bar').innerHTML =
+    `<div class="dist-green dist-label" style="flex-basis:${green/total*100}%">${green}</div>` +
+    `<div class="dist-amber dist-label" style="flex-basis:${amber/total*100}%">${amber}</div>` +
+    `<div class="dist-red dist-label" style="flex-basis:${red/total*100}%">${red}</div>`;
+
+  const sorted = [...ADHERENTS].sort((a, b) => a.conformite - b.conformite);
+  document.querySelector('#adherents-table tbody').innerHTML = sorted.map(e => {
+    const c = e.conformite;
+    const cls = c >= 85 ? 'badge-green' : c >= 70 ? 'badge-amber' : 'badge-red';
+    const col = c >= 85 ? 'var(--green)' : c >= 70 ? 'var(--amber)' : 'var(--red)';
+    const rcls = e.retards === 0 ? 'badge-ok' : e.retards <= 2 ? 'badge-warn' : 'badge-fail';
+    return `<tr>
+      <td><b>${e.nom}</b></td>
+      <td>${e.commune}</td>
+      <td style="text-align:right">${e.parcelles}</td>
+      <td style="text-align:right" class="mono">${e.surface.toFixed(1)} ha</td>
+      <td><span class="bar"><span class="bar-fill" style="width:${c}%;background:${col}"></span></span><span class="pct">${c}%</span> <span class="badge ${cls}">${c>=85?'OK':c>=70?'ATT':'NOK'}</span></td>
+      <td style="text-align:right"><span class="badge ${rcls}">${e.retards}</span></td>
+    </tr>`;
+  }).join('');
+
+  const sevOrder = { crit: 0, warn: 1, info: 2, ok: 3 };
+  const sortedAlerts = [...ALERTS].sort((a, b) => sevOrder[a.sev] - sevOrder[b.sev]);
+  document.getElementById('alerts-box').innerHTML = sortedAlerts.map(a =>
+    `<div class="alert alert-${a.sev}"><div class="alert-ico">${a.ico}</div><div><div class="alert-title">${a.title}</div><div class="alert-sub">${a.sub}</div></div></div>`
+  ).join('');
+  const critCount = ALERTS.filter(a => a.sev === 'crit').length;
+  document.getElementById('alert-count').textContent = `${ALERTS.length} alertes / ${critCount} critiques`;
+
+  const communes = {};
+  ADHERENTS.forEach(e => {
+    if (!communes[e.commune]) communes[e.commune] = { list: [], surf: 0 };
+    communes[e.commune].list.push(e.conformite);
+    communes[e.commune].surf += e.surface;
+  });
+  document.getElementById('communes').innerHTML = Object.entries(communes).map(([name, d]) => {
+    const avg = Math.round(d.list.reduce((a, b) => a + b, 0) / d.list.length);
+    const col = avg >= 85 ? 'var(--green)' : avg >= 70 ? 'var(--amber)' : 'var(--red)';
+    return `<div class="commune-card">
+      <div class="commune-name">${name}</div>
+      <div class="commune-pct" style="color:${col}">${avg}%</div>
+      <div class="commune-meta">${d.list.length} adherents / ${d.surf.toFixed(0)} ha</div>
+    </div>`;
+  }).join('');
+}
+
+/* ===== Trace ===== */
+function renderTrace() {
+  const ico = { ok: '&#10003;', warn: '!', fail: '&#10007;' };
+  const col = { ok: 'var(--green)', warn: 'var(--amber)', fail: 'var(--red)' };
+  document.getElementById('trace-list').innerHTML = TRACE.map(t =>
+    `<div class="trace-item">
+      <div class="trace-time">${t.time}</div>
+      <div class="trace-type" style="color:${col[t.status]}">${t.type}</div>
+      <div class="trace-desc">${t.desc}</div>
+      <div class="trace-status" style="color:${col[t.status]}">${ico[t.status]} ${t.status}</div>
+    </div>`
+  ).join('');
+}
+
+/* ===== Sources ===== */
+function renderSources() {
+  const regHtml = SOURCES_REG.map(s => {
+    const meta = [];
+    if (s.nor) meta.push(`<span>NOR: <b>${s.nor}</b></span>`);
+    if (s.jorf) meta.push(`<span>${s.jorf}</span>`);
+    if (s.date) meta.push(`<span>${s.date}</span>`);
+    return `<div class="src-card">
+      <h4>${s.name}</h4>
+      <div class="src-meta"><span>${s.url}</span>${meta.join('')}</div>
+      <div class="src-use">Ceres: ${s.use} / Maj: ${s.freq}</div>
+    </div>`;
+  }).join('');
+
+  const dataHtml = SOURCES_DATA.map(s => {
+    return `<div class="src-card">
+      <h4>${s.name}</h4>
+      <div class="src-meta"><span>${s.url}</span><span>${s.ver}</span><span>Maj: ${s.freq}</span></div>
+      <div class="src-use">Ceres: ${s.use}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('sources-content').innerHTML =
+    `<div class="src-cat-label">Reglementaire</div>` + regHtml +
+    `<div class="src-cat-label">Donnees et referentiels</div>` + dataHtml;
+}
+
+/* ===== Doc produit ===== */
+function renderDoc() {
+  document.getElementById('doc-content').innerHTML = `
+    <div class="card">
+      <div class="card-head"><div class="card-title">PRD - Produit</div><div class="card-meta">Ceres / copilote administratif</div></div>
+      <div class="card-body">
+        <p style="font-size:13px; margin-bottom:14px;">Ceres est un copilote administratif agricole. Deux faces: Prev (previsions rendement) et Agentique (automatisation registre phyto + declarations). Le fermier valide, Ceres prepare.</p>
+        <div class="prd-grid">
+          <div class="prd-face">
+            <span class="pf-tag pf-prev">Prev</span>
+            <h4>Previsions de rendement</h4>
+            <p>Modeles predictifs sur donnees parcellaires, meteo, satellite et historique. Estimation rendement par parcelle, par culture, par campagne.</p>
+          </div>
+          <div class="prd-face">
+            <span class="pf-tag pf-agent">Agentique</span>
+            <h4>Automatisation registre + declarations</h4>
+            <p>Saisie agentique du registre phyto, pre-remplissage PAC, controles de conformite, exports. L'agent prepare, l'humain declare.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div class="card-title">Protocole - flux 7 etapes</div><div class="card-meta">Extraction -> Exports</div></div>
+      <div class="card-body">
+        <div class="proto">
+          <div class="proto-step"><div class="ps-num">1</div><div class="ps-name">Extraction</div><div class="ps-desc">factures / carnets</div></div>
+          <div class="proto-step"><div class="ps-num">2</div><div class="ps-name">Reconciliation</div><div class="ps-desc">E-Phy / RPG / OEPP</div></div>
+          <div class="proto-step"><div class="ps-num">3</div><div class="ps-name">Controles</div><div class="ps-desc">doses / mentions</div></div>
+          <div class="proto-step"><div class="ps-num">4</div><div class="ps-name">Questions</div><div class="ps-desc">clarifications</div></div>
+          <div class="proto-step"><div class="ps-num">5</div><div class="ps-name">Validation</div><div class="ps-desc">fermier decide</div></div>
+          <div class="proto-step"><div class="ps-num">6</div><div class="ps-name">Registre</div><div class="ps-desc">immuable / horodate</div></div>
+          <div class="proto-step"><div class="ps-num">7</div><div class="ps-name">Exports</div><div class="ps-desc">CSV / JSON / PDF</div></div>
+        </div>
+        <p style="font-size:12px; color:var(--ink-2); margin-top:10px;">Chaque champ porte sa provenance. L'agent prepare, l'humain declare. Le registre est immuable: aucune modification a posteriori, uniquement correction horodatee.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div class="card-title">Roadmap</div><div class="card-meta">Phase 0 -> Phase 4</div></div>
+      <div class="card-body">
+        <div class="roadmap">
+          <div class="rm-phase"><div class="rm-tag">Phase 0</div><div class="rm-name">Prototype + demo</div><div class="rm-date">Sept 2026</div></div>
+          <div class="rm-phase"><div class="rm-tag">Phase 1</div><div class="rm-name">MVP phyto + PAC</div><div class="rm-date">Q4 2026 (3 mois)</div></div>
+          <div class="rm-phase"><div class="rm-tag">Phase 2</div><div class="rm-name">Onboarding coop</div><div class="rm-date">Q1 2027</div></div>
+          <div class="rm-phase"><div class="rm-tag">Phase 3</div><div class="rm-name">Moat donnees + Prev</div><div class="rm-date">Q2 2027</div></div>
+          <div class="rm-phase"><div class="rm-tag">Phase 4</div><div class="rm-name">Effet de reseau</div><div class="rm-date">H2 2027</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div class="card-title">Plan de mise en production</div><div class="card-meta">Infra / RGPD / AI Act</div></div>
+      <div class="card-body">
+        <div class="advice-grid">
+          <div class="advice-card"><h4>Infrastructure</h4>
+            <p style="font-size:12px; color:var(--ink-2);">Hebergement FR (region France centrale), donnees en France. Conformite RGPD. DPA sous-traitant signe avec chaque cooperative cliente.</p>
+          </div>
+          <div class="advice-card"><h4>Referentiels versions</h4>
+            <p style="font-size:12px; color:var(--ink-2);">E-Phy, RPG, OEPP, BBCH versionnes. Chaque version horodatee et conservee. Le registre lie chaque entree a la version du referentiel utilise.</p>
+          </div>
+          <div class="advice-card"><h4>Conservation</h4>
+            <p style="font-size:12px; color:var(--ink-2);">5 ans minimum pour le registre phyto (arrete 24/12/2025). Registre immuable, aucune modification a posteriori.</p>
+          </div>
+          <div class="advice-card"><h4>AI Act</h4>
+            <p style="font-size:12px; color:var(--ink-2);">Art 50(1) transparence: l'utilisateur sait qu'il dialogue avec une IA. Pas d'annexe III (pas de decision automatisee sur prestation publique essentielle). Classification IA-03.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div class="card-title">Architecture</div><div class="card-meta">Flux + couches</div></div>
+      <div class="card-body">
+        <p style="font-size:12px; color:var(--ink-2); margin-bottom:10px;"><b>Flux:</b> Facture/carnet -> Extraction -> Reconciliation (E-Phy, RPG, OEPP) -> Controles -> Questions -> Validation -> Registre immuable -> Exports (CSV/JSON/PDF)</p>
+        <div class="advice-grid">
+          <div class="advice-card"><h4>Couche KERN</h4>
+            <p style="font-size:12px; color:var(--ink-2);">RAG sur referentiels, agents de saisie, connecteurs E-Phy / RPG / TelePAC / Meteo-France. Extraction LLM + reconciliation structurelle.</p>
+          </div>
+          <div class="advice-card"><h4>UI + Data layer</h4>
+            <p style="font-size:12px; color:var(--ink-2);">Interface fermier (chat + formulaires valides), data layer immutable (registre horodate, scelle, versionne). Exports standards.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* ===== Recos ===== */
+function renderRecos() {
+  document.getElementById('recos-content').innerHTML = `
+    <div class="reco"><h4><span class="r-ico">&#9679;</span> Positionnement</h4><p>Couche agentique de saisie, pas un logiciel de gestion parcellaire de plus. Se connecter a MesParcelles, Geofolia, Smag par export CSV/JSON. Ceres ne concurrence pas, il orchestre.</p></div>
+    <div class="reco"><h4><span class="r-ico">&#9679;</span> Canal d'entree</h4><p>Le conseiller cerealier (Tom) comme premier utilisateur. Il tient les carnets, il est ETA/prestataire: cas SIRET detenteur different du beneficiaire couvert. Point d'entree naturel dans la coop.</p></div>
+    <div class="reco"><h4><span class="r-ico">&#9679;</span> Pricing</h4><p>Pilote: 7500 EUR/an. DiagIA: 10000 EUR. Tarif jour: 850 EUR. B2B2C: la coop paie, le fermier utilise.</p></div>
+    <div class="reco"><h4><span class="r-ico">&#9679;</span> Distribution</h4><p>B2B2C via cooperatives. La coop paie la licence, le fermier utilise dans le cadre de son adhesion. RGPD art 28: accord de sous-traitance avec la coop.</p></div>
+    <div class="reco"><h4><span class="r-ico">&#9679;</span> Priorite produit</h4><p>1) Registre phyto (seul flux date) 2) PAC 3) Traceabilite 4) Cahiers des charges 5) Assurance. Le registre phyto est le flux le plus contraignant et le moins bien solutionne.</p></div>
+    <div class="reco"><h4><span class="r-ico">&#9679;</span> Moat (avantage defensif)</h4><p>Donnees parcellaires consolidees via le volet agentique alimentent Ceres Prev. Le volet agentique finance la donnee que le ML ne peut pas acheter ailleurs. Effet de reseau: plus de coops = plus de donnees = meilleurs modeles.</p></div>
+  `;
+}
+
+/* ===== Conseils ===== */
+function renderConseils() {
+  document.getElementById('conseils-content').innerHTML = `
+    <div class="card">
+      <div class="card-head"><div class="card-title">Calendrier de conformite</div><div class="card-meta">2026 -> 2030</div></div>
+      <div class="card-body">
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-date">01/01/2026</div><div class="tl-text">Nouvelles mentions obligatoires entrees en vigueur (annee pedagogique)</div></div>
+          <div class="tl-item"><div class="tl-date">01/01/2027</div><div class="tl-text">Format electronique obligatoire pour les registres phyto</div></div>
+          <div class="tl-item"><div class="tl-date">31/01/2028</div><div class="tl-text">Conversion des usages 2027 en format electronique</div></div>
+          <div class="tl-item"><div class="tl-date">31/01/2029</div><div class="tl-text">Conversion des usages 2028 en format electronique</div></div>
+          <div class="tl-item"><div class="tl-date">01/01/2030</div><div class="tl-text">Conversion sous 30 jours des usages en cours</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div class="card-title">Sanctions</div><div class="card-meta">Reduction des aides PAC</div></div>
+      <div class="card-body" style="padding:0;">
+        <table>
+          <thead><tr><th>Anomalie</th><th>Sanction</th></tr></thead>
+          <tbody>
+            <tr><td>Anomalie mineure</td><td>Reduction 1-3% des aides</td></tr>
+            <tr><td>Repetition d'anomalies mineures</td><td><span class="badge badge-amber">10%</span></td></tr>
+            <tr><td>Falsification de registre</td><td><span class="badge badge-red">15-100%</span></td></tr>
+            <tr><td>Refus de controle</td><td><span class="badge badge-red">100%</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="advice-grid">
+      <div class="advice-card"><h4>Conservation</h4><p style="font-size:12px; color:var(--ink-2);">5 ans minimum pour le registre phyto. Ceres conserve les registres en l'etat immuable, horodate et scelle.</p></div>
+      <div class="advice-card"><h4>AI Act - transparence</h4><p style="font-size:12px; color:var(--ink-2);">Art 50(1): l'utilisateur sait qu'il dialogue avec une IA. Pas d'annexe III (pas de decision automatisee sur prestation publique essentielle). Classification IA-03 (assistant).</p></div>
+      <div class="advice-card"><h4>RGPD</h4><p style="font-size:12px; color:var(--ink-2);">Ceres est sous-traitant (DPA client). Donnees exploitant = donnees personnelles (SIRET = personne physique). Registre phyto geolocalise = donnees personnelles. Fiche VERT / ORANGE / ROUGE selon exposition.</p></div>
+      <div class="advice-card"><h4>Points a faire valider par expert</h4>
+        <ul style="font-size:12px; color:var(--ink-2); padding-left:16px; margin-top:6px;">
+          <li>Definition legale de "sans tarder"</li>
+          <li>Niveau d'integrite (horodatage, scellement)</li>
+          <li>Acceptabilite du CSV/JSON en controle</li>
+          <li>Qualification: registre prepare par IA puis confirme par exploitants</li>
+          <li>Responsabilite editeur en cas d'erreur de reconciliation AMM</li>
+        </ul>
+      </div>
+    </div>
+  `;
+}
+
+/* ===== Chat ===== */
+function renderSuggestions() {
+  document.getElementById('sugg-box').innerHTML = SUGGESTIONS.map(s =>
+    `<span class="sugg" onclick="quickAsk('${s.replace(/'/g, "\\'")}')">${s}</span>`
+  ).join('');
+}
+
+function quickAsk(text) {
+  document.getElementById('chat-text').value = text;
+  sendChat();
+}
+
+let chatIdx = 0;
+function addMsg(role, html) {
+  const body = document.getElementById('chat-body');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  div.innerHTML = `<div class="role">${role === 'user' ? 'Vous' : 'Ceres'}</div><div class="bubble">${html}</div>`;
+  body.appendChild(div);
+  body.scrollTop = body.scrollHeight;
+}
+
+function showTyping() {
+  const body = document.getElementById('chat-body');
+  const div = document.createElement('div');
+  div.className = 'msg assistant typing active';
+  div.id = 'typing-indicator';
+  div.innerHTML = `<div class="role">Ceres</div><div class="bubble"><span class="typing-dots"><span></span><span></span><span></span></span></div>`;
+  body.appendChild(div);
+  body.scrollTop = body.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing-indicator');
+  if (t) t.remove();
+}
+
+function actionBlock(head, rows, statusCol) {
+  const statusHtml = statusCol ? `<div class="ab-row" style="margin-top:6px;border-top:1px solid var(--line);padding-top:6px;"><span class="k">Statut</span><span class="v ${statusCol.cls}">${statusCol.txt}</span></div>` : '';
+  return `<div class="action-block"><div class="ab-head">${head}</div>${rows.map(r => `<div class="ab-row"><span class="k">${r.k}</span><span class="v">${r.v}</span></div>`).join('')}${statusHtml}</div>`;
+}
+
+const RESPONSES = {
+  'pre-remplis ma pac': () => {
+    const pac = [
+      { k: 'Parcelle', v: 'Grand Champ' }, { k: 'Culture OEPP', v: 'TRZAX (ble tendre)' }, { k: 'Surface RPG', v: '28.5 ha' }, { k: 'Superficie declaree', v: '28.5 ha' }, { k: 'Source', v: 'RPG 2025 + TelePAC' }, { k: 'Statut', v: 'Pre-rempli' },
+    ];
+    const pac2 = [
+      { k: 'Parcelle', v: 'La Coste' }, { k: 'Culture OEPP', v: 'TRZDU (ble dur)' }, { k: 'Surface RPG', v: '22.0 ha' }, { k: 'Superficie declaree', v: '22.0 ha' }, { k: 'Source', v: 'RPG 2025' }, { k: 'Statut', v: 'Pre-rempli' },
+    ];
+    const pac3 = [
+      { k: 'Parcelle', v: 'Puy Redon' }, { k: 'Culture OEPP', v: 'HORVS (orge de printemps)' }, { k: 'Surface RPG', v: '18.4 ha' }, { k: 'Superficie declaree', v: '18.4 ha' }, { k: 'Source', v: 'RPG 2025' }, { k: 'Statut', v: 'Pre-rempli' },
+    ];
+    return `J'ai pre-rempli votre declaration PAC pour 2026. 6 parcelles reconciliees avec le RPG 2025 et TelePAC. Voici les 3 principales:` +
+      actionBlock('PAC 2026 - Grand Champ', pac) +
+      actionBlock('PAC 2026 - La Coste', pac2) +
+      actionBlock('PAC 2026 - Puy Redon', pac3) +
+      `<p style="margin-top:6px; font-size:11px; color:var(--muted);">3 autres parcelles pre-remplies (total 117.9 ha). Validez et je teleportage sur TelePAC.</p>`;
+  },
+  'verifie mon registre phyto': () => {
+    return `Audit de conformite du registre phyto sur 7 traitements enregistres:` +
+      actionBlock('Audit registre phyto', [
+        { k: 'Traitements verifies', v: '7' },
+        { k: 'Conformes', v: '6' },
+        { k: 'Anomalies', v: '1' },
+        { k: 'Conformite', v: '86%' },
+        { k: 'Format', v: 'Arrete 24/12/2025' },
+      ], { cls: 'ab-warn', txt: '1 anomalie' }) +
+      `<p style="margin-top:6px; font-size:11px; color:var(--terra);">Anomalie: BELL sur Grand Champ - dose enregistree 1.2 L/ha, dose max autorisee 0.9 L/ha (E-Phy AMM 2140086).</p>`;
+  },
+  'ajoute un traitement bell sur grand champ': () => {
+    return `Traitement ajoute au registre (en attente de votre validation):` +
+      actionBlock('Nouveau traitement', [
+        { k: 'Produit', v: 'BELL (epoxiconazole)' },
+        { k: 'AMM', v: '2140086 (E-Phy)' },
+        { k: 'Parcelle', v: 'Grand Champ (28.5 ha)' },
+        { k: 'Dose', v: '0.9 L/ha' },
+        { k: 'Date', v: '23/09/2026' },
+        { k: 'Stade BBCH', v: '39 (montaison)' },
+        { k: 'Meteo', v: 'Vent 8 km/h, sec' },
+      ], { cls: 'ab-ok', txt: 'Conforme' }) +
+      `<p style="margin-top:6px; font-size:11px; color:var(--muted);">Entree horodatee et scellee dans le registre immuable. Mention obligatoire respectee (arrete 24/12/2025).</p>`;
+  },
+  'exporte mon registre': () => {
+    const csv = 'date,produit,AMM,parcelle,dose,unite,stade\n2026-03-15,MODDUS,88043,Grand Champ,0.3,L/ha,30\n2026-04-02,BELL,2140086,La Coste,0.9,L/ha,32\n2026-04-18,MODDUS,88043,Puy Redon,0.3,L/ha,33\n2026-05-05,BELL,2140086,Grand Champ,0.9,L/ha,39\n2026-06-12,FALCON,98017,La Coste,0.6,L/ha,61\n2026-07-03,MODDUS,88043,Puy Redon,0.3,L/ha,71\n2026-09-23,BELL,2140086,Grand Champ,0.9,L/ha,39';
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'registre_phyto_2026.csv'; a.click();
+    URL.revokeObjectURL(url);
+    return `Export du registre phyto en cours de telechargement (CSV):` +
+      actionBlock('Export registre', [
+        { k: 'Format', v: 'CSV (UTF-8)' },
+        { k: 'Entrees', v: '7' },
+        { k: 'Periode', v: '2026-03-15 -> 2026-09-23' },
+        { k: 'Fichier', v: 'registre_phyto_2026.csv' },
+      ], { cls: 'ab-ok', txt: 'Telecharge' });
+  },
+  'quelles alertes sur mes parcelles?': () => {
+    return `Alertes actives sur vos 6 parcelles:` +
+      actionBlock('Alertes', [
+        { k: 'Grand Champ', v: '1 dose non conforme (BELL)' },
+        { k: 'La Coste', v: 'OK - conforme' },
+        { k: 'Puy Redon', v: 'OK - conforme' },
+        { k: 'Stock MODDUS', v: '1.8 L restant (seuil 2 L)' },
+        { k: 'Burtin', v: 'OK - conforme' },
+        { k: 'Les Vignes', v: 'OK - conforme' },
+      ], { cls: 'ab-warn', txt: '2 alertes' });
+  },
+  'mon stock de moddus?': () => {
+    return `Niveau de stock pour MODDUS:` +
+      actionBlock('Stock MODDUS (AMM 88043)', [
+        { k: 'Restant', v: '1.8 L' },
+        { k: 'Seuil alerte', v: '2.0 L' },
+        { k: 'Dernier usage', v: '23/09/2026 (Grand Champ)' },
+        { k: 'Doses possibles', v: '~6 a 0.3 L/ha' },
+      ], { cls: 'ab-warn', txt: 'Sous seuil' }) +
+      `<p style="margin-top:6px; font-size:11px; color:var(--terra);">Commande conseillee: 5 L pour couvrir les prochains traitements.</p>`;
+  },
+  'calcule mon ift': () => {
+    return `Calcul de l'IFT (Indicateur de Frequence de Traitement) sur la parcelle Grand Champ:` +
+      actionBlock('IFT - Grand Champ (28.5 ha, ble tendre TRZAX)', [
+        { k: 'Traitements phyto', v: '3 (2026)' },
+        { k: 'IFT realise', v: '2.1' },
+        { k: 'IFT seuil BCAE', v: '4.2' },
+        { k: 'Marge', v: '2.1 sous le seuil' },
+        { k: 'Statut conditionnalite', v: 'Conforme' },
+      ], { cls: 'ab-ok', txt: 'Conforme PAC' });
+  },
+};
+
+function sendChat() {
+  const input = document.getElementById('chat-text');
+  const text = input.value.trim();
+  if (!text) return;
+  addMsg('user', text);
+  input.value = '';
+  showTyping();
+  const key = text.toLowerCase().replace(/[?'.]/g, '').trim();
+  setTimeout(() => {
+    removeTyping();
+    let matched = null;
+    for (const k of Object.keys(RESPONSES)) {
+      if (key.includes(k) || k.includes(key)) { matched = k; break; }
+    }
+    if (matched) {
+      addMsg('assistant', RESPONSES[matched]());
+    } else {
+      addMsg('assistant', `Je n'ai pas d'action correspondante. Essayez: pre-remplir la PAC, verifier le registre phyto, ajouter un traitement, exporter le registre, calculer l'IFT, verifier le stock, ou les alertes.`);
+    }
+  }, 700 + Math.random() * 600);
+}
+
+/* ===== Init ===== */
+renderCoop();
+renderTrace();
+renderSources();
+renderDoc();
+renderRecos();
+renderConseils();
+renderSuggestions();
+</script>
+</body>
+</html>

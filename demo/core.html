@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FarmCockpit · Core · Arpent Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --anthracite:#1e242b; --gold:#c7a248; --terra:#b5623e; --paper:#fafaf8;
+  --gris:#eaece8; --gris2:#d4d7d2; --ink:#2a2f36; --muted:#6b7280;
+  --line:#e2e5e0; --line2:#cfd3cc; --ok:#2d7d46; --warn:#b8862f; --err:#a93829;
+  --r:8px; --r-sm:5px; --r-lg:14px;
+  --shadow:0 1px 3px rgba(30,36,43,.06),0 1px 2px rgba(30,36,43,.04);
+  --shadow-md:0 4px 12px rgba(30,36,43,.08),0 2px 4px rgba(30,36,43,.04);
+  --shadow-lg:0 12px 32px rgba(30,36,43,.12),0 4px 8px rgba(30,36,43,.06);
+  --mono:'IBM Plex Mono',ui-monospace,monospace; --sans:'Inter',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,select,textarea{font-family:inherit;font-size:13px}
+a{color:inherit;text-decoration:none}
+::selection{background:rgba(199,162,72,.25)}
+
+/* ===== Layout ===== */
+.app{display:grid;grid-template-columns:240px 1fr;height:100vh;overflow:hidden}
+.sidebar{background:var(--anthracite);color:#c8cdd3;display:flex;flex-direction:column;overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:5px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
+.brand{padding:18px 20px 14px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px}
+.brand-mark{width:28px;height:28px;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--gold),var(--terra));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--anthracite);font-family:var(--mono)}
+.brand-name{font-size:14px;font-weight:600;color:#fff;letter-spacing:-0.01em}
+.brand-sub{font-size:9px;color:rgba(255,255,255,.4);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-top:1px}
+.role-section{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.07)}
+.role-label{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.35);font-family:var(--mono);margin-bottom:8px;display:block}
+.role-tabs{display:flex;flex-direction:column;gap:3px}
+.role-tab{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:var(--r-sm);font-size:12px;color:rgba(255,255,255,.6);transition:all .15s;text-align:left;font-weight:500}
+.role-tab:hover{background:rgba(255,255,255,.06);color:#fff}
+.role-tab.active{background:rgba(199,162,72,.14);color:var(--gold)}
+.role-tab .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.role-tab[data-role="exploitant"] .dot{background:var(--gold)}
+.role-tab[data-role="coop"] .dot{background:var(--terra)}
+.role-tab[data-role="agent"] .dot{background:#6b9bd8}
+.nav-group-label{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.3);font-family:var(--mono);padding:14px 14px 7px;display:block}
+.nav{display:flex;flex-direction:column;gap:1px;padding:0 8px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r-sm);font-size:12.5px;color:rgba(255,255,255,.55);transition:all .12s;font-weight:500;width:100%;text-align:left}
+.nav-item:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.9)}
+.nav-item.active{background:rgba(255,255,255,.08);color:#fff}
+.nav-item .ico{width:15px;height:15px;flex-shrink:0;opacity:.7;text-align:center;font-size:13px}
+.nav-count{margin-left:auto;font-size:10px;font-family:var(--mono);color:rgba(255,255,255,.4);background:rgba(255,255,255,.06);padding:1px 5px;border-radius:3px}
+.sidebar-foot{margin-top:auto;padding:12px 14px;border-top:1px solid rgba(255,255,255,.07);font-size:10px;color:rgba(255,255,255,.3);font-family:var(--mono);line-height:1.6}
+.sidebar-foot a{color:var(--gold);opacity:.7}
+.sidebar-foot a:hover{opacity:1}
+
+.main{overflow-y:auto;background:var(--paper)}
+.main::-webkit-scrollbar{width:6px}
+.main::-webkit-scrollbar-thumb{background:var(--gris2);border-radius:3px}
+.topbar{height:52px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);position:sticky;top:0;z-index:10}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar h1{font-size:14px;font-weight:600;letter-spacing:-0.01em}
+.topbar-breadcrumb{font-size:11px;color:var(--muted);font-family:var(--mono);display:flex;gap:6px;align-items:center}
+.topbar-breadcrumb .sep{opacity:.4}
+.topbar-role{font-size:10px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding:2px 8px;border:1px solid var(--line);border-radius:10px}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.live-badge{display:flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);color:var(--ok);text-transform:uppercase;letter-spacing:.04em}
+.live-badge .pulse{width:7px;height:7px;border-radius:50%;background:var(--ok);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.topbar-meta{font-size:11px;font-family:var(--mono);color:var(--muted)}
+.topbar-btn{font-size:11px;font-family:var(--mono);color:var(--muted);padding:4px 10px;border:1px solid var(--line);border-radius:5px;transition:all .15s;text-transform:uppercase;letter-spacing:.04em}
+.topbar-btn:hover{border-color:var(--gold);color:var(--ink)}
+.user-avatar{width:30px;height:30px;border-radius:50%;background:var(--anthracite);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;font-family:var(--mono)}
+.content{padding:24px;max-width:1100px;margin:0 auto}
+
+/* ===== Cards ===== */
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px}
+.card-head{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--anthracite)}
+.card-sub{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:2px}
+.card-body{padding:18px}
+.card-body.tight{padding:0}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+
+/* ===== KPI ===== */
+.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px;position:relative}
+.kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-family:var(--mono)}
+.kpi-val{font-size:26px;font-weight:600;font-family:var(--mono);margin:6px 0 2px;letter-spacing:-0.02em;color:var(--anthracite)}
+.kpi-unit{font-size:13px;color:var(--muted);font-weight:400}
+.kpi-delta{font-size:11px;font-family:var(--mono);margin-top:4px}
+.kpi-delta.pos{color:var(--ok)} .kpi-delta.neg{color:var(--err)} .kpi-delta.neu{color:var(--muted)}
+.kpi::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;border-radius:var(--r) 0 0 var(--r);background:var(--gris2)}
+.kpi.accent::before{background:var(--gold)}
+.kpi.terra::before{background:var(--terra)}
+.kpi.ok::before{background:var(--ok)}
+.kpi.warn::before{background:var(--warn)}
+
+/* ===== Tables ===== */
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-family:var(--mono);font-weight:500;padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap;cursor:pointer;user-select:none}
+.tbl th.sortable:hover{color:var(--ink)}
+.tbl th .arr{font-size:9px;opacity:.4;margin-left:3px}
+.tbl th.sorted .arr{opacity:1;color:var(--gold)}
+.tbl td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(199,162,72,.03)}
+.tbl td .mono{font-family:var(--mono);font-size:11px}
+.tbl td.num{font-family:var(--mono);text-align:right}
+.tbl-wrap{overflow-x:auto}
+.row-clickable{cursor:pointer}
+
+/* ===== Tags & badges ===== */
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap}
+.tag.gold{background:rgba(199,162,72,.12);color:#8a7126;border:1px solid rgba(199,162,72,.2)}
+.tag.terra{background:rgba(181,98,62,.1);color:#8a4a30;border:1px solid rgba(181,98,62,.2)}
+.tag.ok{background:rgba(45,125,70,.08);color:var(--ok);border:1px solid rgba(45,125,70,.15)}
+.tag.warn{background:rgba(184,134,47,.1);color:var(--warn);border:1px solid rgba(184,134,47,.2)}
+.tag.err{background:rgba(169,56,41,.08);color:var(--err);border:1px solid rgba(169,56,41,.15)}
+.tag.neu{background:var(--gris);color:var(--muted);border:1px solid var(--line)}
+.tag.info{background:rgba(107,155,216,.08);color:#4a7cb8;border:1px solid rgba(107,155,216,.15)}
+.prov{font-size:9px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;padding:1px 5px;border-radius:3px;font-weight:600}
+.prov.saisi{background:rgba(45,125,70,.1);color:var(--ok)}
+.prov.extrait{background:rgba(107,155,216,.1);color:#4a7cb8}
+.prov.deduit{background:rgba(199,162,72,.12);color:#8a7126}
+.prov.confirme{background:rgba(181,98,62,.1);color:#8a4a30}
+
+/* ===== Forms ===== */
+.form-row{margin-bottom:14px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+label.fld{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-family:var(--mono);margin-bottom:5px;font-weight:500}
+label.fld .req{color:var(--terra)}
+label.fld .opt{color:var(--muted);opacity:.6;font-weight:400}
+input.fld,select.fld,textarea.fld{width:100%;padding:8px 11px;border:1px solid var(--line2);border-radius:var(--r-sm);background:#fff;font-size:13px;color:var(--ink);transition:border .15s;outline:none}
+input.fld:focus,select.fld:focus,textarea.fld:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(199,162,72,.12)}
+input.fld.mono,select.fld.mono{font-family:var(--mono);font-size:12px}
+.hint{font-size:11px;color:var(--muted);margin-top:4px;font-family:var(--mono)}
+
+/* ===== Buttons ===== */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:5px;font-size:12px;font-weight:500;transition:all .15s;border:1px solid transparent}
+.btn-primary{background:var(--anthracite);color:#fff}
+.btn-primary:hover{background:#2d3640}
+.btn-gold{background:var(--gold);color:var(--anthracite)}
+.btn-gold:hover{background:#d4b05a}
+.btn-outline{border:1px solid var(--line2);color:var(--ink);background:#fff}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.btn-terra{background:var(--terra);color:#fff}
+.btn-terra:hover{background:#c4714f}
+.btn-sm{padding:5px 11px;font-size:11px}
+.btn-ghost{color:var(--muted);font-size:11px;padding:4px 8px}
+.btn-ghost:hover{color:var(--ink)}
+
+/* ===== Modal ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(30,36,43,.4);backdrop-filter:blur(2px);display:none;align-items:flex-start;justify-content:center;z-index:100;padding:40px 20px;overflow-y:auto}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow-lg);max-width:780px;width:100%;margin:0 auto}
+.modal.lg{max-width:920px}
+.modal-head{padding:18px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:15px;font-weight:600;color:var(--anthracite)}
+.modal-sub{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:2px}
+.modal-body{padding:24px;max-height:70vh;overflow-y:auto}
+.modal-foot{padding:14px 24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.modal-close{font-size:18px;color:var(--muted);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:var(--gris);color:var(--ink)}
+
+/* ===== Alerts ===== */
+.alert{display:flex;gap:12px;padding:12px 16px;border-radius:var(--r-sm);border:1px solid;font-size:12px;margin-bottom:8px}
+.alert.err{border-color:rgba(169,56,41,.2);background:rgba(169,56,41,.04)}
+.alert.warn{border-color:rgba(184,134,47,.2);background:rgba(184,134,47,.04)}
+.alert.ok{border-color:rgba(45,125,70,.2);background:rgba(45,125,70,.04)}
+.alert.info{border-color:rgba(107,155,216,.2);background:rgba(107,155,216,.04)}
+.alert .ai{flex-shrink:0;width:20px;text-align:center;font-size:14px}
+.alert .at{font-weight:600;margin-bottom:2px}
+.alert .ad{color:var(--muted);font-size:11px;font-family:var(--mono)}
+.alert-clickable{cursor:pointer;transition:all .15s}
+.alert-clickable:hover{box-shadow:var(--shadow)}
+
+/* ===== Misc ===== */
+.section-title{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-family:var(--mono);margin-bottom:10px;margin-top:6px}
+.empty{text-align:center;padding:40px;color:var(--muted);font-size:13px}
+.muted{color:var(--muted)}
+.mono{font-family:var(--mono)}
+.divider{height:1px;background:var(--line);margin:18px 0}
+.hidden{display:none!important}
+.compliance-bar{height:6px;border-radius:3px;background:var(--gris);overflow:hidden;margin-top:4px}
+.compliance-fill{height:100%;border-radius:3px;transition:width .5s}
+
+/* ===== Toast ===== */
+.toast-wrap{position:fixed;bottom:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:8px}
+.toast{background:var(--anthracite);color:#fff;padding:10px 16px;border-radius:6px;font-size:12px;box-shadow:var(--shadow-lg);animation:slideIn .25s ease;display:flex;align-items:center;gap:8px}
+.toast .dot{width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.toast.ok .dot{background:var(--ok)}
+.toast.err .dot{background:var(--err)}
+@keyframes slideIn{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* ===== Detail grid (modal) ===== */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.detail-grid .dg-row{display:contents}
+.detail-grid .dg-label,.detail-grid .dg-val{padding:10px 14px;border-bottom:1px solid var(--line);font-size:12px}
+.detail-grid .dg-label{background:var(--paper);color:var(--muted);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.04em;font-weight:500;border-right:1px solid var(--line)}
+.detail-grid .dg-val{font-family:var(--mono);font-size:11px}
+
+/* ===== Connexion cards ===== */
+.conn-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.conn-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px;position:relative;transition:box-shadow .15s}
+.conn-card:hover{box-shadow:var(--shadow-md)}
+.conn-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.conn-name{font-size:13px;font-weight:600;color:var(--anthracite)}
+.conn-type{font-size:10px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.conn-status{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-family:var(--mono);padding:2px 8px;border-radius:10px}
+.conn-status.connecte{background:rgba(45,125,70,.08);color:var(--ok);border:1px solid rgba(45,125,70,.15)}
+.conn-status.preparation{background:rgba(184,134,47,.08);color:var(--warn);border:1px solid rgba(184,134,47,.15)}
+.conn-status .pulse{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
+.conn-fields{font-size:11px;color:var(--muted);font-family:var(--mono);line-height:1.6;margin-top:8px}
+.conn-meta{display:flex;gap:12px;margin-top:10px;font-size:10px;font-family:var(--mono);color:var(--muted);flex-wrap:wrap}
+.conn-meta span{white-space:nowrap}
+
+/* ===== Stock movement log ===== */
+.movement{display:grid;grid-template-columns:120px 60px 1fr 80px;gap:10px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);font-size:12px}
+.movement:last-child{border-bottom:none}
+.movement .mv-date{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.movement .mv-type{font-size:10px;font-family:var(--mono);padding:1px 6px;border-radius:3px}
+.movement .mv-type.entree{background:rgba(45,125,70,.1);color:var(--ok)}
+.movement .mv-type.sortie{background:rgba(181,98,62,.1);color:#8a4a30}
+.movement .mv-desc{font-size:11px}
+.movement .mv-qty{font-family:var(--mono);text-align:right;font-size:11px}
+
+/* ===== Quick links ===== */
+.quick-links{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.quick-link{background:#fff;border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.quick-link:hover{border-color:var(--gold);box-shadow:0 0 0 3px rgba(199,162,72,.08)}
+.quick-link .ql-ico{font-size:18px;opacity:.6}
+.quick-link .ql-label{font-size:12px;font-weight:500}
+.quick-link .ql-sub{font-size:10px;color:var(--muted);font-family:var(--mono)}
+
+/* ===== Profil ===== */
+.info-row{display:grid;grid-template-columns:200px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:12px}
+.info-row:last-child{border-bottom:none}
+.info-row .ir-label{color:var(--muted);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.04em;font-weight:500}
+.info-row .ir-val{font-size:13px}
+.info-row .ir-val .mono{font-family:var(--mono);font-size:12px}
+
+/* ===== Responsive ===== */
+@media(max-width:840px){
+  .app{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+  .conn-grid{grid-template-columns:1fr}
+  .detail-grid{grid-template-columns:1fr}
+  .detail-grid .dg-label{border-right:none;border-bottom:1px solid var(--line)}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">F</div>
+      <div>
+        <div class="brand-name">FarmCockpit</div>
+        <div class="brand-sub">Arpent Lab · Ceres</div>
+      </div>
+    </div>
+    <div class="role-section">
+      <span class="role-label">Role</span>
+      <div class="role-tabs">
+        <button class="role-tab active" data-role="exploitant" onclick="App.setRole('exploitant')"><span class="dot"></span>Exploitant</button>
+        <button class="role-tab" data-role="coop" onclick="App.setRole('coop')"><span class="dot"></span>Coopérative</button>
+        <button class="role-tab" data-role="agent" onclick="App.setRole('agent')"><span class="dot"></span>Agent</button>
+      </div>
+    </div>
+    <div id="navContainer"></div>
+    <div class="sidebar-foot">
+      Arpent Lab · FarmCockpit<br>arrete 24/12/2025 · Annexe I<br><a href="https://arpent.ai">arpent.ai</a> · IA Act art 50(1)
+    </div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1 id="pageTitle">Tableau de bord</h1>
+        <span class="topbar-breadcrumb" id="topbarBreadcrumb"></span>
+        <span class="topbar-role" id="rolePill">Exploitant</span>
+      </div>
+      <div class="topbar-right">
+        <span class="live-badge"><span class="pulse"></span>Sync OK</span>
+        <span class="topbar-meta" id="topbarMeta"></span>
+        <button class="topbar-btn" onclick="App.exportData()">Export</button>
+        <div class="user-avatar">FD</div>
+      </div>
+    </div>
+    <div class="content" id="content"></div>
+  </main>
+</div>
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)App.closeModal()">
+  <div class="modal" id="modalContent"></div>
+</div>
+<div class="toast-wrap" id="toasts"></div>
+
+<script>
+/* ============================================================
+   FARMCOCKPIT · CORE SHELL + DATA LAYER + 6 VIEW MODULES
+   Arpent Lab · arrete 24/12/2025 Annexe I
+   ============================================================ */
+
+/* ===== DATA LAYER ===== */
+const DATA = {
+  exploitation: {
+    siret: '12345678900012',
+    nom: 'Ferme du Moulin',
+    formeJuridique: 'GAEC',
+    sau: 117.9,
+    communePrincipale: 'Saint-Flour',
+    communes: ['Saint-Flour', 'Lempdes'],
+    certifications: [{ nom: 'HVE niveau 3', statut: 'certifie', date: '2024-06-15' }, { nom: 'Agriculture Biologique', statut: 'non', date: null }],
+    historiqueCultures: [
+      { annee: 2024, rotation: 'Blé tendre / Orge d\'hiver / Colza' },
+      { annee: 2025, rotation: 'Blé dur / Orge d\'hiver / Colza' },
+      { annee: 2026, rotation: 'Blé tendre / Orge d\'hiver / Blé dur' },
+    ],
+    associes: [
+      { nom: 'M. Dubois', role: 'Gerant', part: 50 },
+      { nom: 'M. Martin', role: 'Associe', part: 50 },
+    ],
+    profilProductif: 'Grande culture cerealiere',
+    conseiller: { nom: 'Tom Berl', coop: 'Cantal Cereales', telephone: '04 71 00 00 00' },
+    department: 'Cantal (15)',
+  },
+
+  // AMM database (E-Phy ANSES)
+  phyto: {
+    '9400352': { produit: 'MODDUS', substance: 'Spiroxamine 500g/L', dose: 0.8, unite: 'L/ha', type: 'fongicide', cultures: ['TRZAX','HORVS','TRZDU'] },
+    '20080037': { produit: 'BELL', substance: 'Prothioconazole + Tebuconazole', dose: 0.6, unite: 'L/ha', type: 'fongicide', cultures: ['TRZAX','TRZDU','HORVS'] },
+    '9100776': { produit: 'CARBRENE', substance: 'Chlorothalonil 500g/L', dose: 1.5, unite: 'L/ha', type: 'fongicide', cultures: ['TRZAX','TRZDU'] },
+    '9500389': { produit: 'ADEUX', substance: 'Metsulfuron-methyl 20g/kg', dose: 0.1, unite: 'kg/ha', type: 'herbicide', cultures: ['ZEAMX','BRAAN'] },
+    '8800461': { produit: 'KORIT', substance: 'Glyphosate 360g/L', dose: 3.0, unite: 'L/ha', type: 'herbicide', cultures: ['TRZAX','TRZDU','HORVS','BRAAN','ZEAMX'] },
+    '9900424': { produit: 'ADIGOR', substance: 'Metsulfuron + Tribenuron', dose: 0.1, unite: 'kg/ha', type: 'herbicide', cultures: ['TRZAX','TRZDU'] },
+    '20080455': { produit: 'CHEER', substance: 'Chlorothalonil + Propiconazole', dose: 1.0, unite: 'L/ha', type: 'fongicide', cultures: ['TRZAX','TRZDU','HORVS'] },
+    '21001459': { produit: 'VARDOUX', substance: 'Fluxapyroxad 62.5g/L', dose: 1.5, unite: 'L/ha', type: 'fongicide', cultures: ['TRZAX','TRZDU'] },
+    '20100063': { produit: 'CAP OSELE', substance: 'Prothioconazole 250g/L', dose: 0.7, unite: 'L/ha', type: 'fongicide', cultures: ['TRZAX','TRZDU','HORVS'] },
+  },
+
+  // OEPP codes
+  oepp: {
+    TRZAX: 'Ble tendre', TRZDU: 'Ble dur', HORVS: 'Orge hiver',
+    BRAAN: 'Colza', ZEAMX: 'Mais', SBIAX: 'Sorgho', GLYMX: 'Soja',
+  },
+
+  // BBCH stages
+  bbch: {
+    '30': 'Debut montaison', '32': '2 noeuds', '37': 'Fin montaison',
+    '39': 'Ligule visible', '51': 'Debut epiaison', '61': 'Debut floraison',
+    '65': 'Pleine floraison', '71': 'Nouaison', '85': 'Stade pateux',
+  },
+
+  // Parcelles RPG Cantal 15
+  parcels: [
+    { id:'p1', ilot:'1001', parcelle:'3', insee:'15001', commune:'Saint-Flour', nom:'Grand Champ', surface:24.5, culture:'TRZAX', gps:'45.0376,3.0987',
+      rotation:{ 2024:'TRZAX', 2025:'BRAAN', 2026:'TRZAX' }, conformite:'ok', traitements:3, bbch:'32' },
+    { id:'p2', ilot:'1001', parcelle:'5', insee:'15001', commune:'Saint-Flour', nom:'Les Graves', surface:18.2, culture:'HORVS', gps:'45.0412,3.1023',
+      rotation:{ 2024:'HORVS', 2025:'TRZAX', 2026:'HORVS' }, conformite:'ok', traitements:2, bbch:'37' },
+    { id:'p3', ilot:'1002', parcelle:'1', insee:'15001', commune:'Saint-Flour', nom:'Champ du Roc', surface:31.0, culture:'TRZDU', gps:'45.0398,3.0856',
+      rotation:{ 2024:'TRZDU', 2025:'HORVS', 2026:'TRZDU' }, conformite:'warn', traitements:4, bbch:'39' },
+    { id:'p4', ilot:'1003', parcelle:'2', insee:'15014', commune:'Lempdes', nom:'La Vigne', surface:12.8, culture:'BRAAN', gps:'45.0612,3.1345',
+      rotation:{ 2024:'BRAAN', 2025:'TRZAX', 2026:'BRAAN' }, conformite:'ok', traitements:1, bbch:'65' },
+    { id:'p5', ilot:'1003', parcelle:'7', insee:'15014', commune:'Lempdes', nom:'Pre Bas', surface:9.3, culture:'TRZAX', gps:'45.0634,3.1289',
+      rotation:{ 2024:'TRZAX', 2025:'HORVS', 2026:'TRZAX' }, conformite:'ok', traitements:2, bbch:'32' },
+    { id:'p6', ilot:'1004', parcelle:'4', insee:'15001', commune:'Saint-Flour', nom:'Coteau Nord', surface:22.1, culture:'HORVS', gps:'45.0478,3.0734',
+      rotation:{ 2024:'HORVS', 2025:'TRZDU', 2026:'HORVS' }, conformite:'err', traitements:0, bbch:'30' },
+  ],
+
+  // Achats (factures)
+  purchases: [
+    { id:'a1', date:'2026-03-12', produit:'MODDUS', amm:'9400352', quantite:20, unite:'L', prixUnitaire:48.50, total:970.00, fournisseur:'Cantal Cereales', facture:'FAC-2026-0142', type:'fongicide' },
+    { id:'a2', date:'2026-03-12', produit:'BELL', amm:'20080037', quantite:15, unite:'L', prixUnitaire:62.30, total:934.50, fournisseur:'Cantal Cereales', facture:'FAC-2026-0142', type:'fongicide' },
+    { id:'a3', date:'2026-02-28', produit:'CARBRENE', amm:'9100776', quantite:30, unite:'L', prixUnitaire:18.20, total:546.00, fournisseur:'Cantal Cereales', facture:'FAC-2026-0118', type:'fongicide' },
+    { id:'a4', date:'2026-02-28', produit:'ADEUX', amm:'9500389', quantite:5, unite:'kg', prixUnitaire:89.00, total:445.00, fournisseur:'Cantal Cereales', facture:'FAC-2026-0118', type:'herbicide' },
+    { id:'a5', date:'2026-01-15', produit:'KORIT', amm:'8800461', quantite:50, unite:'L', prixUnitaire:11.80, total:590.00, fournisseur:'Cantal Cereales', facture:'FAC-2026-0034', type:'herbicide' },
+    { id:'a6', date:'2026-03-05', produit:'CAP OSELE', amm:'20100063', quantite:12, unite:'L', prixUnitaire:55.40, total:664.80, fournisseur:'Cantal Cereales', facture:'FAC-2026-0125', type:'fongicide' },
+    { id:'a7', date:'2026-03-22', produit:'VARDOUX', amm:'21001459', quantite:8, unite:'L', prixUnitaire:72.10, total:576.80, fournisseur:'Cantal Cereales', facture:'FAC-2026-0156', type:'fongicide' },
+    { id:'a8', date:'2026-01-15', produit:'ADIGOR', amm:'9900424', quantite:3, unite:'kg', prixUnitaire:95.00, total:285.00, fournisseur:'Cantal Cereales', facture:'FAC-2026-0034', type:'herbicide' },
+  ],
+
+  // Stocks (initial, incremented by purchases, decremented by traitements)
+  stock: [
+    { id:'s1', produit:'MODDUS', amm:'9400352', substance:'Spiroxamine 500g/L', quantite:12.4, unite:'L', seuil:10, prixUnitaire:48.50 },
+    { id:'s2', produit:'BELL', amm:'20080037', substance:'Prothioconazole + Tebuconazole', quantite:8.7, unite:'L', seuil:8, prixUnitaire:62.30 },
+    { id:'s3', produit:'CARBRENE', amm:'9100776', substance:'Chlorothalonil 500g/L', quantite:22.5, unite:'L', seuil:15, prixUnitaire:18.20 },
+    { id:'s4', produit:'ADEUX', amm:'9500389', substance:'Metsulfuron-methyl 20g/kg', quantite:2.8, unite:'kg', seuil:3, prixUnitaire:89.00 },
+    { id:'s5', produit:'KORIT', amm:'8800461', substance:'Glyphosate 360g/L', quantite:35.0, unite:'L', seuil:20, prixUnitaire:11.80 },
+    { id:'s6', produit:'CAP OSELE', amm:'20100063', substance:'Prothioconazole 250g/L', quantite:5.2, unite:'L', seuil:6, prixUnitaire:55.40 },
+    { id:'s7', produit:'VARDOUX', amm:'21001459', substance:'Fluxapyroxad 62.5g/L', quantite:3.1, unite:'L', seuil:4, prixUnitaire:72.10 },
+    { id:'s8', produit:'ADIGOR', amm:'9900424', substance:'Metsulfuron + Tribenuron', quantite:1.2, unite:'kg', seuil:2, prixUnitaire:95.00 },
+  ],
+
+  // Stock movements log
+  movements: [
+    { date:'2026-03-12', type:'entree', produit:'MODDUS', quantite:20, unite:'L', source:'FAC-2026-0142' },
+    { date:'2026-03-12', type:'entree', produit:'BELL', quantite:15, unite:'L', source:'FAC-2026-0142' },
+    { date:'2026-03-10', type:'sortie', produit:'MODDUS', quantite:7.6, unite:'L', source:'Traitement Grand Champ' },
+    { date:'2026-03-08', type:'sortie', produit:'BELL', quantite:6.3, unite:'L', source:'Traitement Champ du Roc' },
+    { date:'2026-02-28', type:'entree', produit:'CARBRENE', quantite:30, unite:'L', source:'FAC-2026-0118' },
+    { date:'2026-02-28', type:'entree', produit:'ADEUX', quantite:5, unite:'kg', source:'FAC-2026-0118' },
+    { date:'2026-02-25', type:'sortie', produit:'CARBRENE', quantite:7.5, unite:'L', source:'Traitement Les Graves' },
+    { date:'2026-01-15', type:'entree', produit:'KORIT', quantite:50, unite:'L', source:'FAC-2026-0034' },
+    { date:'2026-01-15', type:'entree', produit:'ADIGOR', quantite:3, unite:'kg', source:'FAC-2026-0034' },
+    { date:'2026-01-10', type:'sortie', produit:'KORIT', quantite:15, unite:'L', source:'Dessiccation Pre Bas' },
+  ],
+
+  // Traitements (registre)
+  traitements: [
+    { id:'t1', date:'2026-03-10', produit:'MODDUS', amm:'9400352', parcelle:'p1', surface:24.5, dose:0.8, conformite:'ok' },
+    { id:'t2', date:'2026-03-08', produit:'BELL', amm:'20080037', parcelle:'p3', surface:31.0, dose:0.6, conformite:'ok' },
+    { id:'t3', date:'2026-02-25', produit:'CARBRENE', amm:'9100776', parcelle:'p2', surface:18.2, dose:1.5, conformite:'warn' },
+    { id:'t4', date:'2026-02-20', produit:'ADEUX', amm:'9500389', parcelle:'p4', surface:12.8, dose:0.1, conformite:'ok' },
+    { id:'t5', date:'2026-01-10', produit:'KORIT', amm:'8800461', parcelle:'p5', surface:9.3, dose:3.0, conformite:'ok' },
+  ],
+
+  // Adherents (for coop role)
+  adherents: [
+    { siret:'12345678900012', nom:'Ferme du Moulin', parcelles:6, surface:117.9, utilisations:5, conformite:96 },
+    { siret:'73282911200015', nom:'GAEC du Cuzols', parcelles:14, surface:203.4, utilisations:8, conformite:92 },
+    { siret:'52412345600022', nom:'EARL VolcAGRI', parcelles:9, surface:156.7, utilisations:12, conformite:88 },
+    { siret:'38146789200031', nom:'Ferme du Margeride', parcelles:11, surface:245.1, utilisations:15, conformite:95 },
+    { siret:'61234567800049', nom:'Gaiec de la Planeze', parcelles:18, surface:312.5, utilisations:21, conformite:97 },
+  ],
+
+  // Connexions (API integrations)
+  connexions: [
+    { id:'ephy', nom:'E-Phy ANSES', type:'API', status:'connecte', derniereSync:'2026-09-23 08:00', version:'2026.1', champs:'AMM, substances, doses ref, cultures autorisees', desc:'Base de produits phytopharmaceutiques' },
+    { id:'rpg', nom:'RPG (Registre Parcellaire Graphique)', type:'API open data', status:'connecte', derniereSync:'2026-06-15 12:00', version:'Campagne 2025', champs:'Ilots, parcelles, INSEE, cultures, surfaces', desc:'Donnees parcellaires open data' },
+    { id:'telepac', nom:'TelePAC', type:'Portail (preparation)', status:'preparation', derniereSync:'2026-09-01 09:00', version:'Campagne 2026', champs:'Declarations PAC, DPU, BCAE', desc:'Portail de declaration PAC. Ceres prepare, ne depose pas.' },
+    { id:'meteo', nom:'Meteo-France', type:'API', status:'connecte', derniereSync:'2026-09-23 11:00', version:'Refresh 1h', champs:'Vent, temperature, humidite, precipitations', desc:'Donnees meteo pour fenetres de traitement' },
+    { id:'agreste', nom:'Agreste', type:'API open data', status:'connecte', derniereSync:'2026-09-20 14:00', version:'2015-2025', champs:'Rendements historiques, statistiques agricoles', desc:'Statistiques agricoles (rendement historique)' },
+    { id:'sentinel', nom:'Sentinel-2', type:'API satellite', status:'connecte', derniereSync:'2026-09-21 06:00', version:'Resolution 10m', champs:'NDVI, imagerie satellite, indices vegetation', desc:'Imagerie satellite (NDVI). Refresh 5 jours.' },
+    { id:'erpc', nom:'Coop ERP (Cantal Cereales)', type:'Export CSV', status:'connecte', derniereSync:'2026-09-22 18:00', version:'Manuel', champs:'Factures, bons de livraison, stocks', desc:'Factures et bons de livraison de la cooperative' },
+  ],
+};
+
+/* ===== NAV CONFIG ===== */
+const NAV_CONFIG = {
+  exploitant: [
+    { id:'dashboard', label:'Tableau de bord', ico:'▣' },
+    { id:'profil', label:'Profil exploitation', ico:'◎' },
+    { id:'parcelles', label:'Parcelles', ico:'▤', count: () => DATA.parcels.length },
+    { id:'achats', label:'Achats', ico:'$', count: () => DATA.purchases.length },
+    { id:'stocks', label:'Stocks', ico:' Inventory icon', count: () => DATA.stock.length },
+    { id:'connexions', label:'Connexions', ico:'⇄', count: () => DATA.connexions.length },
+  ],
+  coop: [
+    { id:'dashboard', label:'Tableau de bord', ico:'▣' },
+    { id:'adherents', label:'Adherents', ico:'∛', count: () => DATA.adherents.length },
+    { id:'connexions', label:'Connexions', ico:'⇄' },
+  ],
+  agent: [
+    { id:'dashboard', label:'Tableau de bord', ico:'▣' },
+    { id:'connexions', label:'Connexions', ico:'⇄' },
+  ],
+};
+
+const TITLES = {
+  dashboard: 'Tableau de bord',
+  profil: 'Profil d\'exploitation',
+  parcelles: 'Parcelles RPG',
+  achats: 'Achats & approvisionnement',
+  stocks: 'Stocks',
+  connexions: 'Connexions API',
+  adherents: 'Adherents',
+};
+
+/* ============================================================
+   APP API (window.App)
+   ============================================================ */
+window.App = {
+  state: {
+    role: 'exploitant',
+    view: 'dashboard',
+    sortCol: null,
+    sortDir: 'asc',
+  },
+  views: {},
+  data: DATA,
+
+  init() {
+    this.renderNav();
+    this.render();
+    this.updateMeta();
+  },
+
+  setRole(role) {
+    this.state.role = role;
+    this.state.view = 'dashboard';
+    document.querySelectorAll('.role-tab').forEach(t => t.classList.toggle('active', t.dataset.role === role));
+    this.renderNav();
+    this.render();
+    this.updateMeta();
+  },
+
+  navigateTo(viewId) {
+    this.state.view = viewId;
+    this.render();
+    this.updateMeta();
+  },
+
+  registerView(id, fn) {
+    this.views[id] = fn;
+  },
+
+  render() {
+    // Update nav active
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.view === this.state.view));
+
+    // Render content
+    const c = document.getElementById('content');
+    const viewFn = this.views[this.state.view];
+    if (viewFn) {
+      c.innerHTML = viewFn.call(this);
+      // Run onMount if provided
+      if (this._onMount) { this._onMount(); this._onMount = null; }
+    } else {
+      c.innerHTML = '<div class="empty">Module non disponible: ' + this.state.view + '</div>';
+    }
+
+    // Update page title
+    const title = TITLES[this.state.view] || this.state.view;
+    document.getElementById('pageTitle').textContent = title;
+    const bc = document.getElementById('topbarBreadcrumb');
+    if (bc) bc.innerHTML = '<span class="sep">/</span>' + (this.state.role === 'exploitant' ? 'Exploitation' : this.state.role === 'coop' ? 'Cooperative' : 'Agent') + '<span class="sep">/</span>' + title;
+  },
+
+  renderNav() {
+    const container = document.getElementById('navContainer');
+    const items = NAV_CONFIG[this.state.role] || [];
+    let html = '<div class="nav-group-label">' + (this.state.role === 'exploitant' ? 'Exploitation' : this.state.role === 'coop' ? 'Cooperative' : 'Agent Ceres') + '</div>';
+    html += '<div class="nav">';
+    items.forEach(item => {
+      const count = item.count ? item.count() : '';
+      const countHtml = count !== '' ? '<span class="nav-count">' + count + '</span>' : '';
+      html += '<button class="nav-item' + (this.state.view === item.id ? ' active' : '') + '" data-view="' + item.id + '" onclick="App.navigateTo(\'' + item.id + '\')"><span class="ico">' + item.ico + '</span>' + item.label + countHtml + '</button>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
+  },
+
+  updateMeta() {
+    const meta = document.getElementById('topbarMeta');
+    const pill = document.getElementById('rolePill');
+    if (this.state.role === 'exploitant') {
+      meta.textContent = 'SIRET ' + DATA.exploitation.siret + ' · ' + DATA.exploitation.department;
+      pill.textContent = 'Exploitant';
+    } else if (this.state.role === 'coop') {
+      meta.textContent = 'Cantal Cereales · 5 adherents';
+      pill.textContent = 'Cooperative';
+    } else {
+      meta.textContent = 'Agent Ceres · GLM-5.2';
+      pill.textContent = 'Agent';
+    }
+  },
+
+  toast(msg, type) {
+    const t = document.createElement('div');
+    t.className = 'toast' + (type ? ' ' + type : '');
+    t.innerHTML = '<span class="dot"></span>' + msg;
+    document.getElementById('toasts').appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  },
+
+  openModal(title, bodyHTML, onMount, opts) {
+    const modal = document.getElementById('modalContent');
+    const sizeClass = opts && opts.size === 'lg' ? ' lg' : '';
+    modal.innerHTML = '<div class="modal' + sizeClass + '">' +
+      '<div class="modal-head"><div><div class="modal-title">' + title + '</div></div>' +
+      '<button class="modal-close" onclick="App.closeModal()">&times;</button></div>' +
+      '<div class="modal-body">' + bodyHTML + '</div>' +
+      '</div>';
+    document.getElementById('modalOverlay').classList.add('show');
+    if (onMount) onMount();
+  },
+
+  closeModal() {
+    document.getElementById('modalOverlay').classList.remove('show');
+  },
+
+  exportData() {
+    const json = JSON.stringify({ app:'FarmCockpit', version:'1.0', generated: new Date().toISOString(), data: DATA }, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'farmcockpit_export.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    this.toast('Export JSON telecharge');
+  },
+
+  // Helpers
+  fmtDate(d) {
+    return new Date(d).toLocaleDateString('fr-FR');
+  },
+  fmtEuro(n) {
+    return n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' EUR';
+  },
+  totalSurface() {
+    return DATA.parcels.reduce((s, p) => s + p.surface, 0);
+  },
+  conformitePct() {
+    const total = DATA.parcels.length;
+    const ok = DATA.parcels.filter(p => p.conformite === 'ok').length;
+    return Math.round((ok / total) * 100);
+  },
+};
+
+/* ============================================================
+   VIEW MODULES
+   ============================================================ */
+
+/* ----- 1. TABLEAU DE BORD ----- */
+App.registerView('dashboard', function() {
+  const totalSurface = App.totalSurface();
+  const traitementsCount = DATA.traitements.length;
+  const conformite = App.conformitePct();
+  const echeancePAC = '15 mai 2026';
+  const joursRestants = Math.max(0, Math.round((new Date('2026-05-15') - new Date('2026-09-23')) / 86400000));
+
+  // Alertes
+  const nonConformes = DATA.traitements.filter(t => t.conformite !== 'ok');
+  const sansRegistre = DATA.parcels.filter(p => p.traitements === 0);
+  const meteoFavorable = true; // Simulated
+
+  let alertesHtml = '';
+  if (nonConformes.length > 0) {
+    alertesHtml += '<div class="alert warn alert-clickable" onclick="App.navigateTo(\'parcelles\')"><div class="ai">▲</div><div><div class="at">Traitements non conformes: ' + nonConformes.length + '</div><div class="ad">Verifier les doses et AMM sur ' + nonConformes.map(t => t.produit).join(', ') + '</div></div></div>';
+  }
+  if (sansRegistre.length > 0) {
+    alertesHtml += '<div class="alert err alert-clickable" onclick="App.navigateTo(\'parcelles\')"><div class="ai">!</div><div><div class="at">Parcelles sans registre: ' + sansRegistre.length + '</div><div class="ad">' + sansRegistre.map(p => p.nom).join(', ') + '</div></div></div>';
+  }
+  if (meteoFavorable) {
+    alertesHtml += '<div class="alert ok alert-clickable" onclick="App.navigateTo(\'stocks\')"><div class="ai">✓</div><div><div class="at">Fenetre meteo favorable</div><div class="ad">Vent < 10 km/h, humidite 45%, prochaines 48h</div></div></div>';
+  }
+  if (DATA.stock.filter(s => s.quantite < s.seuil).length > 0) {
+    const lowStock = DATA.stock.filter(s => s.quantite < s.seuil);
+    alertesHtml += '<div class="alert warn alert-clickable" onclick="App.navigateTo(\'stocks\')"><div class="ai">▲</div><div><div class="at">Stock bas: ' + lowStock.length + ' produit(s)</div><div class="ad">' + lowStock.map(s => s.produit + ' (' + s.quantite + s.unite + ')').join(', ') + '</div></div></div>';
+  }
+
+  // Liens rapides
+  const quickLinks = [
+    { id:'parcelles', ico:'▤', label:'Parcelles', sub: DATA.parcels.length + ' ilots' },
+    { id:'achats', ico:'$', label:'Achats', sub: DATA.purchases.length + ' factures' },
+    { id:'stocks', ico:'◇', label:'Stocks', sub: DATA.stock.length + ' produits' },
+    { id:'connexions', ico:'⇄', label:'Connexions', sub: DATA.connexions.filter(c => c.status === 'connecte').length + ' actives' },
+    { id:'profil', ico:'◎', label:'Profil', sub: 'Ferme du Moulin' },
+  ];
+
+  return '' +
+  '<div class="grid-4" style="margin-bottom:18px">' +
+    '<div class="kpi accent"><div class="kpi-label">Surface totale</div><div class="kpi-val">' + totalSurface.toFixed(1) + '<span class="kpi-unit"> ha</span></div><div class="kpi-delta neu">' + DATA.parcels.length + ' parcelles · 2 communes</div></div>' +
+    '<div class="kpi ok"><div class="kpi-label">Traitements enregistres</div><div class="kpi-val">' + traitementsCount + '</div><div class="kpi-delta pos">registre a jour</div></div>' +
+    '<div class="kpi ' + (conformite >= 90 ? 'ok' : 'warn') + '"><div class="kpi-label">Conformite phyto</div><div class="kpi-val">' + conformite + '<span class="kpi-unit">%</span></div><div class="kpi-delta ' + (conformite >= 90 ? 'pos' : 'neg') + '">' + (conformite >= 90 ? 'conforme' : 'a verifier') + '</div></div>' +
+    '<div class="kpi terra"><div class="kpi-label">Echeance PAC</div><div class="kpi-val">' + echeancePAC.replace(' 2026','') + '<span class="kpi-unit"> 2026</span></div><div class="kpi-delta neu">dans ' + joursRestants + ' jours</div></div>' +
+  '</div>' +
+  '<div class="grid-2">' +
+    '<div class="card"><div class="card-head"><div><div class="card-title">Alertes</div><div class="card-sub">conformite, stock, meteo</div></div></div><div class="card-body">' +
+      (alertesHtml || '<div class="empty">Aucune alerte</div>') +
+    '</div></div>' +
+    '<div class="card"><div class="card-head"><div><div class="card-title">Liens rapides</div><div class="card-sub">modules FarmCockpit</div></div></div><div class="card-body">' +
+      '<div class="quick-links">' +
+        quickLinks.map(ql => '<div class="quick-link" onclick="App.navigateTo(\'' + ql.id + '\')"><span class="ql-ico">' + ql.ico + '</span><div><div class="ql-label">' + ql.label + '</div><div class="ql-sub">' + ql.sub + '</div></div></div>').join('') +
+      '</div>' +
+    '</div></div>' +
+  '</div>' +
+  '<div class="card"><div class="card-head"><div><div class="card-title">Activite recente</div><div class="card-sub">traitements et mouvements</div></div>' +
+    '<button class="btn btn-outline btn-sm" onclick="App.navigateTo(\'stocks\')">Voir stocks</button></div><div class="card-body tight">' +
+    '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Date</th><th>Produit</th><th>Parcelle</th><th class="num">Surface</th><th>Statut</th></tr></thead><tbody>' +
+    DATA.traitements.slice().reverse().map(t => {
+      const p = DATA.parcels.find(pp => pp.id === t.parcelle);
+      return '<tr class="row-clickable" onclick="App.navigateTo(\'parcelles\')"><td class="mono">' + App.fmtDate(t.date) + '</td><td><span class="tag terra">' + t.amm + '</span> ' + t.produit + '</td><td class="mono">' + (p ? p.ilot + '/' + p.parcelle + ' ' + p.nom : t.parcelle) + '</td><td class="num">' + t.surface + ' ha</td><td><span class="tag ' + (t.conformite === 'ok' ? 'ok' : t.conformite === 'warn' ? 'warn' : 'err') + '">' + (t.conformite === 'ok' ? 'Conforme' : t.conformite === 'warn' ? 'A verifier' : 'Non conforme') + '</span></td></tr>';
+    }).join('') +
+    '</tbody></table></div>' +
+  '</div></div>';
+});
+
+/* ----- 2. PROFIL D'EXPLOITATION ----- */
+App.registerView('profil', function() {
+  const e = DATA.exploitation;
+  const certifsHtml = e.certifications.map(c => {
+    const tag = c.statut === 'certifie' ? '<span class="tag ok">certifie</span>' : c.statut === 'non' ? '<span class="tag neu">non</span>' : '<span class="tag warn">' + c.statut + '</span>';
+    return '<div class="info-row"><div class="ir-label">' + c.nom + '</div><div class="ir-val">' + tag + (c.date ? ' <span class="mono" style="color:var(--muted);font-size:11px">depuis ' + App.fmtDate(c.date) + '</span>' : '') + '</div></div>';
+  }).join('');
+
+  const historiqueHtml = e.historiqueCultures.map(h =>
+    '<div class="info-row"><div class="ir-label">Campagne ' + h.annee + '</div><div class="ir-val">' + h.rotation + '</div></div>'
+  ).join('');
+
+  const associesHtml = e.associes.map(a =>
+    '<div class="info-row"><div class="ir-label">' + a.nom + '</div><div class="ir-val">' + a.role + ' <span class="mono" style="color:var(--muted);font-size:11px">' + a.part + '%</span></div></div>'
+  ).join('');
+
+  return '' +
+  '<div class="grid-2">' +
+    '<div class="card"><div class="card-head"><div><div class="card-title">Identification</div><div class="card-sub">Ferme du Moulin · GAEC</div></div><span class="tag gold">HVE 3</span></div><div class="card-body">' +
+      '<div class="info-row"><div class="ir-label">SIRET</div><div class="ir-val mono">' + e.siret + '</div></div>' +
+      '<div class="info-row"><div class="ir-label">Nom</div><div class="ir-val">' + e.nom + '</div></div>' +
+      '<div class="info-row"><div class="ir-label">Forme juridique</div><div class="ir-val">' + e.formeJuridique + '</div></div>' +
+      '<div class="info-row"><div class="ir-label">SAU</div><div class="ir-val mono">' + e.sau.toFixed(1) + ' ha</div></div>' +
+      '<div class="info-row"><div class="ir-label">Communes</div><div class="ir-val">' + e.communes.join(', ') + '</div></div>' +
+      '<div class="info-row"><div class="ir-label">Departement</div><div class="ir-val">' + e.department + '</div></div>' +
+    '</div></div>' +
+    '<div class="card"><div class="card-head"><div><div class="card-title">Certifications</div><div class="card-sub">labels et statuts</div></div></div><div class="card-body">' + certifsHtml + '</div></div>' +
+  '</div>' +
+  '<div class="grid-2">' +
+    '<div class="card"><div class="card-head"><div><div class="card-title">Historique cultures</div><div class="card-sub">rotation 2024-2026</div></div></div><div class="card-body">' + historiqueHtml + '</div></div>' +
+    '<div class="card"><div class="card-head"><div><div class="card-title">Structure</div><div class="card-sub">associes GAEC</div></div></div><div class="card-body">' + associesHtml + '</div></div>' +
+  '</div>' +
+  '<div class="grid-2">' +
+    '<div class="card"><div class="card-head"><div><div class="card-title">Profil productif</div><div class="card-sub">type d\'exploitation</div></div></div><div class="card-body"><div class="info-row"><div class="ir-label">Type</div><div class="ir-val">' + e.profilProductif + '</div></div></div></div>' +
+    '<div class="card"><div class="card-head"><div><div class="card-title">Conseiller</div><div class="card-sub">cooperative</div></div></div><div class="card-body">' +
+      '<div class="info-row"><div class="ir-label">Nom</div><div class="ir-val">' + e.conseiller.nom + '</div></div>' +
+      '<div class="info-row"><div class="ir-label">Cooperative</div><div class="ir-val">' + e.conseiller.coop + '</div></div>' +
+      '<div class="info-row"><div class="ir-label">Telephone</div><div class="ir-val mono">' + e.conseiller.telephone + '</div></div>' +
+    '</div></div>' +
+  '</div>';
+});
+
+/* ----- 3. PARCELLES ----- */
+App.registerView('parcelles', function() {
+  const totalSurface = App.totalSurface();
+  return '' +
+  '<div class="card"><div class="card-head"><div><div class="card-title">Parcelles RPG</div><div class="card-sub">Registre parcellaire graphique · Cantal 15 · ' + DATA.parcels.length + ' parcelles · ' + totalSurface.toFixed(1) + ' ha</div></div>' +
+    '<button class="btn btn-outline btn-sm" onclick="App.navigateTo(\'achats\')">Voir achats</button></div>' +
+    '<div class="tbl-wrap"><table class="tbl" id="parcelTable"><thead><tr>' +
+    '<th class="sortable" onclick="App.sortTable(\'ilot\')">Ilot<span class="arr"></span></th>' +
+    '<th class="sortable" onclick="App.sortTable(\'parcelle\')">Parc.<span class="arr"></span></th>' +
+    '<th>INSEE</th><th>Nom</th><th>Commune</th><th>Culture</th>' +
+    '<th class="sortable" onclick="App.sortTable(\'surface\')">Surface<span class="arr"></span></th>' +
+    '<th>Rotation 3 ans</th><th>Conformite</th>' +
+    '</tr></thead><tbody>' +
+    DATA.parcels.map(p => {
+      const rotStr = (p.rotation[2024] || '-') + ' > ' + (p.rotation[2025] || '-') + ' > ' + (p.rotation[2026] || '-');
+      const confTag = p.conformite === 'ok' ? '<span class="tag ok">OK</span>' : p.conformite === 'warn' ? '<span class="tag warn">A verifier</span>' : '<span class="tag err">Non conforme</span>';
+      return '<tr class="row-clickable" onclick="App.showParcelDetail(\'' + p.id + '\')">' +
+        '<td class="mono">' + p.ilot + '</td>' +
+        '<td class="mono">' + p.parcelle + '</td>' +
+        '<td class="mono">' + p.insee + '</td>' +
+        '<td>' + p.nom + '</td>' +
+        '<td>' + p.commune + '</td>' +
+        '<td><span class="tag gold">' + p.culture + '</span> ' + (DATA.oepp[p.culture] || '') + '</td>' +
+        '<td class="num">' + p.surface.toFixed(1) + ' ha</td>' +
+        '<td class="mono" style="font-size:10px">' + rotStr + '</td>' +
+        '<td>' + confTag + '</td>' +
+      '</tr>';
+    }).join('') +
+    '</tbody></table></div></div>' +
+  '<div style="margin-top:8px" class="section-title">Total: ' + totalSurface.toFixed(1) + ' ha · ' + DATA.parcels.length + ' parcelles · 2 communes (Saint-Flour, Lempdes)</div>';
+});
+
+App.showParcelDetail = function(pid) {
+  const p = DATA.parcels.find(pp => pp.id === pid);
+  if (!p) return;
+  const traitements = DATA.traitements.filter(t => t.parcelle === pid);
+  const bbchLabel = DATA.bbch[p.bbch] || 'N/A';
+  const rotDetail = Object.entries(p.rotation).map(([y, c]) => y + ': ' + c + ' (' + (DATA.oepp[c] || c) + ')').join('<br>');
+
+  const body =
+    '<div class="detail-grid">' +
+    '<div class="dg-label">Ilot / Parcelle</div><div class="dg-val">' + p.ilot + ' / ' + p.parcelle + '</div>' +
+    '<div class="dg-label">INSEE</div><div class="dg-val">' + p.insee + ' (' + p.commune + ')</div>' +
+    '<div class="dg-label">Nom</div><div class="dg-val">' + p.nom + '</div>' +
+    '<div class="dg-label">Surface</div><div class="dg-val">' + p.surface.toFixed(1) + ' ha</div>' +
+    '<div class="dg-label">Culture actuelle</div><div class="dg-val">' + p.culture + ' · ' + (DATA.oepp[p.culture] || '') + '</div>' +
+    '<div class="dg-label">GPS (WGS84)</div><div class="dg-val">' + p.gps + '</div>' +
+    '<div class="dg-label">Stade BBCH</div><div class="dg-val">' + p.bbch + ' · ' + bbchLabel + '</div>' +
+    '<div class="dg-label">Conformite</div><div class="dg-val"><span class="tag ' + (p.conformite === 'ok' ? 'ok' : p.conformite === 'warn' ? 'warn' : 'err') + '">' + (p.conformite === 'ok' ? 'Conforme' : p.conformite === 'warn' ? 'A verifier' : 'Non conforme') + '</span></div>' +
+    '<div class="dg-label">Traitements</div><div class="dg-val">' + traitements.length + ' enregistre(s)</div>' +
+    '</div>' +
+    '<div class="divider"></div>' +
+    '<div class="section-title">Historique rotation (3 ans)</div>' +
+    '<div class="mono" style="font-size:11px;line-height:1.8">' + rotDetail + '</div>' +
+    (traitements.length ? '<div class="divider"></div><div class="section-title">Traitements enregistres</div><table class="tbl"><thead><tr><th>Date</th><th>Produit</th><th>AMM</th><th class="num">Dose</th></tr></thead><tbody>' +
+      traitements.map(t => '<tr><td class="mono">' + App.fmtDate(t.date) + '</td><td>' + t.produit + '</td><td class="mono">' + t.amm + '</td><td class="num">' + t.dose + '</td></tr>').join('') +
+      '</tbody></table>' : '<div class="empty" style="padding:20px">Aucun traitement enregistre</div>');
+
+  App.openModal(p.nom + ' · ' + p.ilot + '/' + p.parcelle, body, null, { size: 'lg' });
+};
+
+App.sortTable = function(col) {
+  // Simple sort toggle
+  if (App.state.sortCol === col) {
+    App.state.sortDir = App.state.sortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    App.state.sortCol = col;
+    App.state.sortDir = 'asc';
+  }
+  DATA.parcels.sort((a, b) => {
+    let va = a[col], vb = b[col];
+    if (typeof va === 'number') return App.state.sortDir === 'asc' ? va - vb : vb - va;
+    va = String(va); vb = String(vb);
+    return App.state.sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+  });
+  App.render();
+  App.toast('Tri par ' + col + ' (' + App.state.sortDir + ')');
+};
+
+/* ----- 4. ACHATS ----- */
+App.registerView('achats', function() {
+  const totalHT = DATA.purchases.reduce((s, p) => s + p.total, 0);
+  const byType = {};
+  DATA.purchases.forEach(p => { byType[p.type] = (byType[p.type] || 0) + p.total; });
+  const types = Object.entries(byType).map(([t, v]) =>
+    '<div class="kpi"><div class="kpi-label">' + t + '</div><div class="kpi-val" style="font-size:18px">' + v.toFixed(0) + '<span class="kpi-unit"> EUR HT</span></div></div>'
+  ).join('');
+
+  return '' +
+  '<div class="grid-4" style="margin-bottom:18px">' +
+    '<div class="kpi accent"><div class="kpi-label">Total achats HT</div><div class="kpi-val">' + totalHT.toFixed(0) + '<span class="kpi-unit"> EUR</span></div><div class="kpi-delta neu">annee 2026</div></div>' +
+    '<div class="kpi"><div class="kpi-label">Factures</div><div class="kpi-val">' + new Set(DATA.purchases.map(p => p.facture)).size + '</div><div class="kpi-delta neu">Cantal Cereales</div></div>' +
+    '<div class="kpi terra"><div class="kpi-label">Produits</div><div class="kpi-val">' + new Set(DATA.purchases.map(p => p.produit)).size + '</div><div class="kpi-delta neu">phyto + herbicide</div></div>' +
+    '<div class="kpi ok"><div class="kpi-label">Fournisseur</div><div class="kpi-val" style="font-size:16px">Cantal Cereales</div><div class="kpi-delta pos">ERP sync</div></div>' +
+  '</div>' +
+  '<div class="grid-3" style="margin-bottom:16px">' + types + '<div class="kpi"><div class="kpi-label">Total</div><div class="kpi-val" style="font-size:18px">' + totalHT.toFixed(0) + '<span class="kpi-unit"> EUR</span></div></div></div>' +
+  '<div class="card"><div class="card-head"><div><div class="card-title">Factures recentes</div><div class="card-sub">achats & approvisionnement · Cantal Cereales</div></div>' +
+    '<button class="btn btn-outline btn-sm" onclick="App.navigateTo(\'stocks\')">Voir stocks</button></div>' +
+  '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Date</th><th>Produit</th><th>AMM</th><th class="num">Qt.</th><th class="num">P.U.</th><th class="num">Total HT</th><th>Facture</th><th>Type</th></tr></thead><tbody>' +
+  DATA.purchases.map(p =>
+    '<tr>' +
+    '<td class="mono">' + App.fmtDate(p.date) + '</td>' +
+    '<td>' + p.produit + '</td>' +
+    '<td class="mono"><span class="tag terra">' + p.amm + '</span></td>' +
+    '<td class="num">' + p.quantite + ' ' + p.unite + '</td>' +
+    '<td class="num">' + p.prixUnitaire.toFixed(2) + '</td>' +
+    '<td class="num">' + p.total.toFixed(2) + '</td>' +
+    '<td class="mono">' + p.facture + '</td>' +
+    '<td><span class="tag ' + (p.type === 'fongicide' ? 'gold' : 'terra') + '">' + p.type + '</span></td>' +
+    '</tr>'
+  ).join('') +
+  '</tbody></table></div></div>' +
+  '<div class="section-title">Lien achats -> stocks: chaque achat incremente le stock automatiquement</div>';
+});
+
+/* ----- 5. STOCKS ----- */
+App.registerView('stocks', function() {
+  const stockValue = DATA.stock.reduce((s, item) => s + (item.quantite * item.prixUnitaire), 0);
+  const lowStock = DATA.stock.filter(s => s.quantite < s.seuil);
+
+  return '' +
+  '<div class="grid-3" style="margin-bottom:18px">' +
+    '<div class="kpi accent"><div class="kpi-label">Valeur stock</div><div class="kpi-val">' + stockValue.toFixed(0) + '<span class="kpi-unit"> EUR</span></div></div>' +
+    '<div class="kpi"><div class="kpi-label">Produits en stock</div><div class="kpi-val">' + DATA.stock.length + '</div></div>' +
+    '<div class="kpi ' + (lowStock.length > 0 ? 'warn' : 'ok') + '"><div class="kpi-label">Stocks bas</div><div class="kpi-val">' + lowStock.length + '</div><div class="kpi-delta ' + (lowStock.length > 0 ? 'neg' : 'pos') + '">' + (lowStock.length > 0 ? 'a reapprovisionner' : 'OK') + '</div></div>' +
+  '</div>' +
+  (lowStock.length > 0 ? '<div class="card" style="border-color:rgba(184,134,47,.3)"><div class="card-body">' +
+    lowStock.map(s => '<div class="alert warn"><div class="ai">▲</div><div><div class="at">' + s.produit + ' (AMM ' + s.amm + ')</div><div class="ad">Stock: ' + s.quantite + s.unite + ' < seuil ' + s.seuil + s.unite + '</div></div></div>').join('') +
+  '</div></div>' : '') +
+  '<div class="card"><div class="card-head"><div><div class="card-title">Inventaire phyto</div><div class="card-sub">produits en stock · E-Phy AMM</div></div>' +
+    '<button class="btn btn-outline btn-sm" onclick="App.navigateTo(\'achats\')">Voir achats</button></div>' +
+  '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Produit</th><th>AMM</th><th>Substance active</th><th class="num">Quantite</th><th>Unite</th><th class="num">Seuil</th><th class="num">Valeur</th><th>Statut</th></tr></thead><tbody>' +
+  DATA.stock.map(s => {
+    const low = s.quantite < s.seuil;
+    return '<tr>' +
+    '<td>' + s.produit + '</td>' +
+    '<td class="mono"><span class="tag terra">' + s.amm + '</span></td>' +
+    '<td class="mono" style="font-size:11px">' + s.substance + '</td>' +
+    '<td class="num">' + s.quantite.toFixed(1) + '</td>' +
+    '<td class="mono">' + s.unite + '</td>' +
+    '<td class="num">' + s.seuil + '</td>' +
+    '<td class="num">' + (s.quantite * s.prixUnitaire).toFixed(0) + ' EUR</td>' +
+    '<td>' + (low ? '<span class="tag err">Stock bas</span>' : '<span class="tag ok">OK</span>') + '</td>' +
+    '</tr>';
+  }).join('') +
+  '</tbody></table></div></div>' +
+  '<div class="card"><div class="card-head"><div><div class="card-title">Mouvements de stock</div><div class="card-sub">entrees (achats) & sorties (traitements)</div></div></div><div class="card-body tight">' +
+  DATA.movements.slice().reverse().map(m =>
+    '<div class="movement">' +
+    '<div class="mv-date">' + App.fmtDate(m.date) + '</div>' +
+    '<div class="mv-type ' + m.type + '">' + (m.type === 'entree' ? '+' : '-') + '</div>' +
+    '<div class="mv-desc">' + m.produit + ' · ' + m.source + '</div>' +
+    '<div class="mv-qty">' + (m.type === 'entree' ? '+' : '-') + m.quantite + ' ' + m.unite + '</div>' +
+    '</div>'
+  ).join('') +
+  '</div></div>' +
+  '<div class="section-title">Lien stocks -> traitements: chaque traitement dans le registre decremente le stock</div>';
+});
+
+/* ----- 6. CONNEXIONS ----- */
+App.registerView('connexions', function() {
+  return '' +
+  '<div class="grid-4" style="margin-bottom:18px">' +
+    '<div class="kpi ok"><div class="kpi-label">Sources connectees</div><div class="kpi-val">' + DATA.connexions.filter(c => c.status === 'connecte').length + '</div></div>' +
+    '<div class="kpi warn"><div class="kpi-label">En preparation</div><div class="kpi-val">' + DATA.connexions.filter(c => c.status === 'preparation').length + '</div></div>' +
+    '<div class="kpi"><div class="kpi-label">Total sources</div><div class="kpi-val">' + DATA.connexions.length + '</div></div>' +
+    '<div class="kpi accent"><div class="kpi-label">Derniere sync</div><div class="kpi-val" style="font-size:16px">11:00</div><div class="kpi-delta neu">23/09/2026</div></div>' +
+  '</div>' +
+  '<div class="conn-grid">' +
+  DATA.connexions.map(c => {
+    const statusClass = c.status === 'connecte' ? 'connecte' : 'preparation';
+    const statusLabel = c.status === 'connecte' ? 'Connecte' : 'Preparation';
+    return '<div class="conn-card">' +
+      '<div class="conn-card-head"><div><div class="conn-name">' + c.nom + '</div><div class="conn-type">' + c.type + '</div></div>' +
+      '<span class="conn-status ' + statusClass + '"><span class="pulse"></span>' + statusLabel + '</span></div>' +
+      '<div style="font-size:12px;color:var(--muted);margin-bottom:6px">' + c.desc + '</div>' +
+      '<div class="conn-fields">Champs: ' + c.champs + '</div>' +
+      '<div class="conn-meta">' +
+        '<span>Derniere sync: ' + c.derniereSync + '</span>' +
+        '<span>Version: ' + c.version + '</span>' +
+      '</div>' +
+      '<div style="margin-top:10px;display:flex;gap:6px">' +
+        '<button class="btn btn-outline btn-sm" onclick="App.toast(\'Sync ' + c.nom + ' lancee\')">Sync</button>' +
+        '<button class="btn btn-ghost btn-sm" onclick="App.showConnDetail(\'' + c.id + '\')">Detail</button>' +
+      '</div>' +
+    '</div>';
+  }).join('') +
+  '</div>' +
+  '<div class="card" style="margin-top:16px"><div class="card-head"><div><div class="card-title">Flux de donnees</div><div class="card-sub">ou les donnent circulent</div></div></div><div class="card-body">' +
+    '<table class="tbl"><thead><tr><th>Source</th><th>Type</th><th>Statut</th><th>Destination</th></tr></thead><tbody>' +
+    DATA.connexions.map(c => '<tr><td>' + c.nom + '</td><td class="mono">' + c.type + '</td><td><span class="tag ' + (c.status === 'connecte' ? 'ok' : 'warn') + '">' + c.status + '</span></td><td class="mono">FarmCockpit</td></tr>').join('') +
+    '</tbody></table>' +
+  '</div></div>';
+});
+
+App.showConnDetail = function(cid) {
+  const c = DATA.connexions.find(cc => cc.id === cid);
+  if (!c) return;
+  const body =
+    '<div class="detail-grid">' +
+    '<div class="dg-label">Nom</div><div class="dg-val">' + c.nom + '</div>' +
+    '<div class="dg-label">Type</div><div class="dg-val">' + c.type + '</div>' +
+    '<div class="dg-label">Statut</div><div class="dg-val"><span class="tag ' + (c.status === 'connecte' ? 'ok' : 'warn') + '">' + c.status + '</span></div>' +
+    '<div class="dg-label">Derniere sync</div><div class="dg-val">' + c.derniereSync + '</div>' +
+    '<div class="dg-label">Version</div><div class="dg-val">' + c.version + '</div>' +
+    '<div class="dg-label">Description</div><div class="dg-val">' + c.desc + '</div>' +
+    '<div class="dg-label">Champs disponibles</div><div class="dg-val">' + c.champs + '</div>' +
+    '</div>';
+  App.openModal('Detail connexion: ' + c.nom, body);
+};
+
+/* ----- ADHERENTS (Coop role) ----- */
+App.registerView('adherents', function() {
+  return '<div class="card"><div class="card-head"><div><div class="card-title">Adherents</div><div class="card-sub">Cantal Cereales · ' + DATA.adherents.length + ' exploitations</div></div></div><div class="card-body tight">' +
+  '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>SIRET</th><th>Nom</th><th class="num">Parcelles</th><th class="num">Surface</th><th class="num">Utilisations</th><th class="num">Conformite</th></tr></thead><tbody>' +
+  DATA.adherents.map(a => '<tr><td class="mono">' + a.siret + '</td><td>' + a.nom + '</td><td class="num">' + a.parcelles + '</td><td class="num">' + a.surface.toFixed(1) + ' ha</td><td class="num">' + a.utilisations + '</td><td class="num"><span class="tag ' + (a.conformite >= 95 ? 'ok' : a.conformite >= 90 ? 'warn' : 'err') + '">' + a.conformite + '%</span></td></tr>').join('') +
+  '</tbody></table></div></div></div>';
+});
+
+/* ===== INIT ===== */
+App.init();
+</script>
+</body>
+</html>

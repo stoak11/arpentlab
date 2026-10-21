@@ -1,6 +1,6 @@
 {
-  "autodiag_api": "https://once-guided-champion-venues.trycloudflare.com",
+  "autodiag_api": "https://api.arpent-lab.ai",
   "ceres_app": "https://app.arpent-lab.ai",
-  "mis_a_jour": "2026-10-21T08:06:50+00:00",
-  "note": "Adresses publiques des services Autodiag, mises \u00e0 jour automatiquement par ops/supervise.py"
+  "mis_a_jour": "2026-10-21T14:45:00+00:00",
+  "note": "Adresses publiques stables des services Arpent, servies par le VPS OVH (plus de tunnel)."
 }
