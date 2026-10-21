@@ -198,6 +198,7 @@ function stableCards(r) {
 function renderResults() {
   compute();
   if (!document.getElementById("res-root")) {
+    if (window.arpentMesure) window.arpentMesure("diagnostic_fini");
     $app.innerHTML = `
     <section class="results"><div class="wrap" id="res-root">
       <div class="toolbar">
@@ -529,6 +530,7 @@ async function submitSend(form) {
     });
     if (resp.status === 201) {
       S.sent = { email: c.email, essai: true, at: Date.now() };
+      if (window.arpentMesure) window.arpentMesure("diagnostic_envoye");
       save();
       renderSend();
       document.getElementById("envoi").scrollIntoView({ behavior: "smooth", block: "center" });
@@ -598,6 +600,7 @@ $app.addEventListener("click", (ev) => {
     S.contact = saved ? saved.contact || {} : {};
     S.profil.type_repondant = a === "start-coop" || qs.get("type") === "cooperative" ? "cooperative" : "exploitant";
     S.step = 0;
+    if (window.arpentMesure) window.arpentMesure("diagnostic_debut");
     go("wizard", "step-title");
   } else if (a === "resume") {
     const d = restore();

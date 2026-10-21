@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://stoak11.github.io/arpentlab/sitemap.xml
+
+Sitemap: https://arpent-lab.ai/sitemap.xml
